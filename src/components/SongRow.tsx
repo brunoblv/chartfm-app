@@ -1,0 +1,51 @@
+import React from "react";
+import { View, Text } from "react-native";
+import { useAppTheme } from "../theme/ThemeProvider";
+import { Cover } from "./Cover";
+import { PositionNumber } from "./PositionNumber";
+import { MovementBadge, MovementStatus } from "./MovementBadge";
+import { ChartSong } from "../data/mock";
+
+export function SongRow({
+  song,
+  position,
+  meta,
+  compact,
+  last,
+}: {
+  song: ChartSong;
+  position?: number;
+  meta?: string;
+  compact?: boolean;
+  last?: boolean;
+}) {
+  const { colors } = useAppTheme();
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+        paddingVertical: 11,
+        paddingHorizontal: 14,
+        borderBottomWidth: last ? 0 : 1,
+        borderBottomColor: colors.dividerSoft,
+      }}
+    >
+      {position != null && <PositionNumber n={position} size={20} />}
+      <Cover cover={song.cover} size={44} />
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: "600", color: colors.text }}>
+          {song.t}
+        </Text>
+        <Text numberOfLines={1} style={{ fontSize: 12, color: colors.textMuted, marginTop: 1 }}>
+          {song.a}
+        </Text>
+        {meta ? (
+          <Text style={{ fontSize: 10.5, color: colors.textDisabled, marginTop: 3 }}>{meta}</Text>
+        ) : null}
+      </View>
+      {song.mv ? <MovementBadge status={song.mv as MovementStatus} delta={song.d} compact={compact} /> : null}
+    </View>
+  );
+}
