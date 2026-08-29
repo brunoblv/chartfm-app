@@ -88,6 +88,10 @@ export function CreateSheetScreen() {
             </Svg>
           }
           label="Importar do Last.fm"
+          onPress={() => {
+            navigation.goBack();
+            navigation.navigate("Lastfm");
+          }}
         />
       </View>
     </View>

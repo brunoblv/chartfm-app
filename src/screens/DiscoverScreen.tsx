@@ -2,15 +2,21 @@ import React from "react";
 import { View, Text, Pressable } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { Screen } from "../components/Screen";
 import { SectionHeader } from "../components/SectionHeader";
 import { Cover } from "../components/Cover";
 import { SongRow } from "../components/SongRow";
 import { TRENDING, POPULAR, PEOPLE, GLOBAL } from "../data/mock";
+import { RootStackParamList } from "../navigation/RootNavigator";
+
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export function DiscoverScreen() {
   const { colors } = useAppTheme();
+  const navigation = useNavigation<Nav>();
   const climbing = GLOBAL.slice(2, 6);
 
   return (
@@ -19,13 +25,16 @@ export function DiscoverScreen() {
         <Text style={{ fontSize: 30, fontWeight: "800", letterSpacing: -0.8, color: colors.text }}>Discover</Text>
       </View>
       <View style={{ paddingHorizontal: 16, paddingBottom: 8 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 9, backgroundColor: colors.fillSubtle, borderRadius: 12, paddingVertical: 11, paddingHorizontal: 13 }}>
+        <Pressable
+          onPress={() => navigation.navigate("Search")}
+          style={{ flexDirection: "row", alignItems: "center", gap: 9, backgroundColor: colors.fillSubtle, borderRadius: 12, paddingVertical: 11, paddingHorizontal: 13 }}
+        >
           <Svg width={17} height={17} viewBox="0 0 24 24" fill="none" stroke={colors.textMuted} strokeWidth={2} strokeLinecap="round">
             <Circle cx={11} cy={11} r={7} />
             <Path d="M20 20l-3.5-3.5" />
           </Svg>
           <Text style={{ fontSize: 14.5, color: colors.textMuted }}>Músicas, artistas, paradas, pessoas</Text>
-        </View>
+        </Pressable>
       </View>
 
       <SectionHeader title="Em alta esta semana" />
@@ -79,7 +88,7 @@ export function DiscoverScreen() {
       <SectionHeader title="Subindo rápido" />
       <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden", marginHorizontal: 16 }}>
         {climbing.map((s, i) => (
-          <SongRow key={s.t} song={s} last={i === climbing.length - 1} />
+          <SongRow key={s.t} song={s} last={i === climbing.length - 1} onPress={() => navigation.navigate("MusicDetail")} />
         ))}
       </View>
 
@@ -90,9 +99,11 @@ export function DiscoverScreen() {
             key={u.handle}
             style={{ width: 132, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 16, alignItems: "center" }}
           >
-            <LinearGradient colors={u.avatar} style={{ width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center" }}>
-              <Text style={{ color: "#fff", fontWeight: "800", fontSize: 18 }}>{u.initial}</Text>
-            </LinearGradient>
+            <Pressable onPress={() => navigation.navigate("UserDetail")}>
+              <LinearGradient colors={u.avatar} style={{ width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center" }}>
+                <Text style={{ color: "#fff", fontWeight: "800", fontSize: 18 }}>{u.initial}</Text>
+              </LinearGradient>
+            </Pressable>
             <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: "700", color: colors.text, marginTop: 10 }}>
               {u.handle}
             </Text>

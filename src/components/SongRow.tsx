@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { Cover } from "./Cover";
 import { PositionNumber } from "./PositionNumber";
@@ -12,16 +12,20 @@ export function SongRow({
   meta,
   compact,
   last,
+  onPress,
 }: {
   song: ChartSong;
   position?: number;
   meta?: string;
   compact?: boolean;
   last?: boolean;
+  onPress?: () => void;
 }) {
   const { colors } = useAppTheme();
+  const Wrapper = onPress ? Pressable : View;
   return (
-    <View
+    <Wrapper
+      onPress={onPress}
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -46,6 +50,6 @@ export function SongRow({
         ) : null}
       </View>
       {song.mv ? <MovementBadge status={song.mv as MovementStatus} delta={song.d} compact={compact} /> : null}
-    </View>
+    </Wrapper>
   );
 }

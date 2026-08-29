@@ -7,6 +7,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { useAppState } from "../state/AppState";
 import { Screen } from "../components/Screen";
+import { OfflineBanner } from "../components/OfflineBanner";
 import { ChartFMLogo } from "../components/ChartFMLogo";
 import { PillButton } from "../components/PillButton";
 import { SectionHeader } from "../components/SectionHeader";
@@ -29,7 +30,7 @@ function BellIcon({ color }: { color: string }) {
 
 export function HomeScreen() {
   const { colors } = useAppTheme();
-  const { hasChart, showGamification } = useAppState();
+  const { hasChart, showGamification, isOffline } = useAppState();
   const navigation = useNavigation<Nav>();
   const globalTop3 = GLOBAL.slice(0, 3);
 
@@ -41,7 +42,7 @@ export function HomeScreen() {
           <Text style={{ flex: 1, fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
             ChartFM
           </Text>
-          <Pressable hitSlop={8}>
+          <Pressable hitSlop={8} onPress={() => navigation.navigate("Notifications")}>
             <BellIcon color={colors.textMuted} />
           </Pressable>
         </View>
@@ -61,7 +62,7 @@ export function HomeScreen() {
           </Text>
           <PillButton label="Criar meu primeiro Chart" variant="white" onPress={() => navigation.navigate("Editor")} />
           <Pressable
-            onPress={() => navigation.navigate("Editor")}
+            onPress={() => navigation.navigate("Lastfm")}
             style={{
               marginTop: 10,
               backgroundColor: "rgba(255,255,255,0.16)",
@@ -82,18 +83,22 @@ export function HomeScreen() {
             <SongRow key={s.t} song={s} position={s.p} last={i === globalTop3.length - 1} />
           ))}
         </Card>
+        <Pressable onPress={() => navigation.navigate("Global100")} style={{ paddingVertical: 14, alignItems: "center" }}>
+          <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 14 }}>Ver o Global 100</Text>
+        </Pressable>
       </Screen>
     );
   }
 
   return (
     <Screen>
+      {isOffline && <OfflineBanner />}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 20, paddingVertical: 10 }}>
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: 23, fontWeight: "800", letterSpacing: -0.6, color: colors.text }}>Bom dia, Bruno</Text>
           <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 2 }}>Semana 35 · 2026</Text>
         </View>
-        <Pressable hitSlop={8} style={{ position: "relative" }}>
+        <Pressable hitSlop={8} style={{ position: "relative" }} onPress={() => navigation.navigate("Notifications")}>
           <BellIcon color={colors.textMuted} />
           <View style={{ position: "absolute", top: -1, right: -1, width: 8, height: 8, borderRadius: 4, backgroundColor: colors.accent, borderWidth: 1.5, borderColor: colors.bg }} />
         </Pressable>
@@ -105,6 +110,7 @@ export function HomeScreen() {
         </LinearGradient>
       </View>
 
+      <View style={{ opacity: isOffline ? 0.55 : 1 }} pointerEvents={isOffline ? "none" : "auto"}>
       <LinearGradient
         colors={[colors.gradientHero[0], colors.gradientHero[1]]}
         style={{ marginHorizontal: 16, borderRadius: 18, padding: 20, flexDirection: "row", alignItems: "center", gap: 16 }}
@@ -164,7 +170,7 @@ export function HomeScreen() {
         ))}
       </View>
 
-      <SectionHeader title="Global 100" action="Ver os 100" />
+      <SectionHeader title="Global 100" action="Ver os 100" onAction={() => navigation.navigate("Global100")} />
       <Card>
         {globalTop3.map((s, i) => (
           <SongRow key={s.t} song={s} position={s.p} last={i === globalTop3.length - 1} />
@@ -222,6 +228,7 @@ export function HomeScreen() {
           </Text>
         </View>
       </Card>
+      </View>
     </Screen>
   );
 }

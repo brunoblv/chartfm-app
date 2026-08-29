@@ -137,3 +137,16 @@ export const NOTIFS_WEEK = [
   { mark: "★", text: "Você desbloqueou a conquista Em Chama.", when: "segunda" },
   { mark: "◎", text: "Seu Top 20 da semana 34 entrou no Global com 6 músicas.", when: "domingo" },
 ];
+
+export const OTHER_USER = {
+  name: "Lelezinha",
+  handle: "@lelezinha",
+  initial: "L",
+  avatar: ["#7C4DFF", "#00C6FF"] as [string, string],
+  charts: 41,
+  followers: 312,
+  match: "92%",
+  top: GLOBAL.slice(0, 5),
+};
+
+export const TRACK_DETAIL: GlobalSong = { ...GLOBAL[6], meta: GLOBAL[6].meta };

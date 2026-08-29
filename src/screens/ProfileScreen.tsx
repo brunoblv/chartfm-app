@@ -24,7 +24,10 @@ export function ProfileScreen() {
   return (
     <Screen>
       <View style={{ flexDirection: "row", justifyContent: "flex-end", paddingHorizontal: 16, paddingBottom: 4, gap: 6 }}>
-        <Pressable style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: colors.fillInset, alignItems: "center", justifyContent: "center" }}>
+        <Pressable
+          onPress={() => navigation.navigate("Settings")}
+          style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: colors.fillInset, alignItems: "center", justifyContent: "center" }}
+        >
           <Svg width={17} height={17} viewBox="0 0 24 24" fill="none" stroke={colors.textSubtle} strokeWidth={1.9} strokeLinecap="round">
             <Circle cx={12} cy={12} r={3} />
             <Path d="M12 3v2M12 19v2M4.5 7.5l1.7 1M17.8 15.5l1.7 1M4.5 16.5l1.7-1M17.8 8.5l1.7-1" />

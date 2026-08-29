@@ -1,0 +1,138 @@
+import React, { useState } from "react";
+import { View, Text, Pressable, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { useAppTheme } from "../theme/ThemeProvider";
+import { useAppState } from "../state/AppState";
+import { BackHeader } from "../components/BackHeader";
+import { PillButton } from "../components/PillButton";
+import { Cover } from "../components/Cover";
+import { PERIODS_PT, IMPORTED, CHART } from "../data/mock";
+import { RootStackParamList } from "../navigation/RootNavigator";
+
+type Nav = NativeStackNavigationProp<RootStackParamList>;
+
+export function LastfmScreen() {
+  const { colors } = useAppTheme();
+  const navigation = useNavigation<Nav>();
+  const { setChart, publishChart, setLastfmConnected } = useAppState();
+  const [step, setStep] = useState(0);
+  const [period, setPeriod] = useState("7d");
+
+  const ctaLabel = step === 0 ? "Conectar conta" : step === 1 ? "Buscar minhas músicas" : "Criar meu Chart";
+
+  const onCta = () => {
+    if (step === 0) {
+      setLastfmConnected(true);
+      setStep(1);
+    } else if (step === 1) {
+      setStep(2);
+    } else {
+      setChart(CHART);
+      publishChart();
+      navigation.navigate("Editor");
+    }
+  };
+
+  return (
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
+      <BackHeader title="Importar do Last.fm" />
+
+      <View style={{ flexDirection: "row", gap: 6, paddingHorizontal: 20, paddingBottom: 22 }}>
+        {[0, 1, 2].map((i) => (
+          <View key={i} style={{ flex: 1, height: 3, borderRadius: 2, backgroundColor: step >= i ? colors.accent : colors.fillSubtle }} />
+        ))}
+      </View>
+
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 100 }}>
+        {step === 0 && (
+          <View style={{ paddingHorizontal: 20 }}>
+            <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 18, padding: 24, alignItems: "center" }}>
+              <View style={{ width: 64, height: 64, borderRadius: 18, backgroundColor: colors.fillSubtle, borderWidth: 1, borderColor: colors.dividerStrong, borderStyle: "dashed", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
+                <Text style={{ fontWeight: "700", fontSize: 14, color: colors.textMuted }}>last.fm</Text>
+              </View>
+              <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text, textAlign: "center" }}>
+                Conecte sua conta
+              </Text>
+              <Text style={{ fontSize: 14, lineHeight: 21, color: colors.textMuted, textAlign: "center", marginTop: 10 }}>
+                Lemos apenas seu histórico de scrobbles para montar a parada. Você confirma tudo antes de publicar.
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {step === 1 && (
+          <View style={{ paddingHorizontal: 20 }}>
+            <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>Escolha o período</Text>
+            <Text style={{ fontSize: 14, color: colors.textMuted, marginTop: 8, marginBottom: 20 }}>
+              Conectado como <Text style={{ fontWeight: "700", color: colors.text }}>brunoblv</Text>
+            </Text>
+            <View style={{ gap: 9 }}>
+              {PERIODS_PT.map((p) => {
+                const active = p.id === period;
+                return (
+                  <Pressable
+                    key={p.id}
+                    onPress={() => setPeriod(p.id)}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 12,
+                      backgroundColor: active ? colors.accentTint : colors.surface,
+                      borderWidth: 1,
+                      borderColor: active ? colors.accent : colors.divider,
+                      borderRadius: 14,
+                      padding: 15,
+                    }}
+                  >
+                    <View style={{ width: 18, height: 18, borderRadius: 9, borderWidth: 2, borderColor: active ? colors.accent : colors.dividerStrong, alignItems: "center", justifyContent: "center" }}>
+                      {active && <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.accent }} />}
+                    </View>
+                    <Text style={{ flex: 1, fontSize: 15, fontWeight: "600", color: colors.text }}>{p.label}</Text>
+                    <Text style={{ fontSize: 12.5, color: colors.textMuted }}>{p.scrobbles}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        )}
+
+        {step === 2 && (
+          <View>
+            <View style={{ paddingHorizontal: 20, paddingBottom: 16 }}>
+              <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>Seu Top da semana</Text>
+              <Text style={{ fontSize: 14, color: colors.textMuted, marginTop: 8 }}>
+                20 músicas encontradas nos últimos 7 dias. Você pode reordenar depois.
+              </Text>
+            </View>
+            <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
+              {IMPORTED.map((s, i) => (
+                <View
+                  key={s.t}
+                  style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 10, borderBottomWidth: i === IMPORTED.length - 1 ? 0 : 1, borderBottomColor: colors.dividerSoft }}
+                >
+                  <Text style={{ width: 22, fontSize: 14, fontWeight: "800", color: colors.text }}>{s.p}</Text>
+                  <Cover cover={s.cover} size={40} />
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "600", color: colors.text }}>
+                      {s.t}
+                    </Text>
+                    <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
+                      {s.a}
+                    </Text>
+                  </View>
+                  <Text style={{ fontSize: 11.5, color: colors.textMuted }}>{s.plays}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+      </ScrollView>
+
+      <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: 16, backgroundColor: colors.bgTopbar, borderTopWidth: 0.5, borderTopColor: colors.divider }}>
+        <PillButton label={ctaLabel} onPress={onCta} />
+      </View>
+    </SafeAreaView>
+  );
+}
