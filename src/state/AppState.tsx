@@ -1,4 +1,5 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import NetInfo from "@react-native-community/netinfo";
 import { CHART, ChartSong } from "../data/mock";
 import { DEFAULT_NOTIF_PREFS, NotifPref } from "../data/notifPrefs";
 
@@ -34,6 +35,13 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [notifPrefs, setNotifPrefs] = useState<NotifPref[]>(DEFAULT_NOTIF_PREFS);
   const [lastfmConnected, setLastfmConnected] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsOffline(state.isConnected === false || state.isInternetReachable === false);
+    });
+    return unsubscribe;
+  }, []);
 
   const toggleNotifPref = useCallback((id: string) => {
     setNotifPrefs((prev) => prev.map((p) => (p.id === id ? { ...p, on: !p.on } : p)));

@@ -1,11 +1,18 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation, CommonActions } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme, ThemePreference } from "../theme/ThemeProvider";
 import { useAppState } from "../state/AppState";
+import { useAuth } from "../state/AuthContext";
+import { useLastfmStatusQuery } from "../api/lastfm";
 import { Screen } from "../components/Screen";
 import { BackHeader } from "../components/BackHeader";
 import { Toggle } from "../components/Toggle";
+import { RootStackParamList } from "../navigation/RootNavigator";
+
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 function SegmentedControl<T extends string>({
   options,
@@ -52,7 +59,17 @@ function SectionLabel({ children }: { children: string }) {
 
 export function SettingsScreen() {
   const { colors, preference, setPreference, lang, setLang } = useAppTheme();
-  const { notifPrefs, toggleNotifPref, isPublicProfile, setIsPublicProfile, isOffline, setIsOffline } = useAppState();
+  const { notifPrefs, toggleNotifPref, isPublicProfile, setIsPublicProfile, isOffline } = useAppState();
+  const { user, signOut } = useAuth();
+  const navigation = useNavigation<Nav>();
+  const lastfmStatus = useLastfmStatusQuery();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigation.dispatch(
+      CommonActions.reset({ index: 0, routes: [{ name: "Onboarding" }] })
+    );
+  };
 
   return (
     <Screen>
@@ -60,13 +77,15 @@ export function SettingsScreen() {
 
       <View style={{ marginHorizontal: 16, marginBottom: 20, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 16, flexDirection: "row", alignItems: "center", gap: 14 }}>
         <LinearGradient colors={[colors.gradientHero[0], colors.gradientHero[1]]} style={{ width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" }}>
-          <Text style={{ color: "#fff", fontWeight: "800", fontSize: 19 }}>B</Text>
+          <Text style={{ color: "#fff", fontWeight: "800", fontSize: 19 }}>{(user?.name ?? user?.handle ?? "?").charAt(0).toUpperCase()}</Text>
         </LinearGradient>
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={{ fontSize: 16, fontWeight: "700", color: colors.text }}>Bruno</Text>
-          <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 1 }}>bruno@exemplo.com</Text>
+          <Text style={{ fontSize: 16, fontWeight: "700", color: colors.text }}>{user?.name ?? user?.handle ?? "—"}</Text>
+          <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 1 }}>{user?.email ?? ""}</Text>
         </View>
-        <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Editar</Text>
+        <Pressable onPress={() => navigation.navigate("EditProfile")}>
+          <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Editar</Text>
+        </Pressable>
       </View>
 
       <SectionLabel>Aparência</SectionLabel>
@@ -120,9 +139,13 @@ export function SettingsScreen() {
           </View>
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Last.fm</Text>
-            <Text style={{ fontSize: 11.5, color: colors.upFg, marginTop: 2 }}>Conectado como brunoblv</Text>
+            <Text style={{ fontSize: 11.5, color: lastfmStatus.data?.connected ? colors.upFg : colors.textMuted, marginTop: 2 }}>
+              {lastfmStatus.data?.connected ? `Conectado como ${lastfmStatus.data.username}` : "Não conectado"}
+            </Text>
           </View>
-          <Text style={{ fontSize: 12.5, color: colors.textMuted, fontWeight: "600" }}>Desconectar</Text>
+          {lastfmStatus.data?.connected && (
+            <Text style={{ fontSize: 12.5, color: colors.textMuted, fontWeight: "600" }}>Desconectar</Text>
+          )}
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 14 }}>
           <View style={{ width: 38, height: 38, borderRadius: 11, backgroundColor: colors.fillSubtle, alignItems: "center", justifyContent: "center" }}>
@@ -157,19 +180,16 @@ export function SettingsScreen() {
         <Text style={{ padding: 14, fontSize: 14.5, fontWeight: "600", color: colors.text, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}>
           Termos e privacidade
         </Text>
-        <Text style={{ padding: 14, fontSize: 14.5, fontWeight: "600", color: colors.accent }}>Sair da conta</Text>
+        <Pressable onPress={handleSignOut}>
+          <Text style={{ padding: 14, fontSize: 14.5, fontWeight: "600", color: colors.accent }}>Sair da conta</Text>
+        </Pressable>
       </View>
 
-      <SectionLabel>Simulação</SectionLabel>
-      <View style={{ marginHorizontal: 16, marginBottom: 20, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 14 }}>
-          <View style={{ flex: 1, minWidth: 0 }}>
-            <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Modo offline</Text>
-            <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 2 }}>Mostra a Home com dados salvos e ações pausadas</Text>
-          </View>
-          <Toggle on={isOffline} onToggle={() => setIsOffline(!isOffline)} />
+      {isOffline && (
+        <View style={{ marginHorizontal: 16, marginBottom: 20, backgroundColor: colors.fillSubtle, borderRadius: 14, padding: 14 }}>
+          <Text style={{ fontSize: 12.5, color: colors.textSubtle }}>Sem conexão com a internet no momento.</Text>
         </View>
-      </View>
+      )}
 
       <Text style={{ textAlign: "center", fontSize: 11.5, color: colors.textDisabled, paddingTop: 22 }}>ChartFM 1.0 (240)</Text>
     </Screen>

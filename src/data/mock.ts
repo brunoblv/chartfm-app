@@ -9,6 +9,10 @@ export interface ChartSong {
   mv?: MovementStatus;
   d?: number;
   cover: CoverArt;
+  /** Preenchidos quando a música veio de uma busca real (não mock) — necessários para publicar no backend. */
+  album?: string | null;
+  spotifyId?: string | null;
+  songId?: string | null;
 }
 
 export interface GlobalSong extends ChartSong {

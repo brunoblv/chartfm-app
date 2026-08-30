@@ -3,6 +3,7 @@
     "name": "ChartFM",
     "slug": "chartfm-app",
     "version": "1.0.0",
+    "scheme": "chartfm",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -10,6 +11,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.chartfm.app",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -20,6 +22,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-web-browser",
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "1ee14e71-3632-41eb-b09d-9240ff1b0793"
+      }
     }
   }
 }

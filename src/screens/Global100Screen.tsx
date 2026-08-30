@@ -1,22 +1,39 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, ScrollView } from "react-native";
+import { View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import Svg, { Circle, Line, Path } from "react-native-svg";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { BackHeader } from "../components/BackHeader";
 import { SongRow } from "../components/SongRow";
-import { VideoClipCover } from "../components/VideoClipCover";
-import { GLOBAL } from "../data/mock";
+import { useGlobalArtistsQuery, useGlobalSongsQuery, songItemToGlobalSong } from "../api/global";
 
 const TABS = [
   { id: "songs", label: "Músicas" },
-  { id: "albums", label: "Álbuns" },
   { id: "artists", label: "Artistas" },
+  { id: "albums", label: "Álbuns" },
   { id: "clips", label: "Clipes" },
 ] as const;
+
+function ComingSoon({ label }: { label: string }) {
+  const { colors } = useAppTheme();
+  return (
+    <View style={{ marginHorizontal: 16, paddingVertical: 40, alignItems: "center" }}>
+      <Text style={{ color: colors.textMuted, fontSize: 13.5, textAlign: "center" }}>
+        Ranking de {label} ainda não está disponível.
+      </Text>
+    </View>
+  );
+}
 
 export function Global100Screen() {
   const { colors } = useAppTheme();
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("songs");
+  const [week, setWeek] = useState<number | undefined>(undefined);
+
+  const songsQuery = useGlobalSongsQuery("weekly", week);
+  const artistsQuery = useGlobalArtistsQuery("weekly", week);
+
+  const active = tab === "artists" ? artistsQuery : songsQuery;
+  const header = active.data;
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: 24 }}>
@@ -33,7 +50,7 @@ export function Global100Screen() {
           </View>
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={{ fontSize: 11, fontWeight: "600", letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.7)" }}>
-              Semana 35 · 2026
+              {header?.weekLabel ?? "Carregando…"}
             </Text>
             <Text style={{ fontSize: 32, fontWeight: "800", letterSpacing: -0.7, color: "#fff", marginTop: 4 }}>Global 100</Text>
           </View>
@@ -41,18 +58,28 @@ export function Global100Screen() {
         <Text style={{ fontSize: 13, lineHeight: 20, color: "rgba(255,255,255,0.8)", marginTop: 14, marginBottom: 12 }}>
           Sua parada vale pontos: a #1 de cada usuário soma 100 e a #20 soma 1.
         </Text>
-        <View style={{ flexDirection: "row", gap: 16 }}>
-          <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>4.812 paradas</Text>
-          <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>·</Text>
-          <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>100 músicas</Text>
-        </View>
+        {header ? (
+          <View style={{ flexDirection: "row", gap: 16 }}>
+            <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{header.dateRange}</Text>
+            <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>·</Text>
+            <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{header.items.length} {tab === "artists" ? "artistas" : "músicas"}</Text>
+          </View>
+        ) : null}
         <View style={{ flexDirection: "row", gap: 8, marginTop: 16 }}>
-          <View style={{ borderWidth: 1, borderColor: "rgba(255,255,255,0.25)", paddingVertical: 8, paddingHorizontal: 13, borderRadius: 10 }}>
-            <Text style={{ color: "#fff", fontWeight: "600", fontSize: 12.5 }}>‹ Semana 34</Text>
-          </View>
-          <View style={{ borderWidth: 1, borderColor: "rgba(255,255,255,0.12)", paddingVertical: 8, paddingHorizontal: 13, borderRadius: 10 }}>
-            <Text style={{ color: "rgba(255,255,255,0.45)", fontWeight: "600", fontSize: 12.5 }}>Semana 36 ›</Text>
-          </View>
+          <Pressable
+            disabled={!header?.hasPrevWeek}
+            onPress={() => header?.prevWeekIndex && setWeek(header.prevWeekIndex)}
+            style={{ borderWidth: 1, borderColor: header?.hasPrevWeek ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.12)", paddingVertical: 8, paddingHorizontal: 13, borderRadius: 10 }}
+          >
+            <Text style={{ color: header?.hasPrevWeek ? "#fff" : "rgba(255,255,255,0.45)", fontWeight: "600", fontSize: 12.5 }}>‹ Anterior</Text>
+          </Pressable>
+          <Pressable
+            disabled={!header?.hasNextWeek}
+            onPress={() => header?.nextWeekIndex && setWeek(header.nextWeekIndex)}
+            style={{ borderWidth: 1, borderColor: header?.hasNextWeek ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.12)", paddingVertical: 8, paddingHorizontal: 13, borderRadius: 10 }}
+          >
+            <Text style={{ color: header?.hasNextWeek ? "#fff" : "rgba(255,255,255,0.45)", fontWeight: "600", fontSize: 12.5 }}>Próxima ›</Text>
+          </Pressable>
         </View>
       </View>
 
@@ -69,29 +96,38 @@ export function Global100Screen() {
       </ScrollView>
 
       {tab === "clips" ? (
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12, paddingHorizontal: 16 }}>
-          {GLOBAL.map((s) => (
-            <View key={s.t} style={{ width: "47%" }}>
-              <VideoClipCover paletteA={s.cover.palette[0]} paletteB={s.cover.palette[1]} seed={s.cover.seed} width={170} />
-              <View style={{ flexDirection: "row", gap: 6, marginTop: 7 }}>
-                <Text style={{ fontSize: 12, fontWeight: "800", color: colors.textMuted }}>{s.p}</Text>
-                <View style={{ minWidth: 0, flex: 1 }}>
-                  <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: "600", color: colors.text }}>
-                    {s.t}
-                  </Text>
-                  <Text numberOfLines={1} style={{ fontSize: 11, color: colors.textMuted }}>
-                    {s.a}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          ))}
+        <ComingSoon label="clipes" />
+      ) : tab === "albums" ? (
+        <ComingSoon label="álbuns" />
+      ) : active.isLoading ? (
+        <View style={{ paddingVertical: 40, alignItems: "center" }}>
+          <ActivityIndicator color={colors.text} />
+        </View>
+      ) : active.isError ? (
+        <View style={{ paddingVertical: 40, alignItems: "center" }}>
+          <Text style={{ color: colors.textMuted, fontSize: 13.5 }}>Não foi possível carregar o ranking.</Text>
         </View>
       ) : (
         <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
-          {GLOBAL.map((s, i) => (
-            <SongRow key={s.t} song={s} position={s.p} meta={s.meta} last={i === GLOBAL.length - 1} />
-          ))}
+          {tab === "artists"
+            ? artistsQuery.data?.items.map((a, i) => (
+                <SongRow
+                  key={`${a.position}-${a.name}`}
+                  song={{ t: a.name, a: "", mv: a.movement, d: a.delta ?? undefined, cover: { palette: ["#1D1D1F", "#5B5B60"], seed: i } }}
+                  position={a.position}
+                  meta={`${a.weeks} ${a.weeks === 1 ? "semana" : "semanas"} · pico #${a.peak}`}
+                  last={i === (artistsQuery.data?.items.length ?? 0) - 1}
+                />
+              ))
+            : songsQuery.data?.items.map((s, i) => (
+                <SongRow
+                  key={`${s.position}-${s.title}`}
+                  song={songItemToGlobalSong(s, i)}
+                  position={s.position}
+                  meta={songItemToGlobalSong(s, i).meta}
+                  last={i === (songsQuery.data?.items.length ?? 0) - 1}
+                />
+              ))}
         </View>
       )}
     </ScrollView>

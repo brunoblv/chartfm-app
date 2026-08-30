@@ -14,8 +14,12 @@ import { SectionHeader } from "../components/SectionHeader";
 import { Card } from "../components/Card";
 import { SongRow } from "../components/SongRow";
 import { Cover } from "../components/Cover";
-import { GLOBAL, TRENDING } from "../data/mock";
+import { TRENDING } from "../data/mock";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useAuth } from "../state/AuthContext";
+import { useGlobalSongsQuery, songItemToGlobalSong } from "../api/global";
+import { useProgressionQuery } from "../api/progression";
+import { useCopaQuery, useCopaFixturesQuery } from "../api/copa";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -31,8 +35,17 @@ function BellIcon({ color }: { color: string }) {
 export function HomeScreen() {
   const { colors } = useAppTheme();
   const { hasChart, showGamification, isOffline } = useAppState();
+  const { user } = useAuth();
   const navigation = useNavigation<Nav>();
-  const globalTop3 = GLOBAL.slice(0, 3);
+  const songsQuery = useGlobalSongsQuery("weekly");
+  const globalTop3 = (songsQuery.data?.items ?? []).slice(0, 3).map((s, i) => songItemToGlobalSong(s, i));
+  const progressionQuery = useProgressionQuery(showGamification);
+  const progression = progressionQuery.data?.progression;
+  const firstName = (user?.name ?? "").split(" ")[0] || user?.handle || "";
+  const copaQuery = useCopaQuery();
+  const copa = copaQuery.data?.copa;
+  const copaFixturesQuery = useCopaFixturesQuery(copa?.id);
+  const copaLiveCount = (copaFixturesQuery.data?.fixtures ?? []).filter((f) => f.status === "LIVE" && !f.myVote).length;
 
   if (!hasChart) {
     return (
@@ -95,8 +108,7 @@ export function HomeScreen() {
       {isOffline && <OfflineBanner />}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 20, paddingVertical: 10 }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 23, fontWeight: "800", letterSpacing: -0.6, color: colors.text }}>Bom dia, Bruno</Text>
-          <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 2 }}>Semana 35 · 2026</Text>
+          <Text style={{ fontSize: 23, fontWeight: "800", letterSpacing: -0.6, color: colors.text }}>Olá{firstName ? `, ${firstName}` : ""}</Text>
         </View>
         <Pressable hitSlop={8} style={{ position: "relative" }} onPress={() => navigation.navigate("Notifications")}>
           <BellIcon color={colors.textMuted} />
@@ -106,7 +118,7 @@ export function HomeScreen() {
           colors={[colors.gradientHero[0], colors.gradientHero[1]]}
           style={{ width: 34, height: 34, borderRadius: 17, alignItems: "center", justifyContent: "center" }}
         >
-          <Text style={{ color: "#fff", fontWeight: "800", fontSize: 13 }}>B</Text>
+          <Text style={{ color: "#fff", fontWeight: "800", fontSize: 13 }}>{(user?.name ?? user?.handle ?? "?").charAt(0).toUpperCase()}</Text>
         </LinearGradient>
       </View>
 
@@ -139,18 +151,15 @@ export function HomeScreen() {
         />
       </View>
 
-      {showGamification && (
+      {showGamification && progression && (
         <View style={{ marginHorizontal: 16, marginTop: 14, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 14, padding: 14 }}>
           <View style={{ flexDirection: "row", alignItems: "baseline", gap: 8 }}>
-            <Text style={{ flex: 1, fontSize: 13, fontWeight: "700", color: colors.text }}>Nível 7 · Curador de Paradas</Text>
-            <Text style={{ fontSize: 12, color: colors.textMuted }}>82%</Text>
+            <Text style={{ flex: 1, fontSize: 13, fontWeight: "700", color: colors.text }}>Nível {progression.level}</Text>
+            <Text style={{ fontSize: 12, color: colors.textMuted }}>{progression.percent}%</Text>
           </View>
           <View style={{ height: 6, borderRadius: 3, backgroundColor: colors.fillSubtle, overflow: "hidden", marginTop: 9 }}>
-            <View style={{ width: "82%", height: "100%", backgroundColor: colors.accent }} />
+            <View style={{ width: `${progression.percent}%`, height: "100%", backgroundColor: colors.accent }} />
           </View>
-          <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 8 }}>
-            Faltam 3 avaliações para Crítico Musical
-          </Text>
         </View>
       )}
 
@@ -177,37 +186,41 @@ export function HomeScreen() {
         ))}
       </Card>
 
-      <SectionHeader title="Eventos" />
-      <View
-        style={{
-          marginHorizontal: 16,
-          borderRadius: 16,
-          padding: 18,
-          backgroundColor: "#1D1D1F",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 14,
-        }}
-      >
-        <LinearGradient colors={["#FA243C", "#FF5858"]} style={{ width: 44, height: 44, borderRadius: 13, alignItems: "center", justifyContent: "center" }}>
-          <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8} strokeLinecap="round">
-            <Path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z" />
-            <Path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
-          </Svg>
-        </LinearGradient>
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={{ fontSize: 15, fontWeight: "700", color: "#fff" }}>Copa do Mundo de Músicas</Text>
-          <Text style={{ fontSize: 12.5, color: "rgba(255,255,255,0.72)", marginTop: 2 }}>
-            Oitavas · você ainda não votou
-          </Text>
-        </View>
-        <Pressable
-          onPress={() => navigation.navigate("Copa")}
-          style={{ backgroundColor: colors.accent, borderRadius: 100, paddingHorizontal: 14, paddingVertical: 9 }}
-        >
-          <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>VOTAR</Text>
-        </Pressable>
-      </View>
+      {copa ? (
+        <>
+          <SectionHeader title="Eventos" />
+          <View
+            style={{
+              marginHorizontal: 16,
+              borderRadius: 16,
+              padding: 18,
+              backgroundColor: "#1D1D1F",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 14,
+            }}
+          >
+            <LinearGradient colors={["#FA243C", "#FF5858"]} style={{ width: 44, height: 44, borderRadius: 13, alignItems: "center", justifyContent: "center" }}>
+              <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8} strokeLinecap="round">
+                <Path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z" />
+                <Path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
+              </Svg>
+            </LinearGradient>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 15, fontWeight: "700", color: "#fff" }}>{copa.name}</Text>
+              <Text style={{ fontSize: 12.5, color: "rgba(255,255,255,0.72)", marginTop: 2 }}>
+                {copaLiveCount > 0 ? `${copaLiveCount} confronto(s) esperando seu voto` : "Nenhum confronto pendente"}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => navigation.navigate("Copa")}
+              style={{ backgroundColor: colors.accent, borderRadius: 100, paddingHorizontal: 14, paddingVertical: 9 }}
+            >
+              <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>VOTAR</Text>
+            </Pressable>
+          </View>
+        </>
+      ) : null}
 
       <SectionHeader title="Atividade" />
       <Card>

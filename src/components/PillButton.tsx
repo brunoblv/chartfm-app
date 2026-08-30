@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, Text, ViewStyle, StyleProp } from "react-native";
+import { ActivityIndicator, Pressable, Text, ViewStyle, StyleProp } from "react-native";
 import { useAppTheme } from "../theme/ThemeProvider";
 
 type Variant = "accent" | "dark" | "ghost" | "white";
@@ -9,11 +9,15 @@ export function PillButton({
   onPress,
   variant = "accent",
   style,
+  disabled,
+  loading,
 }: {
   label: string;
   onPress?: () => void;
   variant?: Variant;
   style?: StyleProp<ViewStyle>;
+  disabled?: boolean;
+  loading?: boolean;
 }) {
   const { colors } = useAppTheme();
 
@@ -38,6 +42,7 @@ export function PillButton({
   return (
     <Pressable
       onPress={onPress}
+      disabled={disabled || loading}
       style={[
         {
           backgroundColor: bg,
@@ -46,11 +51,16 @@ export function PillButton({
           alignItems: "center",
           borderWidth: variant === "ghost" ? 1 : 0,
           borderColor,
+          opacity: disabled || loading ? 0.6 : 1,
         },
         style,
       ]}
     >
-      <Text style={{ color: fg, fontSize: 16, fontWeight: "700", letterSpacing: -0.2 }}>{label}</Text>
+      {loading ? (
+        <ActivityIndicator color={fg} />
+      ) : (
+        <Text style={{ color: fg, fontSize: 16, fontWeight: "700", letterSpacing: -0.2 }}>{label}</Text>
+      )}
     </Pressable>
   );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, ActivityIndicator } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
@@ -9,15 +9,22 @@ import { Screen } from "../components/Screen";
 import { SectionHeader } from "../components/SectionHeader";
 import { Cover } from "../components/Cover";
 import { SongRow } from "../components/SongRow";
-import { TRENDING, POPULAR, PEOPLE, GLOBAL } from "../data/mock";
+import { POPULAR, PEOPLE } from "../data/mock";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useRecommendationsQuery } from "../api/discover";
+import { useGlobalSongsQuery, songItemToGlobalSong } from "../api/global";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export function DiscoverScreen() {
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
-  const climbing = GLOBAL.slice(2, 6);
+  const { cards: trending, isLoading: isTrendingLoading } = useRecommendationsQuery();
+  const songsQuery = useGlobalSongsQuery("weekly");
+  const climbing = (songsQuery.data?.items ?? [])
+    .filter((s) => s.movement === "up")
+    .slice(0, 4)
+    .map((s, i) => songItemToGlobalSong(s, i));
 
   return (
     <Screen>
@@ -38,19 +45,26 @@ export function DiscoverScreen() {
       </View>
 
       <SectionHeader title="Em alta esta semana" />
-      <View style={{ flexDirection: "row", gap: 12, paddingHorizontal: 16 }}>
-        {TRENDING.map((c) => (
-          <View key={c.t} style={{ width: 150 }}>
-            <Cover cover={c.cover} size={150} rounded={14} />
-            <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "600", color: colors.text, marginTop: 8 }}>
-              {c.t}
-            </Text>
-            <Text numberOfLines={1} style={{ fontSize: 12, color: colors.textMuted }}>
-              {c.a}
-            </Text>
-          </View>
-        ))}
-      </View>
+      {isTrendingLoading ? (
+        <ActivityIndicator color={colors.textMuted} style={{ marginVertical: 12 }} />
+      ) : (
+        <View style={{ flexDirection: "row", gap: 12, paddingHorizontal: 16 }}>
+          {trending.map((c) => (
+            <View key={c.key} style={{ width: 150 }}>
+              <Cover cover={c.cover} size={150} rounded={14} />
+              <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "600", color: colors.text, marginTop: 8 }}>
+                {c.t}
+              </Text>
+              <Text numberOfLines={1} style={{ fontSize: 12, color: colors.textMuted }}>
+                {c.a}
+              </Text>
+            </View>
+          ))}
+          {trending.length === 0 && (
+            <Text style={{ fontSize: 13, color: colors.textMuted, paddingVertical: 8 }}>Nada em alta no momento.</Text>
+          )}
+        </View>
+      )}
 
       <SectionHeader title="Paradas populares" />
       <View style={{ flexDirection: "row", gap: 12, paddingHorizontal: 16 }}>

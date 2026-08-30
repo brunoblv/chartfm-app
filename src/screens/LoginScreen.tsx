@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, ActivityIndicator, Alert } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -8,13 +8,65 @@ import { ChartFMLogo } from "../components/ChartFMLogo";
 import { AuthField } from "../components/AuthField";
 import { PillButton } from "../components/PillButton";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useAuth } from "../state/AuthContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
+const GOOGLE_ERROR_MESSAGES: Record<string, string> = {
+  cancelled: "Login cancelado.",
+  email_not_verified: "Sua conta Google precisa ter o email verificado.",
+  google_not_configured: "Login com Google indisponível no momento.",
+};
+
+const LOGIN_ERROR_MESSAGES: Record<string, string> = {
+  missing_fields: "Preencha email e senha.",
+  invalid_credentials: "Email ou senha incorretos.",
+  email_not_verified: "Confirme seu email antes de entrar.",
+  rate_limited: "Muitas tentativas. Tente novamente em alguns minutos.",
+  network_error: "Não foi possível conectar. Verifique sua internet.",
+};
+
 export function LoginScreen({ navigation }: Props) {
   const { colors } = useAppTheme();
-  const [email, setEmail] = useState("bruno@exemplo.com");
-  const [password, setPassword] = useState("••••••••");
+  const { signInWithGoogle, signInWithPassword } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+
+  const handleGoogleLogin = async () => {
+    if (isGoogleLoading) return;
+    setIsGoogleLoading(true);
+    try {
+      const result = await signInWithGoogle();
+      if (result.ok) {
+        navigation.replace("Main");
+      } else if (result.error !== "cancelled") {
+        Alert.alert("Não foi possível entrar", GOOGLE_ERROR_MESSAGES[result.error ?? ""] ?? "Tente novamente.");
+      }
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
+  const handlePasswordLogin = async () => {
+    if (isLoginLoading) return;
+    if (!email || !password) {
+      Alert.alert("Não foi possível entrar", LOGIN_ERROR_MESSAGES.missing_fields);
+      return;
+    }
+    setIsLoginLoading(true);
+    try {
+      const result = await signInWithPassword(email, password);
+      if (result.ok) {
+        navigation.replace("Main");
+      } else {
+        Alert.alert("Não foi possível entrar", LOGIN_ERROR_MESSAGES[result.error ?? ""] ?? "Tente novamente.");
+      }
+    } finally {
+      setIsLoginLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView edges={["top", "bottom"]} style={{ flex: 1, backgroundColor: colors.bg }}>
@@ -38,15 +90,15 @@ export function LoginScreen({ navigation }: Props) {
           <Text style={{ fontSize: 14, color: colors.textMuted, marginBottom: 26 }}>Continue de onde parou</Text>
 
           <View style={{ gap: 12 }}>
-            <AuthField label="Email" value={email} onChangeText={setEmail} />
-            <AuthField label="Senha" value={password} onChangeText={setPassword} secureTextEntry />
+            <AuthField label="Email" value={email} onChangeText={setEmail} placeholder="voce@exemplo.com" />
+            <AuthField label="Senha" value={password} onChangeText={setPassword} secureTextEntry placeholder="••••••••" />
           </View>
 
           <Pressable style={{ alignSelf: "flex-end", marginTop: 10 }}>
             <Text style={{ fontSize: 13, color: colors.accent, fontWeight: "600" }}>Esqueci minha senha</Text>
           </Pressable>
 
-          <PillButton label="Entrar" style={{ marginTop: 22 }} onPress={() => navigation.replace("Main")} />
+          <PillButton label="Entrar" style={{ marginTop: 22 }} onPress={handlePasswordLogin} loading={isLoginLoading} />
 
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginVertical: 22 }}>
             <View style={{ flex: 1, height: 1, backgroundColor: colors.divider }} />
@@ -54,12 +106,31 @@ export function LoginScreen({ navigation }: Props) {
             <View style={{ flex: 1, height: 1, backgroundColor: colors.divider }} />
           </View>
 
-          <View style={{ borderWidth: 1, borderColor: colors.dividerStrong, borderRadius: 12, paddingVertical: 13, alignItems: "center" }}>
-            <Text style={{ fontWeight: "700", fontSize: 14, color: colors.text }}>Google</Text>
-          </View>
+          <Pressable
+            onPress={handleGoogleLogin}
+            disabled={isGoogleLoading}
+            style={{
+              borderWidth: 1,
+              borderColor: colors.dividerStrong,
+              borderRadius: 12,
+              paddingVertical: 13,
+              alignItems: "center",
+              opacity: isGoogleLoading ? 0.6 : 1,
+            }}
+          >
+            {isGoogleLoading ? (
+              <ActivityIndicator color={colors.text} />
+            ) : (
+              <Text style={{ fontWeight: "700", fontSize: 14, color: colors.text }}>Google</Text>
+            )}
+          </Pressable>
         </View>
 
-        <Pressable onPress={() => navigation.navigate("Cadastro")} style={{ alignItems: "center", paddingBottom: 8 }}>
+        <Pressable
+          onPress={() => navigation.navigate("Cadastro")}
+          hitSlop={12}
+          style={{ alignItems: "center", paddingVertical: 14, marginBottom: 12 }}
+        >
           <Text style={{ fontSize: 14, color: colors.textMuted }}>
             Não tem conta? <Text style={{ color: colors.accent, fontWeight: "700" }}>Criar conta</Text>
           </Text>

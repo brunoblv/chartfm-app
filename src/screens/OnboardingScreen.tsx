@@ -43,7 +43,11 @@ export function OnboardingScreen({ navigation }: Props) {
           </View>
         </View>
         <PillButton label="Começar" onPress={() => navigation.navigate("Cadastro")} />
-        <Pressable onPress={() => navigation.navigate("Login")} style={{ marginTop: 16, alignItems: "center" }}>
+        <Pressable
+          onPress={() => navigation.navigate("Login")}
+          hitSlop={12}
+          style={{ marginTop: 20, paddingVertical: 6, alignItems: "center" }}
+        >
           <Text style={{ fontSize: 14, color: colors.textMuted }}>
             Já tem conta? <Text style={{ color: colors.accent, fontWeight: "600" }}>Entrar</Text>
           </Text>

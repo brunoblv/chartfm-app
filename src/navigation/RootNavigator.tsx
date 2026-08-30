@@ -1,7 +1,10 @@
 import React from "react";
+import { View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useAppTheme } from "../theme/ThemeProvider";
+import { useAuth } from "../state/AuthContext";
 import { TabBar } from "./TabBar";
 import { OnboardingScreen } from "../screens/OnboardingScreen";
 import { LoginScreen } from "../screens/LoginScreen";
@@ -21,6 +24,10 @@ import { MusicDetailScreen } from "../screens/MusicDetailScreen";
 import { UserDetailScreen } from "../screens/UserDetailScreen";
 import { NotificationsScreen } from "../screens/NotificationsScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
+import { PushSubmitScreen } from "../screens/PushSubmitScreen";
+import { PushRankScreen } from "../screens/PushRankScreen";
+import { ClubeScreen } from "../screens/ClubeScreen";
+import { EditProfileScreen } from "../screens/EditProfileScreen";
 
 export type RootStackParamList = {
   Onboarding: undefined;
@@ -35,9 +42,13 @@ export type RootStackParamList = {
   Global100: undefined;
   Search: undefined;
   MusicDetail: undefined;
-  UserDetail: undefined;
+  UserDetail: { handle: string } | undefined;
   Notifications: undefined;
   Settings: undefined;
+  PushSubmit: undefined;
+  PushRank: undefined;
+  Clube: undefined;
+  EditProfile: undefined;
 };
 
 export type MainTabParamList = {
@@ -79,9 +90,20 @@ function MainTabs() {
 }
 
 export function RootNavigator() {
+  const { colors } = useAppTheme();
+  const { isLoading, isSignedIn } = useAuth();
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: colors.bg }}>
+        <ActivityIndicator color={colors.text} />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={isSignedIn ? "Main" : "Onboarding"}>
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Cadastro" component={SignupScreen} />
@@ -95,6 +117,10 @@ export function RootNavigator() {
         <Stack.Screen name="UserDetail" component={UserDetailScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="PushSubmit" component={PushSubmitScreen} />
+        <Stack.Screen name="PushRank" component={PushRankScreen} />
+        <Stack.Screen name="Clube" component={ClubeScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen
           name="CreateSheet"
           component={CreateSheetScreen}

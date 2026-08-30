@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Alert } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
@@ -13,6 +13,7 @@ import { MovementBadge, MovementStatus } from "../components/MovementBadge";
 import { PillButton } from "../components/PillButton";
 import { ChartSong } from "../data/mock";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { usePublishChartMutation, publishErrorMessage } from "../api/charts";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -20,6 +21,20 @@ export function EditorScreen() {
   const { colors } = useAppTheme();
   const { chart, setChart, removeSong, publishChart } = useAppState();
   const navigation = useNavigation<Nav>();
+  const publishMutation = usePublishChartMutation();
+
+  const handlePublish = () => {
+    if (publishMutation.isPending) return;
+    publishMutation.mutate(chart, {
+      onSuccess: () => {
+        publishChart();
+        navigation.navigate("Main");
+      },
+      onError: (error) => {
+        Alert.alert("Não foi possível publicar", publishErrorMessage(error));
+      },
+    });
+  };
 
   const renderItem = ({ item, drag, isActive, getIndex }: RenderItemParams<ChartSong>) => {
     const index = getIndex() ?? 0;
@@ -120,13 +135,7 @@ export function EditorScreen() {
         />
 
         <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: 16, backgroundColor: colors.bgTopbar, borderTopWidth: 0.5, borderTopColor: colors.divider }}>
-          <PillButton
-            label="Publicar parada"
-            onPress={() => {
-              publishChart();
-              navigation.navigate("Main");
-            }}
-          />
+          <PillButton label="Publicar parada" onPress={handlePublish} loading={publishMutation.isPending} />
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>
