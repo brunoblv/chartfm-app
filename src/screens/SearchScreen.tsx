@@ -101,13 +101,14 @@ export function SearchScreen() {
           {tab === "Artistas" ? (
             <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
               {(data?.artists ?? []).map((a, i) => (
-                <View
+                <Pressable
                   key={a.id}
+                  onPress={() => navigation.navigate("ArtistDetail", { artistId: a.id })}
                   style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 12, borderBottomWidth: i === (data?.artists.length ?? 0) - 1 ? 0 : 1, borderBottomColor: colors.dividerSoft }}
                 >
                   <Avatar uri={a.imageUrl} label={a.name} />
                   <Text style={{ fontSize: 15, fontWeight: "700", color: colors.text }}>{a.name}</Text>
-                </View>
+                </Pressable>
               ))}
               {(data?.artists.length ?? 0) === 0 && (
                 <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>Nenhum artista encontrado.</Text>

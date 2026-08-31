@@ -37,8 +37,8 @@ export function OnboardingScreen({ navigation }: Props) {
               Sua música.{"\n"}Sua parada.{"\n"}Sua comunidade.
             </Text>
             <Text style={{ fontSize: 15, lineHeight: 23, color: colors.textMuted, marginTop: 16, maxWidth: 290 }}>
-              Monte seu Top 20 toda semana, veja como suas escolhas se comparam com as de outros fãs e acompanhe o
-              Global 100.
+              Monte sua parada pessoal toda semana, veja como suas escolhas se comparam com as de outros fãs e
+              acompanhe o Global 100.
             </Text>
           </View>
         </View>

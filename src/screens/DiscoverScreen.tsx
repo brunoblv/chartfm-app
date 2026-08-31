@@ -9,10 +9,11 @@ import { Screen } from "../components/Screen";
 import { SectionHeader } from "../components/SectionHeader";
 import { Cover } from "../components/Cover";
 import { SongRow } from "../components/SongRow";
-import { POPULAR, PEOPLE } from "../data/mock";
+import { PEOPLE } from "../data/mock";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useRecommendationsQuery } from "../api/discover";
 import { useGlobalSongsQuery, songItemToGlobalSong } from "../api/global";
+import { useHomeDiscoveryQuery } from "../api/homeHub";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -21,6 +22,8 @@ export function DiscoverScreen() {
   const navigation = useNavigation<Nav>();
   const { cards: trending, isLoading: isTrendingLoading } = useRecommendationsQuery();
   const songsQuery = useGlobalSongsQuery("weekly");
+  const discoveryQuery = useHomeDiscoveryQuery();
+  const popularCharts = discoveryQuery.data?.charts ?? [];
   const climbing = (songsQuery.data?.items ?? [])
     .filter((s) => s.movement === "up")
     .slice(0, 4)
@@ -67,37 +70,53 @@ export function DiscoverScreen() {
       )}
 
       <SectionHeader title="Paradas populares" />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
-        {POPULAR.map((pc) => (
-          <View
-            key={pc.handle}
-            style={{ width: 230, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 14 }}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 9 }}>
-              <LinearGradient colors={pc.avatar} style={{ width: 30, height: 30, borderRadius: 15, alignItems: "center", justifyContent: "center" }}>
-                <Text style={{ color: "#fff", fontWeight: "800", fontSize: 12 }}>{pc.initial}</Text>
-              </LinearGradient>
-              <View style={{ flex: 1, minWidth: 0 }}>
-                <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: "700", color: colors.text }}>
-                  {pc.handle}
-                </Text>
-                <Text style={{ fontSize: 11, color: colors.textMuted }}>{pc.meta}</Text>
-              </View>
-            </View>
-            <View style={{ marginTop: 11, gap: 7 }}>
-              {pc.top.map((r) => (
-                <View key={r.p} style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                  <Text style={{ width: 12, fontSize: 11.5, fontWeight: "800", color: colors.textMuted }}>{r.p}</Text>
-                  <Cover cover={r.cover} size={26} rounded={6} />
-                  <Text numberOfLines={1} style={{ flex: 1, fontSize: 12.5, fontWeight: "600", color: colors.text }}>
-                    {r.t}
+      {discoveryQuery.isLoading ? (
+        <ActivityIndicator color={colors.textMuted} style={{ marginVertical: 12 }} />
+      ) : (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
+          {popularCharts.map((pc) => (
+            <Pressable
+              key={pc.id}
+              onPress={() => navigation.navigate("UserDetail", { handle: pc.authorHandle })}
+              style={{ width: 230, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 14 }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 9 }}>
+                {pc.authorImage ? (
+                  <View style={{ width: 30, height: 30, borderRadius: 15, overflow: "hidden" }}>
+                    <Cover cover={{ palette: ["#1D1D1F", "#5B5B60"], seed: 0, imageUrl: pc.authorImage }} size={30} rounded={15} />
+                  </View>
+                ) : (
+                  <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: pc.authorColor, alignItems: "center", justifyContent: "center" }}>
+                    <Text style={{ color: "#fff", fontWeight: "800", fontSize: 12 }}>{pc.authorName.charAt(0).toUpperCase()}</Text>
+                  </View>
+                )}
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: "700", color: colors.text }}>
+                    {pc.paradaNome}
+                  </Text>
+                  <Text numberOfLines={1} style={{ fontSize: 11, color: colors.textMuted }}>
+                    @{pc.authorHandle} · {pc.likes} curtidas
                   </Text>
                 </View>
-              ))}
-            </View>
-          </View>
-        ))}
-      </ScrollView>
+              </View>
+              <View style={{ marginTop: 11, gap: 7 }}>
+                {pc.topSongs.map((s, i) => (
+                  <View key={`${i}-${s.title}`} style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                    <Text style={{ width: 12, fontSize: 11.5, fontWeight: "800", color: colors.textMuted }}>{i + 1}</Text>
+                    <Cover cover={{ palette: ["#1D1D1F", "#5B5B60"], seed: i, imageUrl: s.coverUrl ?? undefined }} size={26} rounded={6} />
+                    <Text numberOfLines={1} style={{ flex: 1, fontSize: 12.5, fontWeight: "600", color: colors.text }}>
+                      {s.title}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </Pressable>
+          ))}
+          {popularCharts.length === 0 && (
+            <Text style={{ fontSize: 13, color: colors.textMuted, paddingVertical: 8 }}>Nenhuma parada popular no momento.</Text>
+          )}
+        </ScrollView>
+      )}
 
       <SectionHeader title="Subindo rápido" />
       <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden", marginHorizontal: 16 }}>

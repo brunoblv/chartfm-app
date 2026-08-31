@@ -296,7 +296,7 @@ export function HomeScreen() {
             Crie sua própria parada musical
           </Text>
           <Text style={{ fontSize: 14, lineHeight: 21, color: "#fff", opacity: 0.9, marginTop: 10, marginBottom: 20, maxWidth: 270 }}>
-            Escolha suas favoritas, monte seu Top 20 e descubra como você se compara com outros fãs.
+            Escolha suas favoritas, monte sua parada pessoal e descubra como você se compara com outros fãs.
           </Text>
           <PillButton label="Criar meu primeiro Chart" variant="white" onPress={() => navigation.navigate("Editor")} />
           <Pressable

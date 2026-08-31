@@ -139,7 +139,7 @@ export const NOTIFS_TODAY = [
 export const NOTIFS_WEEK = [
   { mark: "@", text: "Maria comentou na sua parada da semana 34.", when: "terça" },
   { mark: "★", text: "Você desbloqueou a conquista Em Chama.", when: "segunda" },
-  { mark: "◎", text: "Seu Top 20 da semana 34 entrou no Global com 6 músicas.", when: "domingo" },
+  { mark: "◎", text: "Sua parada da semana 34 entrou no Global com 6 músicas.", when: "domingo" },
 ];
 
 export const OTHER_USER = {

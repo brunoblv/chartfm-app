@@ -59,7 +59,7 @@ export function UserDetailScreen() {
         </View>
         <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
           <Text style={{ fontSize: 11, fontWeight: "700", letterSpacing: 1, textTransform: "uppercase", color: colors.textMuted, padding: 14, paddingBottom: 10 }}>
-            Top 20
+            Parada pessoal
           </Text>
           {OTHER_USER.top.map((s, i) => (
             <SongRow key={s.t} song={s} position={s.p} last={i === OTHER_USER.top.length - 1} />

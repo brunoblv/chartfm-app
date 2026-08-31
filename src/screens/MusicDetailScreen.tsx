@@ -63,7 +63,12 @@ export function MusicDetailScreen() {
         <Text style={{ fontSize: 23, fontWeight: "800", letterSpacing: -0.5, color: colors.text, marginTop: 18, textAlign: "center" }}>
           {song.title}
         </Text>
-        <Text style={{ fontSize: 15, color: colors.textMuted, marginTop: 4 }}>{song.artist}</Text>
+        <Pressable
+          disabled={song.artistId == null}
+          onPress={() => song.artistId != null && navigation.navigate("ArtistDetail", { artistId: song.artistId })}
+        >
+          <Text style={{ fontSize: 15, color: colors.textMuted, marginTop: 4 }}>{song.artist}</Text>
+        </Pressable>
         {song.albumTitle ? (
           <Pressable
             disabled={song.albumId == null}

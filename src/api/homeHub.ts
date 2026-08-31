@@ -103,9 +103,33 @@ export interface HomeReleaseAlbum {
   order: number;
 }
 
+export interface PopularChartSong {
+  title: string;
+  artist: string;
+  coverUrl: string | null;
+}
+
+/** Espelha `PublicHomeChart` de c:\ChartFM\lib\public-home-data.ts. */
+export interface PopularChart {
+  id: string;
+  paradaNome: string;
+  weekLabel: string;
+  authorName: string;
+  authorHandle: string;
+  authorImage: string | null;
+  authorColor: string;
+  communityName: string | null;
+  communitySlug: string | null;
+  likes: number;
+  comments: number;
+  entryCount: number;
+  topSongs: PopularChartSong[];
+}
+
 export interface HomeDiscoveryResponse {
   reviews: HomeReview[];
   releases: { id: string; weekLabel: string; albums: HomeReleaseAlbum[] } | null;
+  charts: PopularChart[];
 }
 
 export function useHomeDiscoveryQuery() {

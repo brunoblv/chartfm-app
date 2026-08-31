@@ -144,7 +144,7 @@ export function EditorScreen() {
               {homeHubQuery.data?.weekStatus.paradaNome ?? "Minha parada"}
             </Text>
             <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 1 }}>
-              {latestChart?.weekLabel ?? "Carregando…"} · {chart.length} de 20 músicas
+              {latestChart?.weekLabel ?? "Carregando…"} · {chart.length} {chart.length === 1 ? "música" : "músicas"}
             </Text>
           </View>
         </View>

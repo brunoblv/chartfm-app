@@ -62,10 +62,12 @@ export function AlbumDetailScreen() {
         <Text style={{ fontSize: 23, fontWeight: "800", letterSpacing: -0.5, color: colors.text, marginTop: 18, textAlign: "center" }}>
           {album.title}
         </Text>
-        <Text style={{ fontSize: 15, color: colors.textMuted, marginTop: 4 }}>
-          {album.artist}
-          {album.releaseYear ? ` · ${album.releaseYear}` : ""}
-        </Text>
+        <Pressable onPress={() => navigation.navigate("ArtistDetail", { artistId: album.artistId })}>
+          <Text style={{ fontSize: 15, color: colors.textMuted, marginTop: 4 }}>
+            {album.artist}
+            {album.releaseYear ? ` · ${album.releaseYear}` : ""}
+          </Text>
+        </Pressable>
       </View>
 
       {album.reception ? (
