@@ -20,7 +20,7 @@ export function ReviewsRow({ reviews }: { reviews: HomeReview[] }) {
       {reviews.map((r) => (
         <Pressable
           key={r.id}
-          onPress={() => navigation.navigate("AlbumDetail", { albumId: r.albumId })}
+          onPress={() => navigation.navigate("ReviewDetail", { review: r })}
           style={{
             width: 240,
             backgroundColor: colors.surface,

@@ -32,9 +32,11 @@ import { ClubeScreen } from "../screens/ClubeScreen";
 import { EditProfileScreen } from "../screens/EditProfileScreen";
 import { RecommendSongScreen } from "../screens/RecommendSongScreen";
 import { WriteReviewScreen } from "../screens/WriteReviewScreen";
+import { ReviewDetailScreen } from "../screens/ReviewDetailScreen";
 import { ChartDetailScreen } from "../screens/ChartDetailScreen";
 import { SpotlightsScreen } from "../screens/SpotlightsScreen";
 import { ParadaWeekPickerSheet } from "../components/ParadaWeekPickerSheet";
+import { HomeReview } from "../api/homeHub";
 
 export type RootStackParamList = {
   Onboarding: undefined;
@@ -60,6 +62,7 @@ export type RootStackParamList = {
   EditProfile: undefined;
   RecommendSong: undefined;
   WriteReview: { albumId?: number; title?: string; artist?: string; coverUrl?: string | null } | undefined;
+  ReviewDetail: { review: HomeReview };
   ChartDetail: { chartId: string };
   Spotlights: undefined;
   ParadaWeekPicker: undefined;
@@ -143,6 +146,7 @@ export function RootNavigator() {
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="ChartDetail" component={ChartDetailScreen} />
         <Stack.Screen name="Spotlights" component={SpotlightsScreen} />
+        <Stack.Screen name="ReviewDetail" component={ReviewDetailScreen} />
         <Stack.Screen
           name="CreateSheet"
           component={CreateSheetScreen}
