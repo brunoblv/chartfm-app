@@ -20,6 +20,13 @@ interface RequestOptions extends Omit<RequestInit, "body"> {
   auth?: boolean;
 }
 
+/** Registrado pelo AuthContext para forçar logout quando um token expira/é inválido. */
+let unauthorizedHandler: (() => void) | null = null;
+
+export function setUnauthorizedHandler(handler: (() => void) | null) {
+  unauthorizedHandler = handler;
+}
+
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { auth = true, body, headers, ...rest } = options;
 
@@ -46,6 +53,9 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
       (parsed && typeof parsed === "object" && "error" in parsed && typeof (parsed as any).error === "string"
         ? (parsed as any).error
         : null) ?? res.statusText ?? "request_failed";
+    if (res.status === 401 && auth) {
+      unauthorizedHandler?.();
+    }
     throw new ApiError(res.status, message, parsed);
   }
 

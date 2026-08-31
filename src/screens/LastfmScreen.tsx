@@ -16,6 +16,7 @@ import {
   LastfmImportSong,
 } from "../api/lastfm";
 import type { ChartSong } from "../data/mock";
+import { resolveMediaUrl } from "../lib/api";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -37,7 +38,7 @@ function songToChartSong(s: LastfmImportSong, seed: number): ChartSong {
 export function LastfmScreen() {
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
-  const { setChart, publishChart } = useAppState();
+  const { setChart } = useAppState();
   const statusQuery = useLastfmStatusQuery();
   const connectMutation = useConnectLastfmMutation();
   const importMutation = useLastfmImportMutation();
@@ -68,7 +69,6 @@ export function LastfmScreen() {
       });
     } else {
       setChart(importedSongs.map(songToChartSong));
-      publishChart();
       navigation.navigate("Editor");
     }
   };
@@ -151,7 +151,7 @@ export function LastfmScreen() {
                 >
                   <Text style={{ width: 22, fontSize: 14, fontWeight: "800", color: colors.text }}>{i + 1}</Text>
                   {s.imageUrl ? (
-                    <Image source={{ uri: s.imageUrl }} style={{ width: 40, height: 40, borderRadius: 9 }} />
+                    <Image source={{ uri: resolveMediaUrl(s.imageUrl) }} style={{ width: 40, height: 40, borderRadius: 9 }} />
                   ) : (
                     <View style={{ width: 40, height: 40, borderRadius: 9, backgroundColor: colors.fillSubtle }} />
                   )}

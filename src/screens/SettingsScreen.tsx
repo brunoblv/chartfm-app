@@ -7,10 +7,19 @@ import { useAppTheme, ThemePreference } from "../theme/ThemeProvider";
 import { useAppState } from "../state/AppState";
 import { useAuth } from "../state/AuthContext";
 import { useLastfmStatusQuery } from "../api/lastfm";
+import { useNotificationPrefsQuery, useUpdateNotificationPrefsMutation, NotifPrefCategory } from "../api/notificationPrefs";
 import { Screen } from "../components/Screen";
 import { BackHeader } from "../components/BackHeader";
 import { Toggle } from "../components/Toggle";
 import { RootStackParamList } from "../navigation/RootNavigator";
+
+const NOTIF_ROWS: { category: NotifPrefCategory | null; label: string; note: string }[] = [
+  { category: "chart", label: "Minha parada", note: "Lembrete semanal de atualizar" },
+  { category: null, label: "Ranking", note: "Em breve" },
+  { category: null, label: "Eventos", note: "Em breve" },
+  { category: "social", label: "Comunidade", note: "Seguidores, curtidas e comentários" },
+  { category: null, label: "Conquistas", note: "Em breve" },
+];
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -59,10 +68,12 @@ function SectionLabel({ children }: { children: string }) {
 
 export function SettingsScreen() {
   const { colors, preference, setPreference, lang, setLang } = useAppTheme();
-  const { notifPrefs, toggleNotifPref, isPublicProfile, setIsPublicProfile, isOffline } = useAppState();
+  const { isPublicProfile, setIsPublicProfile, isOffline } = useAppState();
   const { user, signOut } = useAuth();
   const navigation = useNavigation<Nav>();
   const lastfmStatus = useLastfmStatusQuery();
+  const notifPrefsQuery = useNotificationPrefsQuery();
+  const updateNotifPrefs = useUpdateNotificationPrefsMutation();
 
   const handleSignOut = async () => {
     await signOut();
@@ -117,18 +128,36 @@ export function SettingsScreen() {
 
       <SectionLabel>Notificações</SectionLabel>
       <View style={{ marginHorizontal: 16, marginBottom: 20, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
-        {notifPrefs.map((p, i) => (
-          <View
-            key={p.id}
-            style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderBottomWidth: i === notifPrefs.length - 1 ? 0 : 1, borderBottomColor: colors.dividerSoft }}
-          >
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>{p.label}</Text>
-              <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 2 }}>{p.note}</Text>
+        {NOTIF_ROWS.map((row, i) => {
+          const enabled = row.category ? notifPrefsQuery.data?.prefs[row.category] ?? true : false;
+          return (
+            <View
+              key={row.label}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 12,
+                padding: 14,
+                borderBottomWidth: i === NOTIF_ROWS.length - 1 ? 0 : 1,
+                borderBottomColor: colors.dividerSoft,
+                opacity: row.category ? 1 : 0.5,
+              }}
+            >
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>{row.label}</Text>
+                <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 2 }}>{row.note}</Text>
+              </View>
+              <Toggle
+                on={row.category ? enabled : false}
+                onToggle={
+                  row.category
+                    ? () => updateNotifPrefs.mutate({ [row.category as NotifPrefCategory]: !enabled })
+                    : () => {}
+                }
+              />
             </View>
-            <Toggle on={p.on} onToggle={() => toggleNotifPref(p.id)} />
-          </View>
-        ))}
+          );
+        })}
       </View>
 
       <SectionLabel>Contas conectadas</SectionLabel>

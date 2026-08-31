@@ -48,6 +48,10 @@ export interface ProfilePayload {
   isFollowing: boolean;
   totalCharts: number;
   genres: string[];
+  statsSummary?: {
+    totalRankedSlots: number;
+    numberOnes: number;
+  };
   progression: {
     level: { level: number; xp: number; percent: number };
     families: ProfileFamilyProgress[];

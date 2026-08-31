@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Image, StyleSheet } from "react-native";
 import Svg, { RadialGradient, LinearGradient, Rect, Circle, Stop, Defs } from "react-native-svg";
+import { resolveMediaUrl } from "../lib/api";
 
 export interface CoverArt {
   palette: [string, string];
@@ -25,7 +26,7 @@ export function Cover({
   if (imageUrl) {
     return (
       <Image
-        source={{ uri: imageUrl }}
+        source={{ uri: resolveMediaUrl(imageUrl) }}
         style={{ width: size, height: size, borderRadius: rounded }}
       />
     );

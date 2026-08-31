@@ -6,6 +6,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { BackHeader } from "../components/BackHeader";
 import { useSearchQuery } from "../api/search";
 import { usePushRoundQuery, usePushSubmitMutation, pushErrorMessage, pushPhaseLabel } from "../api/push";
+import { resolveMediaUrl } from "../lib/api";
 
 export function PushSubmitScreen() {
   const { colors } = useAppTheme();
@@ -73,7 +74,7 @@ export function PushSubmitScreen() {
                     style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 11, paddingHorizontal: 14, borderBottomWidth: i === results.length - 1 ? 0 : 1, borderBottomColor: colors.dividerSoft }}
                   >
                     {song.coverUrl ? (
-                      <Image source={{ uri: song.coverUrl }} style={{ width: 44, height: 44, borderRadius: 10 }} />
+                      <Image source={{ uri: resolveMediaUrl(song.coverUrl) }} style={{ width: 44, height: 44, borderRadius: 10 }} />
                     ) : (
                       <View style={{ width: 44, height: 44, borderRadius: 10, backgroundColor: colors.fillSubtle }} />
                     )}

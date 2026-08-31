@@ -1,23 +1,18 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
-import { CHART, ChartSong } from "../data/mock";
-import { DEFAULT_NOTIF_PREFS, NotifPref } from "../data/notifPrefs";
+import { ChartSong } from "../data/mock";
 
 interface AppStateValue {
-  hasChart: boolean;
   chart: ChartSong[];
   setChart: (songs: ChartSong[]) => void;
   addSong: (song: ChartSong) => void;
   removeSong: (index: number) => void;
-  publishChart: () => void;
   showGamification: boolean;
   setShowGamification: (v: boolean) => void;
   copaVote: "a" | "b" | null;
   setCopaVote: (v: "a" | "b" | null) => void;
   isPublicProfile: boolean;
   setIsPublicProfile: (v: boolean) => void;
-  notifPrefs: NotifPref[];
-  toggleNotifPref: (id: string) => void;
   lastfmConnected: boolean;
   setLastfmConnected: (v: boolean) => void;
   isOffline: boolean;
@@ -27,12 +22,10 @@ interface AppStateValue {
 const AppStateContext = createContext<AppStateValue | null>(null);
 
 export function AppStateProvider({ children }: { children: React.ReactNode }) {
-  const [hasChart, setHasChart] = useState(true);
-  const [chart, setChartState] = useState<ChartSong[]>(CHART);
+  const [chart, setChartState] = useState<ChartSong[]>([]);
   const [showGamification, setShowGamification] = useState(true);
   const [copaVote, setCopaVote] = useState<"a" | "b" | null>(null);
   const [isPublicProfile, setIsPublicProfile] = useState(true);
-  const [notifPrefs, setNotifPrefs] = useState<NotifPref[]>(DEFAULT_NOTIF_PREFS);
   const [lastfmConnected, setLastfmConnected] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
 
@@ -41,10 +34,6 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       setIsOffline(state.isConnected === false || state.isInternetReachable === false);
     });
     return unsubscribe;
-  }, []);
-
-  const toggleNotifPref = useCallback((id: string) => {
-    setNotifPrefs((prev) => prev.map((p) => (p.id === id ? { ...p, on: !p.on } : p)));
   }, []);
 
   const setChart = useCallback((songs: ChartSong[]) => setChartState(songs), []);
@@ -57,44 +46,24 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setChartState((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
-  const publishChart = useCallback(() => setHasChart(true), []);
-
   const value = useMemo<AppStateValue>(
     () => ({
-      hasChart,
       chart,
       setChart,
       addSong,
       removeSong,
-      publishChart,
       showGamification,
       setShowGamification,
       copaVote,
       setCopaVote,
       isPublicProfile,
       setIsPublicProfile,
-      notifPrefs,
-      toggleNotifPref,
       lastfmConnected,
       setLastfmConnected,
       isOffline,
       setIsOffline,
     }),
-    [
-      hasChart,
-      chart,
-      showGamification,
-      copaVote,
-      isPublicProfile,
-      notifPrefs,
-      lastfmConnected,
-      isOffline,
-      setChart,
-      addSong,
-      removeSong,
-      publishChart,
-      toggleNotifPref,
-    ]
+    [chart, showGamification, copaVote, isPublicProfile, lastfmConnected, isOffline, setChart, addSong, removeSong]
   );
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;

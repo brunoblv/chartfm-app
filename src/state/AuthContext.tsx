@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import * as WebBrowser from "expo-web-browser";
 import { API_BASE_URL, getQueryParam } from "../lib/api";
 import { tokenStorage } from "../lib/tokenStorage";
-import { ApiError, apiRequest } from "../lib/apiClient";
+import { ApiError, apiRequest, setUnauthorizedHandler } from "../lib/apiClient";
 
 const TOKEN_KEY = "chartfm_mobile_token";
 /** Precisa bater com `scheme` do app.json e com o redirect final do backend. */
@@ -123,6 +123,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setToken(null);
     setUser(null);
   }, []);
+
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      signOut();
+    });
+    return () => setUnauthorizedHandler(null);
+  }, [signOut]);
 
   const refreshUser = useCallback(async () => {
     const stored = await tokenStorage.getItem(TOKEN_KEY);

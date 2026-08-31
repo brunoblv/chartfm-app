@@ -103,7 +103,11 @@ export function RootNavigator() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={isSignedIn ? "Main" : "Onboarding"}>
+      <Stack.Navigator
+        key={isSignedIn ? "signed-in" : "signed-out"}
+        screenOptions={{ headerShown: false }}
+        initialRouteName={isSignedIn ? "Main" : "Onboarding"}
+      >
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Cadastro" component={SignupScreen} />

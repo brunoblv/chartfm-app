@@ -15,6 +15,7 @@ import {
   pushPhaseLabel,
   PushSubmissionRow,
 } from "../api/push";
+import { resolveMediaUrl } from "../lib/api";
 
 export function PushRankScreen() {
   const { colors } = useAppTheme();
@@ -73,7 +74,7 @@ export function PushRankScreen() {
         >
           <Text style={{ width: 24, fontSize: 16, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{index + 1}</Text>
           {item.song.coverUrl ? (
-            <Image source={{ uri: item.song.coverUrl }} style={{ width: 44, height: 44, borderRadius: 10 }} />
+            <Image source={{ uri: resolveMediaUrl(item.song.coverUrl) }} style={{ width: 44, height: 44, borderRadius: 10 }} />
           ) : (
             <View style={{ width: 44, height: 44, borderRadius: 10, backgroundColor: colors.fillSubtle }} />
           )}

@@ -6,6 +6,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { useAppState } from "../state/AppState";
 import { useSearchQuery, SearchSong } from "../api/search";
 import type { ChartSong } from "../data/mock";
+import { resolveMediaUrl } from "../lib/api";
 
 function songToChartSong(song: SearchSong, seed: number): ChartSong {
   return {
@@ -89,7 +90,7 @@ export function AddSongScreen() {
                     }}
                   >
                     {song.coverUrl ? (
-                      <Image source={{ uri: song.coverUrl }} style={{ width: 44, height: 44, borderRadius: 10 }} />
+                      <Image source={{ uri: resolveMediaUrl(song.coverUrl) }} style={{ width: 44, height: 44, borderRadius: 10 }} />
                     ) : (
                       <View style={{ width: 44, height: 44, borderRadius: 10, backgroundColor: colors.fillSubtle }} />
                     )}

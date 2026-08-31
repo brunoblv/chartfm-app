@@ -36,8 +36,40 @@ export function usePublishChartMutation() {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["global"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
   });
+}
+
+/**
+ * Atualiza uma parada já publicada. O backend não faz upsert em POST /api/charts
+ * (semana já publicada dá 409), então "editar" uma parada da semana atual precisa
+ * passar por aqui em vez de tentar criar de novo.
+ */
+export function useUpdateChartMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (vars: { id: string; songs: ChartSong[] }) =>
+      apiRequest<{ ok: true }>(`/api/charts/${vars.id}`, {
+        method: "PATCH",
+        body: { entries: vars.songs.map(toPublishEntry) },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["global"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+  });
+}
+
+/** Extrai o id da parada já existente que veio no 409 de "já publicou essa semana". */
+export function existingChartIdFromConflict(error: unknown): string | null {
+  if (error instanceof ApiError && error.status === 409) {
+    if (typeof error.body === "object" && error.body && "id" in error.body) {
+      const id = (error.body as { id?: string }).id;
+      if (typeof id === "string") return id;
+    }
+  }
+  return null;
 }
 
 export function publishErrorMessage(error: unknown): string {

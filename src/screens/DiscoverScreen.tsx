@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, Pressable, ActivityIndicator, ScrollView } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
@@ -48,7 +48,7 @@ export function DiscoverScreen() {
       {isTrendingLoading ? (
         <ActivityIndicator color={colors.textMuted} style={{ marginVertical: 12 }} />
       ) : (
-        <View style={{ flexDirection: "row", gap: 12, paddingHorizontal: 16 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
           {trending.map((c) => (
             <View key={c.key} style={{ width: 150 }}>
               <Cover cover={c.cover} size={150} rounded={14} />
@@ -63,11 +63,11 @@ export function DiscoverScreen() {
           {trending.length === 0 && (
             <Text style={{ fontSize: 13, color: colors.textMuted, paddingVertical: 8 }}>Nada em alta no momento.</Text>
           )}
-        </View>
+        </ScrollView>
       )}
 
       <SectionHeader title="Paradas populares" />
-      <View style={{ flexDirection: "row", gap: 12, paddingHorizontal: 16 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
         {POPULAR.map((pc) => (
           <View
             key={pc.handle}
@@ -97,7 +97,7 @@ export function DiscoverScreen() {
             </View>
           </View>
         ))}
-      </View>
+      </ScrollView>
 
       <SectionHeader title="Subindo rápido" />
       <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden", marginHorizontal: 16 }}>
@@ -107,7 +107,7 @@ export function DiscoverScreen() {
       </View>
 
       <SectionHeader title="Pessoas com gosto parecido" />
-      <View style={{ flexDirection: "row", gap: 12, paddingHorizontal: 16 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
         {PEOPLE.map((u) => (
           <View
             key={u.handle}
@@ -127,7 +127,7 @@ export function DiscoverScreen() {
             </Pressable>
           </View>
         ))}
-      </View>
+      </ScrollView>
     </Screen>
   );
 }

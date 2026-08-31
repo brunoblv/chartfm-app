@@ -10,7 +10,9 @@ import { useAuth } from "../state/AuthContext";
 import { Screen } from "../components/Screen";
 import { MovementBadge, MovementStatus } from "../components/MovementBadge";
 import { RootStackParamList } from "../navigation/RootNavigator";
-import { useProfileQuery, familyLabel } from "../api/profile";
+import { useProfileQuery, familyLabel, ProfileFamilyProgress } from "../api/profile";
+import { resolveMediaUrl } from "../lib/api";
+import { AchievementDetailModal } from "../components/AchievementDetailModal";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -22,6 +24,7 @@ export function ProfileScreen() {
   const profileQuery = useProfileQuery(user?.handle);
   const profile = profileQuery.data;
   const latestChart = profile?.user.charts[0];
+  const [selectedFamily, setSelectedFamily] = React.useState<ProfileFamilyProgress | null>(null);
 
   return (
     <Screen>
@@ -43,7 +46,7 @@ export function ProfileScreen() {
         <>
           <View style={{ alignItems: "center", paddingHorizontal: 20, paddingBottom: 20 }}>
             {profile?.imageUrl ? (
-              <Image source={{ uri: profile.imageUrl }} style={{ width: 82, height: 82, borderRadius: 41 }} />
+              <Image source={{ uri: resolveMediaUrl(profile.imageUrl) }} style={{ width: 82, height: 82, borderRadius: 41 }} />
             ) : (
               <LinearGradient colors={[colors.gradientHero[0], colors.gradientHero[1]]} style={{ width: 82, height: 82, borderRadius: 41, alignItems: "center", justifyContent: "center" }}>
                 <Text style={{ color: "#fff", fontWeight: "800", fontSize: 32 }}>
@@ -94,7 +97,7 @@ export function ProfileScreen() {
                 >
                   <Text style={{ width: 20, fontSize: 13, fontWeight: "800", color: colors.textMuted }}>{e.position}</Text>
                   {e.song.imageUrl ? (
-                    <Image source={{ uri: e.song.imageUrl }} style={{ width: 36, height: 36, borderRadius: 8 }} />
+                    <Image source={{ uri: resolveMediaUrl(e.song.imageUrl) }} style={{ width: 36, height: 36, borderRadius: 8 }} />
                   ) : (
                     <View style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: colors.fillSubtle }} />
                   )}
@@ -106,13 +109,59 @@ export function ProfileScreen() {
                       {e.song.artist}
                     </Text>
                   </View>
+                  <Text style={{ fontSize: 10.5, color: colors.textDisabled, marginRight: 2 }}>
+                    {e.weeks} {e.weeks === 1 ? "sem" : "sems"} · pico #{e.peak}
+                  </Text>
                   <MovementBadge status={e.status as MovementStatus} delta={e.delta ?? undefined} compact />
                 </View>
               ))}
+              {latestChart.entries.length > 10 && (
+                <Pressable
+                  onPress={() => navigation.navigate("UserDetail", { handle: user!.handle })}
+                  style={{ paddingVertical: 13, alignItems: "center", borderTopWidth: 1, borderTopColor: colors.dividerSoft }}
+                >
+                  <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 13 }}>
+                    Ver todas as {latestChart.entries.length} músicas
+                  </Text>
+                </Pressable>
+              )}
             </View>
           ) : (
             <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 20, alignItems: "center" }}>
               <Text style={{ color: colors.textMuted, fontSize: 13.5 }}>Você ainda não publicou uma parada.</Text>
+            </View>
+          )}
+
+          {profile?.statsSummary && (
+            <View
+              style={{
+                marginHorizontal: 16,
+                marginTop: 12,
+                backgroundColor: colors.surface,
+                borderWidth: 1,
+                borderColor: colors.divider,
+                borderRadius: 16,
+                padding: 16,
+                flexDirection: "row",
+              }}
+            >
+              <View style={{ flex: 1, alignItems: "center" }}>
+                <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
+                  {profile.statsSummary.totalRankedSlots}
+                </Text>
+                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 2, textAlign: "center" }}>
+                  posições ocupadas{"\n"}em todas as paradas
+                </Text>
+              </View>
+              <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
+              <View style={{ flex: 1, alignItems: "center" }}>
+                <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
+                  {profile.statsSummary.numberOnes}
+                </Text>
+                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 2, textAlign: "center" }}>
+                  músicas em{"\n"}#1
+                </Text>
+              </View>
             </View>
           )}
 
@@ -125,8 +174,9 @@ export function ProfileScreen() {
               </View>
               <View style={{ marginHorizontal: 16, flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
                 {profile.progression.families.map((f) => (
-                  <View
+                  <Pressable
                     key={f.code}
+                    onPress={() => setSelectedFamily(f)}
                     style={{
                       width: "47%",
                       backgroundColor: colors.surface,
@@ -151,13 +201,14 @@ export function ProfileScreen() {
                         {f.isComplete ? "Completo" : `${f.value} / ${f.nextThreshold}`}
                       </Text>
                     </View>
-                  </View>
+                  </Pressable>
                 ))}
               </View>
             </>
           )}
         </>
       )}
+      <AchievementDetailModal family={selectedFamily} onClose={() => setSelectedFamily(null)} />
     </Screen>
   );
 }

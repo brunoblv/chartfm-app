@@ -101,6 +101,7 @@ export function useCopaVoteMutation(copaId: string | undefined) {
 export function copaErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {
     if (error.status === 409) return "Você já votou nesse confronto.";
+    if (error.status === 401) return "Sua sessão expirou. Faça login novamente.";
     if (typeof error.body === "object" && error.body && "error" in error.body) {
       const msg = (error.body as { error?: string }).error;
       if (msg) return msg;

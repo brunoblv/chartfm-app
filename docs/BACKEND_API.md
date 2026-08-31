@@ -6,22 +6,35 @@ passes de limpeza como este). Fonte de verdade real: `C:\ChartFM\app\api\**\rout
 
 ## 0. Status geral — o que já foi migrado
 
+**⚠️ Pendência de deploy ativa (2026-08-30):** a VPS de produção (`https://chartfm.com.br`)
+está rodando um build mais antigo que o `HEAD` do repo local. Confirmado testando ao vivo:
+`/api/global/leaderboard` responde 404 em produção mesmo com o arquivo de rota commitado e
+presente no histórico — ou seja, o Global 100 do mobile está quebrado em produção só por
+falta de rebuild/restart, não por bug de código. Os endpoints novos desta fase (`/api/home/hub`,
+`/api/home/discovery`, `/api/feed`, `/api/user/notification-prefs`) e as 13 rotas de
+interação migradas para `getApiUser` (seção 4.9) **também não existem em produção ainda** pelo
+mesmo motivo. Precisa dar `git pull` + rebuild + restart na VPS antes de qualquer teste real
+no app.
+
 | Área | Status | Detalhe |
 |---|---|---|
 | Auth (login, cadastro, sessão) | ✅ Completo | Seção 2 |
-| Home / Global 100 / Discover / Search | ✅ Completo | Seção 4.1 |
-| Chart pessoal (criar) | 🟡 Parcial — falta editar/apagar | Seção 4.2 |
+| Home / Global 100 / Discover / Search | ✅ Completo no código — 🔴 bloqueado por deploy | Seção 4.1 |
+| Chart pessoal (criar + editar) | ✅ Completo | Seção 4.2 |
 | Copa | 🟡 Placar corrigido, votação e hub prontos — falta tabela de grupos na UI | Seção 5 |
 | Push (indicar + avaliar) | ✅ Completo | Seção 4.4 |
 | Clube do Álbum | ✅ Completo | Seção 4.5 |
 | Perfil / social (ver, seguir) | ✅ Completo | Seção 4.6 |
-| Edição de perfil (nome/handle/gêneros) | ✅ Completo — falta avatar | Seção 4.6 |
-| Notificações | ✅ Completo | Seção 4.7 |
+| Edição de perfil (nome/handle/gêneros/avatar) | ✅ Completo | Seção 4.6 |
+| Notificações (lista + prefs por categoria) | ✅ Completo (2 de 5 categorias têm notificação real) | Seção 4.7 |
 | Last.fm (conectar + importar) | ✅ Completo | Seção 4.7 |
+| Conquistas (detalhe/requisitos por família) | ✅ Completo, catálogo espelhado no mobile | Seção 4.6 |
+| Home Hub (resumo semanal, charts de amigos, pessoas p/ conhecer, reviews, lançamentos) | ✅ Completo no código — 🔴 bloqueado por deploy | Seção 4.8 |
+| Feed de posts (paradas, recomendações, editorial, sistema) | 🟡 Leitura + curtir/repostar completos; comentar sem UI — 🔴 bloqueado por deploy | Seção 4.9 |
 | Modo offline real | ✅ Completo | Seção 6 |
 | Spotify/YouTube connect | ❌ Não iniciado | — |
 | MusicDetailScreen (trajetória real) | ❌ Não iniciado | Seção 7 |
-| Discover "Paradas populares"/"Pessoas parecidas" | ❌ Não iniciado | Seção 7 |
+| Discover "Paradas populares"/"Pessoas parecidas" | ❌ Não iniciado (mocks antigos ainda na tela Discover; a Home Hub cobre um caso parecido com dado real) | Seção 7 |
 
 ## 1. Overview & convenções
 
@@ -39,11 +52,21 @@ passes de limpeza como este). Fonte de verdade real: `C:\ChartFM\app\api\**\rout
 - Não há WebSocket/SignalR. Qualquer feature "ao vivo" (Copa live-feed, live-comments)
   é implementada via polling sobre jobs cron — ver seção 6.
 - **Dependências nativas exigem rebuild do app, não só reload do Metro.** Toda vez que uma lib
-  com código nativo é adicionada (`expo-secure-store`, `expo-web-browser`, e mais recentemente
-  `@react-native-community/netinfo`), o binário instalado no dispositivo/emulador precisa ser
-  recompilado com `npx expo run:android` (ou `run:ios`, ou um build novo via EAS) — só rodar
-  `npm start`/`expo start` reconecta ao binário antigo e o módulo aparece como `null` em
-  runtime ("NativeModule.X is null").
+  com código nativo é adicionada (`expo-secure-store`, `expo-web-browser`,
+  `@react-native-community/netinfo`, e mais recentemente `expo-image-picker`), o binário
+  instalado no dispositivo/emulador precisa ser recompilado com `npx expo run:android` (ou
+  `run:ios`, ou um build novo via EAS) — só rodar `npm start`/`expo start` reconecta ao binário
+  antigo e o módulo aparece como `null` em runtime ("NativeModule.X is null").
+- **Toda imagem vinda da API passa por `resolveMediaUrl()` (`src/lib/api.ts`).** Nem todo
+  campo de imagem devolve URL absoluta — avatar de upload direto (vs. login Google) volta como
+  caminho relativo (`/api/uploads/...`), que o `Image` do RN não resolve sozinho. Qualquer tela
+  nova que renderize avatar/capa deve passar o valor por esse helper antes do `uri`.
+- **401 de uma chamada autenticada força logout automático.** `apiClient.ts` chama um handler
+  registrado por `AuthContext` (`setUnauthorizedHandler`) sempre que uma resposta 401 vem de uma
+  chamada com `auth: true`; o `RootNavigator` usa `key={isSignedIn ? "signed-in" : "signed-out"}`
+  no `Stack.Navigator` pra garantir que a troca de tela (voltar pro Onboarding/Login) realmente
+  aconteça — sem essa `key`, `initialRouteName` só é lido na montagem inicial e o app fica preso
+  na tela autenticada mesmo depois de deslogado.
 
 ## 2. Autenticação — ✅ completo
 
@@ -125,16 +148,33 @@ Fonte completa: `C:\ChartFM\prisma\schema.prisma` (~70 models, 2588 linhas).
 - **`GET /api/me/progression`** — migrado para `getApiUser`. Usado em `HomeScreen.tsx` para
   nível/XP reais.
 
-### 4.2 Chart pessoal — 🟡 parcial (criar sim, editar/apagar não)
+### 4.2 Chart pessoal — ✅ completo (criar e editar)
 - **`POST /api/charts`** — migrado para `getApiUser`. Body:
   `{entries: [{title, artist, album?, spotifyId?, songId?}], weekDate?}`. Usado por
   `EditorScreen.tsx` (`usePublishChartMutation` em `src/api/charts.ts`) e por
-  `LastfmScreen.tsx` (monta os `entries` a partir da importação real).
-- **`GET/PATCH/DELETE /api/charts/[id]`** e **`GET /api/charts/latest`** — migrados para
-  `getApiUser`, mas **ainda não consumidos** por nenhuma tela — hoje o `EditorScreen` sempre
-  cria uma parada nova via `POST`, nunca edita uma já publicada.
-- Ainda não usados: `GET /api/charts/weeks`, `POST /api/charts/[id]/like|repost|comment`,
-  `GET /api/charts/[id]/overlap|video-clips|mytrl-daily`.
+  `LastfmScreen.tsx` (monta os `entries` a partir da importação real). **Não faz upsert**: se
+  já existe parada publicada nesse período, retorna 409 com `{id, error}` (o `id` é o da parada
+  já existente).
+- **Achado + correção (2026-08-30)**: o `EditorScreen` sempre chamava só o `POST`, então
+  "editar" uma parada já publicada na semana sempre batia no 409 acima e falhava — era a causa
+  real do "editar parada está mockado" reportado pelo usuário, não um bug de UI. Corrigido em
+  duas pontas:
+  1. **Pré-carregamento**: `EditorScreen.tsx` agora busca `useProfileQuery(user.handle)` e, se
+     o rascunho local (`AppState.chart`) estiver vazio, pré-preenche com
+     `profile.user.charts[0].entries` (a parada mais recente — pode ser a desta semana, se já
+     publicada, ou a da semana passada, servindo como ponto de partida).
+  2. **Fallback automático**: `EditorScreen.handlePublish` tenta `POST` primeiro; se vier 409
+     com `id` no corpo, chama a nova `useUpdateChartMutation` (`PATCH /api/charts/[id]`) com o
+     mesmo `id`, em vez de mostrar erro. Ver `existingChartIdFromConflict()` em
+     `src/api/charts.ts`.
+- **`GET/PATCH/DELETE /api/charts/[id]`** — migrados para `getApiUser`. `PATCH` agora é
+  **consumido** (fluxo acima). `GET`/`DELETE` ainda não têm tela.
+- **`GET /api/charts/latest`** — migrado para `getApiUser`, mas **ainda não consumido** — devolve
+  a parada do período *anterior* ao informado (pensado para o fluxo web de "começar da semana
+  passada"), não a parada da semana atual; não confundir com o pré-carregamento acima, que usa
+  `GET /api/profile/[handle]` porque esse já trazia a parada mais recente pronta.
+- Ainda não usados: `GET /api/charts/weeks`, `GET /api/charts/[id]/overlap|video-clips|mytrl-daily`.
+  `POST /api/charts/[id]/like|repost|comment` **agora são usados** — ver seção 4.9 (Feed).
 - `AddSongScreen.tsx` reaproveita `GET /api/search` em vez de `manual-create`/`manual-lookup`
   — cobre o caso comum (música já no catálogo/Spotify). Entrada manual de música fora do
   catálogo ficou pendente.
@@ -196,9 +236,32 @@ migração). Resumo do que está implementado:
   - **`PATCH /api/user/handle`** — migrado de `getToken()` direto (não suportava mobile) para
     `getApiUser`.
   - **`PATCH /api/user/genres`** — migrado para `getApiUser`.
-- **Avatar — auth migrada, sem UI**: `POST/DELETE /api/user/avatar` migrados para `getApiUser`,
-  prontos, mas sem tela — exigiria `expo-image-picker` (nova dependência nativa) + `FormData`
-  multipart.
+- **Avatar — ✅ completo (2026-08-30)**: `expo-image-picker` adicionado como dependência nativa
+  (**precisa rebuild do app**, ver seção 1). `EditProfileScreen.tsx` ganhou UI de trocar/remover
+  foto: `ImagePicker.launchImageLibraryAsync` → `POST /api/user/avatar` via `FormData`
+  multipart (`useUploadAvatarMutation`/`useDeleteAvatarMutation` em `src/api/account.ts`, fora
+  do `apiRequest` genérico porque este força `Content-Type: application/json`). Após upload,
+  chama `refreshUser()` e invalida `["profile"]`.
+- **Achado + correção (2026-08-30) — capas/avatares "não aparecem"**: confirmado testando a API
+  de produção que **avatar enviado por upload direto volta como caminho relativo**
+  (`/api/uploads/avatars/<id>.jpg?v=...`), enquanto avatar de login Google e capas do Spotify
+  vêm como URL absoluta. `Image` do React Native não resolve URI relativa como um navegador
+  faria — por isso ficava em branco. Corrigido com `resolveMediaUrl()` em `src/lib/api.ts`
+  (prefixa com `API_BASE_URL` quando a URL não começa com `http`), aplicado em `Cover.tsx` e em
+  todo `<Image source={{uri:...}}>` de avatar/capa do app (Profile, UserDetail, Home, Search,
+  Clube, AddSong, PushRank, PushSubmit, Lastfm). **Sempre passar imageUrl/coverUrl/avatarUrl por
+  esse helper em telas novas.**
+- **Conquistas — detalhe por família (2026-08-30)**: `ProfileScreen.tsx` agora abre um modal
+  (`AchievementDetailModal.tsx`) ao tocar num card de conquista, mostrando descrição, os 4 tiers
+  (bronze/prata/ouro/platina) com limiar e XP de cada um, e qual já foi desbloqueado. Os
+  limiares/descrições vivem em `src/data/achievements.ts`, **copiados** de
+  `C:\ChartFM\lib\progression\achievements-catalog.ts` (`ACHIEVEMENT_FAMILIES`) — não há
+  endpoint que devolva os 4 limiares por família, só o progresso atual
+  (`ProfileFamilyProgress.nextThreshold`, um de cada vez). **Se os limiares mudarem no backend
+  (só descem, nunca sobem — ver comentário no catálogo), `src/data/achievements.ts` fica
+  desatualizado silenciosamente.** Considerar expor os 4 limiares completos em
+  `GET /api/profile/[handle]` (`progression.families[].thresholds`) numa fase futura para
+  eliminar essa cópia.
 - Não usados: `GET /api/profile/[handle]/paradas|reviews`, `/api/user/chart-name|account|
   export-data`.
 
@@ -223,8 +286,95 @@ migração). Resumo do que está implementado:
   Fase 3. Só 7 e 30 dias existem na API — os demais períodos do mock foram removidos da tela.
 - Não usados: `/api/spotify/**`, `/api/youtube/**` (`SettingsScreen` mostra Spotify como
   "Não conectado" estático).
-- **Preferências de notificação continuam só locais** (`NotifPref`/`DEFAULT_NOTIF_PREFS` em
-  `AppState`, memória) — não foi encontrado modelo/endpoint de prefs por categoria no schema.
+- **Preferências de notificação — ✅ reais para 2 de 5 categorias (2026-08-30)**: schema ganhou
+  `User.notifPrefs Json?` (`@map("notif_prefs")`, nullable, migration
+  `prisma/migrations/20260830120000_user_notif_prefs` — aditiva, sem backfill, ausência de
+  preferência = categoria habilitada). Nova rota `GET/PATCH /api/user/notification-prefs`
+  (`getApiUser`) lê/grava `{chart, social}`. `lib/notifications.ts#createNotification` agora
+  checa a preferência do destinatário antes de criar a notificação, via um mapa fixo
+  `TYPE_CATEGORY` (tipo de notificação → categoria).
+  - **Só 2 categorias têm notificação real hoje**: `chart` (tipo `milestone`, streak) e
+    `social` (`like, comment, comment_reply, comment_like, repost, follow,
+    weekly_playlist_comment*, community_join_approved`). "Ranking" e "Conquistas" (categorias
+    que já existiam na UI mobile) **nunca disparam notificação no backend atual** — não existe
+    `Notification` para conquista desbloqueada (só `XpTransaction`) nem para movimento no
+    Global 100. `SettingsScreen.tsx` mostra os 5 toggles, mas "Ranking"/"Eventos"/"Conquistas"
+    ficam visualmente desabilitados com nota "Em breve" — só "Minha parada" e "Comunidade" são
+    reais (`src/api/notificationPrefs.ts`, `NOTIF_ROWS` em `SettingsScreen.tsx`).
+  - `src/data/notifPrefs.ts` (mock local) e o `notifPrefs`/`toggleNotifPref` do `AppState`
+    foram removidos — não têm mais uso.
+  - Tipos sem categoria mapeada (`support_reply`, `support_ticket`, etc.) nunca são suprimidos
+    — comunicação transacional, não engajamento.
+
+### 4.8 Home Hub (nova Home mobile, 2026-08-30) — ✅ completo no código, 🔴 bloqueado por deploy
+
+A Home web (`app/page.tsx`) nunca teve API própria — é 100% renderizada no servidor (RSC),
+consumindo `lib/*` direto com Prisma. Pra existir no mobile, cada seção pessoal virou uma rota
+nova (todas em `getApiUser`, nenhuma existia antes desta fase):
+
+- **`GET /api/home/hub`** (autenticado) — um único GET cobrindo as seções pessoais, pra evitar
+  4 idas e voltas do app:
+  - `weekStatus`: `{streak, daysLeft, paradaNome, primaryParadaId, thisWeekChartId}` — espelha
+    `YourWeekCard`/`app/page.tsx` (o card vermelho de "publique sua parada").
+  - `recap`: `WeeklyRecap` de `lib/weekly-recap.ts#getWeeklyRecap` (não mudou, só passou a ser
+    exposto) — "Sua semana no ChartFM".
+  - `friendCharts`: `lib/home-hub-data.ts#getFriendCharts` — "Charts de quem você segue".
+  - `people`: `lib/home-hub-data.ts#getPeopleToMeet` — "Pessoas para conhecer". **Sem "X% de
+    compatibilidade"** — só `commonGenres.length` (contagem de gêneros em comum); a doc de
+    design menciona percentual, mas não está implementado em lugar nenhum do backend.
+- **`GET /api/home/discovery`** (público, sem `getApiUser`) — `reviews` e `releases`, via
+  `lib/public-home-data.ts#getPublicHomeData` (já cacheada 300s por semana+locale, igual à
+  web). Não é dado por usuário, por isso não exige auth.
+- Mobile: `src/api/homeHub.ts` (`useHomeHubQuery`, `useHomeDiscoveryQuery`), componentes em
+  `src/components/home/*` (`WeekStatusCard`, `WeeklyRecapCard`, `FriendChartsRow`,
+  `PeopleToMeetRow`, `ReviewsRow`, `ReleasesRow`), compostos em `HomeScreen.tsx` sob a aba
+  "Início". Textos de `recapItemLabel()` em `src/api/homeHub.ts` são cópia manual das chaves
+  i18n de `lib/i18n/messages/pages-pt-BR.ts` (`homeHub.recap*`) — **se o texto mudar na web,
+  não propaga sozinho pro mobile.**
+- `HomeScreen.tsx` também ganhou o `hasChart` derivado de `useProfileQuery` (antes vinha de um
+  `AppState.hasChart` local que tinha sido removido, deixando a Home sempre presa na tela de
+  onboarding) e um avatar/notificação real no header (badge do sino só aparece com notificação
+  não lida de verdade).
+
+### 4.9 Feed de posts (2026-08-30) — 🟡 leitura + curtir/repostar completos, comentar sem UI
+
+- **`getTimelineFeed`/`mapChartRow`** (antes função local dentro de `app/page.tsx`) foram
+  **extraídos** para `lib/timeline-feed.ts`, reutilizável — `app/page.tsx` importa de lá agora,
+  comportamento da web não muda (só refatoração, confirmado por typecheck).
+- **`GET /api/feed?tab=for-you|following&cursor=&limit=&locale=`** (autenticado) — mistura
+  `getTimelineFeed` (paradas publicadas) + `getRecommendationsFeed` + `getSystemFeedPosts` +
+  `getEditorialPicksSorted` via `lib/home-mixed-feed.ts#mergeHomeFeed` (já existia, reaproveitado
+  sem alteração). Reviews **não entram** no feed misto — mesma escolha da própria web (tem seção
+  própria, já coberta pela Home Hub acima).
+  - **Paginação é nova, desenhada do zero**: a web nunca paginou o feed (renderiza tudo de uma
+    vez com `take` fixo por fonte). A rota monta um pool de até 200 itens mesclados e pagina
+    dentro dele por `createdAt` (string ISO, cursor = `createdAt` do último item da página).
+    Passar do fim do pool = fim do feed por ora. Se isso incomodar (usuário rolando muito),
+    a alavanca é aumentar `POOL_LIMIT` em `app/api/feed/route.ts`, não reescrever a paginação.
+- **13 rotas de interação migradas de `getServerSession` para `getApiUser`** (nenhuma delas
+  aceitava Bearer JWT antes — qualquer botão de curtir/comentar/repostar do feed mobile daria
+  401 sem isso):
+  `charts/[id]/like`, `charts/[id]/repost`, `charts/[id]/comment` (GET+POST),
+  `charts/[id]/comment/[commentId]` (DELETE), `charts/[id]/comment/[commentId]/like`,
+  `charts/[id]/comment/[commentId]/replies` (GET+POST),
+  `recommendations/[id]/like`, `recommendations/[id]/comments` (GET+POST),
+  `recommendations/[id]/comments/[commentId]/like`,
+  `recommendations/[id]/comments/[commentId]/replies` (GET+POST),
+  `editorial-posts/[slug]/like`, `editorial-posts/[slug]/comment` (GET+POST),
+  `editorial-posts/comments/[commentId]/like`.
+  Troca mecânica igual ao padrão da seção 8 (`getServerSession` → `getApiUser`,
+  `session.user.id` → `apiUser.id`), sem mudança de comportamento pro client web.
+- Mobile: `src/api/feed.ts` (`useFeedQuery` com `useInfiniteQuery`, `useLikeChartMutation`,
+  `useRepostChartMutation`, `useLikeRecommendationMutation`), cards por tipo em
+  `src/components/feed/*` (`ChartFeedCard`, `RecommendationFeedCard`, `SystemFeedCard`,
+  `EditorialFeedCard`), lista com scroll infinito em `FeedList.tsx`. `HomeScreen.tsx` ganhou a
+  aba "Feed" (com sub-abas "Para você"/"Seguindo"), ao lado da aba "Início" da seção 4.8.
+- **Deliberadamente fora do escopo desta fase**: compor/ver comentários e respostas — as rotas
+  já estão migradas e prontas (`GET/POST /api/charts/[id]/comment`, etc.), só falta a tela
+  mobile (lista de comentários + campo de texto + respostas aninhadas). Curtir e repostar
+  paradas funcionam; curtir recomendação funciona; curtir/comentar em post editorial **não tem
+  hook no mobile ainda** (rota migrada, mas `src/api/feed.ts` não expõe mutation pra isso —
+  post editorial no feed mobile é só leitura por ora).
 
 ## 5. Copa (Cup) — mecânica real confirmada
 
@@ -277,14 +427,40 @@ na Fase 4 (ver 4.3).
   de posição"; (3) não existe endpoint de "quem tem essa música no Top 20". Precisa de
   plumbing de navegação + endpoints novos no backend.
 - **DiscoverScreen "Paradas populares" (POPULAR) e "Pessoas com gosto parecido" (PEOPLE)**:
-  ainda mockados. Não foi encontrado endpoint equivalente — precisa investigação dedicada
-  (talvez `/api/communities` ou overlap client-side sobre `/api/charts/[id]/overlap`).
-- **HomeScreen "Atividade"** e o texto "faltam 2 dias · sequência de X" no card de parada:
-  ainda mockados (dependem de um feed de atividade e cálculo de prazo que não foram mapeados).
+  ainda mockados (a tela `Discover`, não a Home). Não foi encontrado endpoint equivalente
+  específico pra essa tela — a Home Hub (seção 4.8) resolve um caso parecido ("Pessoas para
+  conhecer", "Charts de quem você segue") com dado real, mas `DiscoverScreen.tsx` em si não foi
+  tocado nesta fase.
 - **Global100Screen abas Álbuns/Clipes**: confirmado que não existe ranking de Álbuns nem de
   Clipes no `GlobalSnapshot` — a tela mostra "ainda não está disponível" nessas abas.
-- **Avatar**: rota migrada, sem UI (precisa `expo-image-picker`).
 - **Spotify/YouTube connect**: sem equivalente ao fluxo de status do Last.fm investigado.
+- **Comentários do Feed sem UI mobile**: ver seção 4.9 — rotas prontas, falta a tela.
+- **Preferências de notificação "Ranking"/"Eventos"/"Conquistas"**: sem notificação real
+  correspondente no backend hoje — ver seção 4.7.
+- **Achievement thresholds duplicados no mobile**: `src/data/achievements.ts` copia
+  `ACHIEVEMENT_FAMILIES` do backend à mão — ver nota na seção 4.6.
+
+### Resolvidos nesta fase (2026-08-30) — ficam registrados por contexto, não por ação pendente
+- ~~**Global 100 não carrega**~~: não era bug de código — a rota existe e está correta, mas a
+  VPS está com deploy desatualizado (ver aviso no topo da seção 0).
+- ~~**Capas/avatares não aparecem**~~: `Image` do RN não resolvia caminho relativo de avatar
+  de upload direto — corrigido com `resolveMediaUrl()` (seção 4.6).
+- ~~**Listas de álbum/música não rolam**~~: em `DiscoverScreen.tsx`, três fileiras horizontais
+  ("Em alta esta semana", "Paradas populares", "Pessoas com gosto parecido") eram `View` com
+  `flexDirection: row` sem `ScrollView` horizontal ao redor — bug de mobile puro, sem relação
+  com o backend.
+- ~~**Editar parada mockado**~~: não era mock — era o `POST /api/charts` retornando 409 (sem
+  upsert) e o `EditorScreen` nunca tentando `PATCH`. Corrigido na seção 4.2.
+- ~~**Home sempre presa na tela de "criar minha primeira parada"**~~: regressão local — um
+  `AppState.hasChart` tinha sido removido sem atualizar `HomeScreen.tsx`, que ainda o
+  destructurava (virava `undefined`, sempre falsy). Corrigido derivando de
+  `useProfileQuery` (seção 4.8).
+- ~~**Copa dando "Unauthorized"**~~: não havia bug no endpoint de voto em si (já usa
+  `getApiUser`), mas o app não tinha *nenhum* tratamento de 401 expirado — `RootNavigator`
+  não trocava de tela ao deslogar (`initialRouteName` só lido na montagem). Corrigido com
+  `setUnauthorizedHandler()` em `apiClient.ts` (força logout em qualquer 401 autenticado) +
+  `key={isSignedIn ? "signed-in" : "signed-out"}` no `Stack.Navigator` pra remontar e navegar
+  de verdade.
 
 ## 8. Auth compartilhada mobile+web nas rotas (`lib/api-auth.ts`)
 
@@ -305,10 +481,22 @@ por rota: `getServerSession(authOptions); session.user.id` vira `getApiUser(req)
 `/api/push/[roundId]/vote`, `/api/clube/nominations`, `/api/clube/votes`,
 `/api/profile/[handle]`, `/api/profile/[handle]/followers`, `/api/user/follow`,
 `/api/notifications` (GET/PATCH), `/api/lastfm/status`, `/api/lastfm/import`,
-`/api/user/handle`, `/api/user/genres`, `/api/user/avatar` (POST/DELETE).
+`/api/user/handle`, `/api/user/genres`, `/api/user/avatar` (POST/DELETE),
+`/api/user/notification-prefs` (GET/PATCH, rota nova),
+`/api/charts/[id]/like`, `/api/charts/[id]/repost`, `/api/charts/[id]/comment` (GET/POST),
+`/api/charts/[id]/comment/[commentId]` (DELETE),
+`/api/charts/[id]/comment/[commentId]/like`,
+`/api/charts/[id]/comment/[commentId]/replies` (GET/POST),
+`/api/recommendations/[id]/like`, `/api/recommendations/[id]/comments` (GET/POST),
+`/api/recommendations/[id]/comments/[commentId]/like`,
+`/api/recommendations/[id]/comments/[commentId]/replies` (GET/POST),
+`/api/editorial-posts/[slug]/like`, `/api/editorial-posts/[slug]/comment` (GET/POST),
+`/api/editorial-posts/comments/[commentId]/like`.
+Rotas novas que já nasceram em `getApiUser` (nunca usaram `getServerSession`):
+`/api/home/hub`, `/api/home/discovery` (esta não exige auth), `/api/feed`.
 
-**Ainda não migradas**: a maioria das ~200 rotas restantes (comunidades, mensagens diretas,
-editorial, admin, etc.) — migrar sob demanda, só quando uma fase futura precisar delas. Rotas
+**Ainda não migradas**: a maioria das ~185 rotas restantes (comunidades, mensagens diretas,
+admin, etc.) — migrar sob demanda, só quando uma fase futura precisar delas. Rotas
 de leitura pública que já degradam bem sem sessão (`/api/search`, `/api/discover/mystery-track`,
 `/api/recommendations`, `/api/global/leaderboard`, `/api/copa`, `/api/copa/[id]/fixtures`,
 `/api/push`, `/api/clube`) não precisam de migração — funcionam no mobile mesmo sem
@@ -318,8 +506,17 @@ de leitura pública que já degradam bem sem sessão (`/api/search`, `/api/disco
 
 - Confirmar shape exato de resposta de `GET /api/global/top` (Álbuns/Artistas/Clipes existem
   como variação de query em algum lugar não encontrado, ou de fato não existem?).
-- Confirmar se existe endpoint de "atividade"/feed para a HomeScreen, ou se deve vir de
-  `/api/posts` / `/api/editorial-posts`.
+- ~~Confirmar se existe endpoint de "atividade"/feed para a HomeScreen~~ — **respondido nesta
+  fase**: não existia nenhum (a home web é 100% RSC sem API própria); `GET /api/feed` e
+  `GET /api/home/hub`/`GET /api/home/discovery` foram criados pra cobrir isso (seções 4.8/4.9).
 - Confirmar se `Clube do Álbum` deve mesmo virar uma feature geral do app (decisão tomada do
   lado mobile) ou se há alguma regra de acesso do lado do backend que precise ser replicada
   (ex.: `app/criticsfm/**` pode ter algum gate de role que não foi encontrado).
+- Decidir se vale expor os 4 limiares de cada família de conquista em
+  `GET /api/profile/[handle]` pra eliminar a cópia manual em `src/data/achievements.ts`
+  (ver seção 4.6).
+- Confirmar se "Ranking"/"Conquistas" devem ganhar notificação real (`Notification` row) no
+  futuro, ou se ficam permanentemente fora do sistema de preferências por categoria (ver
+  seção 4.7) — hoje a UI mobile mostra os toggles desabilitados esperando essa decisão.
+- Priorizar (ou não) uma tela de comentários pro Feed mobile — as 13 rotas de interação já
+  estão migradas e prontas (seção 4.9), só falta o trabalho de UI.

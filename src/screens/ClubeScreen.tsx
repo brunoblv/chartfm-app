@@ -7,10 +7,11 @@ import { BackHeader } from "../components/BackHeader";
 import { PillButton } from "../components/PillButton";
 import { useClubeQuery, useClubeNominateMutation, useClubeVoteMutation, clubeErrorMessage, CLUBE_PHASE_LABELS, ClubeNomination, ClubeWinner } from "../api/clube";
 import { useSearchQuery, SearchAlbum } from "../api/search";
+import { resolveMediaUrl } from "../lib/api";
 
 function AlbumCover({ url, size = 44 }: { url: string | null; size?: number }) {
   const { colors } = useAppTheme();
-  if (url) return <Image source={{ uri: url }} style={{ width: size, height: size, borderRadius: 10 }} />;
+  if (url) return <Image source={{ uri: resolveMediaUrl(url) }} style={{ width: size, height: size, borderRadius: 10 }} />;
   return <View style={{ width: size, height: size, borderRadius: 10, backgroundColor: colors.fillSubtle }} />;
 }
 

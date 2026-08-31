@@ -6,13 +6,14 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useSearchQuery } from "../api/search";
+import { resolveMediaUrl } from "../lib/api";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 const TABS = ["Músicas", "Artistas", "Pessoas"] as const;
 
 function Avatar({ uri, label, color }: { uri: string | null; label: string; color?: string }) {
-  if (uri) return <Image source={{ uri }} style={{ width: 44, height: 44, borderRadius: 22 }} />;
+  if (uri) return <Image source={{ uri: resolveMediaUrl(uri) }} style={{ width: 44, height: 44, borderRadius: 22 }} />;
   return (
     <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: color ?? "#8BC34A", alignItems: "center", justifyContent: "center" }}>
       <Text style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>{label.charAt(0).toUpperCase()}</Text>
@@ -140,7 +141,7 @@ export function SearchScreen() {
                   style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 12, borderBottomWidth: i === (data?.songs.length ?? 0) - 1 ? 0 : 1, borderBottomColor: colors.dividerSoft }}
                 >
                   {s.coverUrl ? (
-                    <Image source={{ uri: s.coverUrl }} style={{ width: 44, height: 44, borderRadius: 10 }} />
+                    <Image source={{ uri: resolveMediaUrl(s.coverUrl) }} style={{ width: 44, height: 44, borderRadius: 10 }} />
                   ) : (
                     <View style={{ width: 44, height: 44, borderRadius: 10, backgroundColor: colors.fillSubtle }} />
                   )}

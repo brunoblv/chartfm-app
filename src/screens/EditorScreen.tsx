@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, Pressable, Alert } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Text, Pressable, Alert, ActivityIndicator } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
@@ -8,29 +8,73 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { useAppState } from "../state/AppState";
+import { useAuth } from "../state/AuthContext";
 import { Cover } from "../components/Cover";
 import { MovementBadge, MovementStatus } from "../components/MovementBadge";
 import { PillButton } from "../components/PillButton";
 import { ChartSong } from "../data/mock";
 import { RootStackParamList } from "../navigation/RootNavigator";
-import { usePublishChartMutation, publishErrorMessage } from "../api/charts";
+import {
+  usePublishChartMutation,
+  useUpdateChartMutation,
+  existingChartIdFromConflict,
+  publishErrorMessage,
+} from "../api/charts";
+import { useProfileQuery, ProfileChartEntry } from "../api/profile";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
+function entryToChartSong(e: ProfileChartEntry, seed: number): ChartSong {
+  return {
+    t: e.song.title,
+    a: e.song.artist,
+    cover: { palette: ["#1D1D1F", "#5B5B60"], seed, imageUrl: e.song.imageUrl ?? undefined },
+  };
+}
+
 export function EditorScreen() {
   const { colors } = useAppTheme();
-  const { chart, setChart, removeSong, publishChart } = useAppState();
+  const { chart, setChart, removeSong } = useAppState();
+  const { user } = useAuth();
   const navigation = useNavigation<Nav>();
   const publishMutation = usePublishChartMutation();
+  const updateMutation = useUpdateChartMutation();
+  const profileQuery = useProfileQuery(user?.handle);
+  const latestChart = profileQuery.data?.user.charts[0];
+  const prefilledRef = useRef(false);
+
+  useEffect(() => {
+    if (prefilledRef.current) return;
+    if (chart.length > 0) {
+      prefilledRef.current = true;
+      return;
+    }
+    if (latestChart) {
+      prefilledRef.current = true;
+      setChart(latestChart.entries.map(entryToChartSong));
+    }
+  }, [latestChart, chart.length, setChart]);
+
+  const isSaving = publishMutation.isPending || updateMutation.isPending;
 
   const handlePublish = () => {
-    if (publishMutation.isPending) return;
+    if (isSaving) return;
     publishMutation.mutate(chart, {
       onSuccess: () => {
-        publishChart();
         navigation.navigate("Main");
       },
       onError: (error) => {
+        const existingId = existingChartIdFromConflict(error);
+        if (existingId) {
+          updateMutation.mutate(
+            { id: existingId, songs: chart },
+            {
+              onSuccess: () => navigation.navigate("Main"),
+              onError: (updateError) => Alert.alert("Não foi possível publicar", publishErrorMessage(updateError)),
+            }
+          );
+          return;
+        }
         Alert.alert("Não foi possível publicar", publishErrorMessage(error));
       },
     });
@@ -135,7 +179,7 @@ export function EditorScreen() {
         />
 
         <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: 16, backgroundColor: colors.bgTopbar, borderTopWidth: 0.5, borderTopColor: colors.divider }}>
-          <PillButton label="Publicar parada" onPress={handlePublish} loading={publishMutation.isPending} />
+          <PillButton label="Publicar parada" onPress={handlePublish} loading={isSaving} />
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>

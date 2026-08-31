@@ -25,7 +25,13 @@
     },
     "plugins": [
       "expo-web-browser",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O ChartFM usa acesso às suas fotos para você escolher uma foto de perfil."
+        }
+      ]
     ],
     "extra": {
       "eas": {

@@ -9,6 +9,7 @@ import { SongRow } from "../components/SongRow";
 import { OTHER_USER } from "../data/mock";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useProfileQuery, useFollowMutation } from "../api/profile";
+import { resolveMediaUrl } from "../lib/api";
 
 type Route = RouteProp<RootStackParamList, "UserDetail">;
 
@@ -72,7 +73,7 @@ export function UserDetailScreen() {
 
       <View style={{ alignItems: "center", paddingHorizontal: 20, paddingBottom: 20 }}>
         {profile.imageUrl ? (
-          <Image source={{ uri: profile.imageUrl }} style={{ width: 82, height: 82, borderRadius: 41 }} />
+          <Image source={{ uri: resolveMediaUrl(profile.imageUrl) }} style={{ width: 82, height: 82, borderRadius: 41 }} />
         ) : (
           <LinearGradient colors={["#8BC34A", "#CDDC39"]} style={{ width: 82, height: 82, borderRadius: 41, alignItems: "center", justifyContent: "center" }}>
             <Text style={{ color: "#fff", fontWeight: "800", fontSize: 32 }}>{profile.user.name.charAt(0).toUpperCase()}</Text>
@@ -125,7 +126,7 @@ export function UserDetailScreen() {
             >
               <Text style={{ width: 20, fontSize: 13, fontWeight: "800", color: colors.textMuted }}>{e.position}</Text>
               {e.song.imageUrl ? (
-                <Image source={{ uri: e.song.imageUrl }} style={{ width: 36, height: 36, borderRadius: 8 }} />
+                <Image source={{ uri: resolveMediaUrl(e.song.imageUrl) }} style={{ width: 36, height: 36, borderRadius: 8 }} />
               ) : (
                 <View style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: colors.fillSubtle }} />
               )}
@@ -133,6 +134,9 @@ export function UserDetailScreen() {
                 <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "600", color: colors.text }}>{e.song.title}</Text>
                 <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>{e.song.artist}</Text>
               </View>
+              <Text style={{ fontSize: 10.5, color: colors.textDisabled }}>
+                {e.weeks} {e.weeks === 1 ? "sem" : "sems"} · pico #{e.peak}
+              </Text>
             </View>
           ))}
         </View>
