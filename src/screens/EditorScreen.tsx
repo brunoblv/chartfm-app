@@ -36,7 +36,7 @@ function entryToChartSong(e: ProfileChartEntry, seed: number): ChartSong {
 
 export function EditorScreen() {
   const { colors } = useAppTheme();
-  const { chart, setChart, removeSong } = useAppState();
+  const { chart, setChart, removeSong, paradaId, weekDate, spotlights, resetDraft } = useAppState();
   const { user } = useAuth();
   const navigation = useNavigation<Nav>();
   const publishMutation = usePublishChartMutation();
@@ -73,9 +73,10 @@ export function EditorScreen() {
 
   const handlePublish = () => {
     if (isSaving) return;
-    publishMutation.mutate(chart, {
+    const vars = { songs: chart, paradaId, weekDate, spotlights };
+    publishMutation.mutate(vars, {
       onSuccess: () => {
-        setChart([]);
+        resetDraft();
         prefilledRef.current = false;
         navigation.navigate("Main");
       },
@@ -83,10 +84,10 @@ export function EditorScreen() {
         const existingId = existingChartIdFromConflict(error);
         if (existingId) {
           updateMutation.mutate(
-            { id: existingId, songs: chart },
+            { id: existingId, ...vars },
             {
               onSuccess: () => {
-                setChart([]);
+                resetDraft();
                 prefilledRef.current = false;
                 navigation.navigate("Main");
               },
@@ -99,6 +100,11 @@ export function EditorScreen() {
       },
     });
   };
+
+  const spotlightCount = Object.values(spotlights).filter((s) => s != null).length;
+  const periodLabel = weekDate
+    ? new Date(`${weekDate}T00:00:00`).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })
+    : null;
 
   const renderItem = ({ item, drag, isActive, getIndex }: RenderItemParams<ChartSong>) => {
     const index = getIndex() ?? 0;
@@ -144,9 +150,25 @@ export function EditorScreen() {
               {homeHubQuery.data?.weekStatus.paradaNome ?? "Minha parada"}
             </Text>
             <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 1 }}>
-              {latestChart?.weekLabel ?? "Carregando…"} · {chart.length} {chart.length === 1 ? "música" : "músicas"}
+              {periodLabel ?? latestChart?.weekLabel ?? "Carregando…"} · {chart.length} {chart.length === 1 ? "música" : "músicas"}
             </Text>
           </View>
+          <Pressable
+            onPress={() => navigation.navigate("ParadaWeekPicker")}
+            style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: colors.fillInset, alignItems: "center", justifyContent: "center" }}
+          >
+            <Svg width={17} height={17} viewBox="0 0 24 24" fill="none" stroke={colors.text} strokeWidth={2.2} strokeLinecap="round">
+              <Path d="M7 3v3M17 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z" />
+            </Svg>
+          </Pressable>
+          <Pressable
+            onPress={() => navigation.navigate("Lastfm")}
+            style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: colors.fillInset, alignItems: "center", justifyContent: "center" }}
+          >
+            <Svg width={17} height={17} viewBox="0 0 24 24" fill="none" stroke={colors.text} strokeWidth={2.2} strokeLinecap="round">
+              <Path d="M12 3v12M12 15l-4-4M12 15l4-4M4 19h16" />
+            </Svg>
+          </Pressable>
         </View>
 
         <View
@@ -165,6 +187,29 @@ export function EditorScreen() {
             remover.
           </Text>
         </View>
+
+        <Pressable
+          onPress={() => navigation.navigate("Spotlights")}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginHorizontal: 16,
+            marginBottom: 12,
+            paddingVertical: 10,
+            paddingHorizontal: 12,
+            backgroundColor: colors.surface,
+            borderWidth: 1,
+            borderColor: colors.divider,
+            borderRadius: 12,
+          }}
+        >
+          <Text style={{ flex: 1, fontSize: 13, fontWeight: "700", color: colors.text }}>
+            Destaques {spotlightCount > 0 ? `(${spotlightCount})` : "(opcional)"}
+          </Text>
+          <Svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke={colors.textMuted} strokeWidth={2.2} strokeLinecap="round">
+            <Path d="M9 18l6-6-6-6" />
+          </Svg>
+        </Pressable>
 
         {isLoadingChart ? (
           <ActivityIndicator color={colors.text} style={{ marginTop: 30 }} />

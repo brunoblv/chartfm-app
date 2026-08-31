@@ -30,6 +30,11 @@ import { PushSubmitScreen } from "../screens/PushSubmitScreen";
 import { PushRankScreen } from "../screens/PushRankScreen";
 import { ClubeScreen } from "../screens/ClubeScreen";
 import { EditProfileScreen } from "../screens/EditProfileScreen";
+import { RecommendSongScreen } from "../screens/RecommendSongScreen";
+import { WriteReviewScreen } from "../screens/WriteReviewScreen";
+import { ChartDetailScreen } from "../screens/ChartDetailScreen";
+import { SpotlightsScreen } from "../screens/SpotlightsScreen";
+import { ParadaWeekPickerSheet } from "../components/ParadaWeekPickerSheet";
 
 export type RootStackParamList = {
   Onboarding: undefined;
@@ -53,6 +58,11 @@ export type RootStackParamList = {
   PushRank: undefined;
   Clube: undefined;
   EditProfile: undefined;
+  RecommendSong: undefined;
+  WriteReview: { albumId?: number; title?: string; artist?: string; coverUrl?: string | null } | undefined;
+  ChartDetail: { chartId: string };
+  Spotlights: undefined;
+  ParadaWeekPicker: undefined;
 };
 
 export type MainTabParamList = {
@@ -131,6 +141,8 @@ export function RootNavigator() {
         <Stack.Screen name="PushRank" component={PushRankScreen} />
         <Stack.Screen name="Clube" component={ClubeScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="ChartDetail" component={ChartDetailScreen} />
+        <Stack.Screen name="Spotlights" component={SpotlightsScreen} />
         <Stack.Screen
           name="CreateSheet"
           component={CreateSheetScreen}
@@ -139,6 +151,21 @@ export function RootNavigator() {
         <Stack.Screen
           name="AddSong"
           component={AddSongScreen}
+          options={{ presentation: "transparentModal", animation: "fade" }}
+        />
+        <Stack.Screen
+          name="RecommendSong"
+          component={RecommendSongScreen}
+          options={{ presentation: "transparentModal", animation: "fade" }}
+        />
+        <Stack.Screen
+          name="WriteReview"
+          component={WriteReviewScreen}
+          options={{ presentation: "transparentModal", animation: "fade" }}
+        />
+        <Stack.Screen
+          name="ParadaWeekPicker"
+          component={ParadaWeekPickerSheet}
           options={{ presentation: "transparentModal", animation: "fade" }}
         />
       </Stack.Navigator>

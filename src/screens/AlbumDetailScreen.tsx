@@ -51,7 +51,23 @@ export function AlbumDetailScreen() {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: 40 }}>
-      <BackHeader />
+      <BackHeader
+        action={
+          <Pressable
+            onPress={() =>
+              navigation.navigate("WriteReview", {
+                albumId: album.albumId,
+                title: album.title,
+                artist: album.artist,
+                coverUrl: album.coverUrl,
+              })
+            }
+            style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 100, backgroundColor: colors.accentTint }}
+          >
+            <Text style={{ fontSize: 13, fontWeight: "700", color: colors.accent }}>Avaliar</Text>
+          </Pressable>
+        }
+      />
 
       <View style={{ alignItems: "center", paddingHorizontal: 20, paddingTop: 8, paddingBottom: 18 }}>
         {album.coverUrl ? (

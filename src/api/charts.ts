@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiError, apiRequest } from "../lib/apiClient";
 import type { ChartSong } from "../data/mock";
+import type { SpotlightCategory, SpotlightDraft } from "../state/AppState";
 
 interface PublishEntry {
   title: string;
@@ -26,13 +27,41 @@ function toPublishEntry(song: ChartSong): PublishEntry {
   };
 }
 
+/** `undefined` (destaque nunca tocado) vira chave ausente no JSON — o PATCH do backend só apaga o que veio no corpo. */
+function toSpotlightEntry(song: SpotlightDraft): PublishEntry | null | undefined {
+  if (song === undefined) return undefined;
+  if (song === null) return null;
+  return { title: song.title, artist: song.artist, spotifyId: song.spotifyId ?? null, songId: song.songId ?? null };
+}
+
+interface PublishVars {
+  songs: ChartSong[];
+  paradaId?: string | null;
+  weekDate?: string | null;
+  spotlights?: Partial<Record<SpotlightCategory, SpotlightDraft>>;
+}
+
+function buildChartBody(vars: PublishVars) {
+  const s = vars.spotlights ?? {};
+  return {
+    entries: vars.songs.map(toPublishEntry),
+    ...(vars.paradaId ? { paradaId: vars.paradaId } : {}),
+    ...(vars.weekDate ? { weekDate: vars.weekDate } : {}),
+    flashback: toSpotlightEntry(s.flashback),
+    destaque: toSpotlightEntry(s.destaque),
+    nacional: toSpotlightEntry(s.nacional),
+    push: toSpotlightEntry(s.push),
+    radar: toSpotlightEntry(s.radar),
+  };
+}
+
 export function usePublishChartMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (songs: ChartSong[]) =>
+    mutationFn: (vars: PublishVars) =>
       apiRequest<PublishChartResponse>("/api/charts", {
         method: "POST",
-        body: { entries: songs.map(toPublishEntry) },
+        body: buildChartBody(vars),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["global"] });
@@ -49,10 +78,10 @@ export function usePublishChartMutation() {
 export function useUpdateChartMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (vars: { id: string; songs: ChartSong[] }) =>
+    mutationFn: (vars: { id: string } & PublishVars) =>
       apiRequest<{ ok: true }>(`/api/charts/${vars.id}`, {
         method: "PATCH",
-        body: { entries: vars.songs.map(toPublishEntry) },
+        body: buildChartBody(vars),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["global"] });

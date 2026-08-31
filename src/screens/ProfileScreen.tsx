@@ -74,14 +74,17 @@ export function ProfileScreen() {
 
           {latestChart ? (
             <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
-              <View style={{ flexDirection: "row", alignItems: "baseline", gap: 8, padding: 14, paddingBottom: 10 }}>
+              <Pressable
+                onPress={() => navigation.navigate("ChartDetail", { chartId: latestChart.id })}
+                style={{ flexDirection: "row", alignItems: "baseline", gap: 8, padding: 14, paddingBottom: 10 }}
+              >
                 <Text style={{ flex: 1, fontSize: 11, fontWeight: "700", letterSpacing: 1, textTransform: "uppercase", color: colors.textMuted }}>
                   {latestChart.weekLabel}
                 </Text>
                 <Pressable onPress={() => navigation.navigate("Editor")}>
                   <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Editar</Text>
                 </Pressable>
-              </View>
+              </Pressable>
               {latestChart.entries.slice(0, 10).map((e, i) => (
                 <View
                   key={`${e.position}-${e.song.title}`}
