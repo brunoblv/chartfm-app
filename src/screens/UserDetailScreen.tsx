@@ -2,19 +2,41 @@ import React from "react";
 import { View, Text, Pressable, ActivityIndicator, Image, Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { BackHeader } from "../components/BackHeader";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { SongRow } from "../components/SongRow";
+import { ChartTable, ChartTableEntry } from "../components/ChartTable";
 import { OTHER_USER } from "../data/mock";
 import { RootStackParamList } from "../navigation/RootNavigator";
-import { useProfileQuery, useFollowMutation } from "../api/profile";
+import { useProfileQuery, useFollowMutation, ProfileChartEntry } from "../api/profile";
 import { resolveMediaUrl } from "../lib/api";
 
 type Route = RouteProp<RootStackParamList, "UserDetail">;
+type Nav = NativeStackNavigationProp<RootStackParamList>;
+
+function toChartTableEntry(e: ProfileChartEntry, navigation: Nav): ChartTableEntry {
+  return {
+    key: `${e.position}-${e.song.id}`,
+    position: e.position,
+    meta: `${e.weeks} ${e.weeks === 1 ? "sem" : "sems"} · pico #${e.peak}`,
+    song: {
+      t: e.song.title,
+      a: e.song.artist,
+      mv: e.status,
+      d: e.delta ?? undefined,
+      cover: { palette: ["#1D1D1F", "#5B5B60"], seed: e.position, imageUrl: e.song.imageUrl ?? undefined },
+      songId: e.song.id,
+      spotifyId: e.song.spotifyId ?? null,
+    },
+    onPress: () => navigation.navigate("MusicDetail", { songId: e.song.id, spotifyId: e.song.spotifyId ?? undefined }),
+  };
+}
 
 export function UserDetailScreen() {
   const { colors } = useAppTheme();
+  const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const handle = route.params?.handle;
   const profileQuery = useProfileQuery(handle);
@@ -115,31 +137,12 @@ export function UserDetailScreen() {
       </View>
 
       {latestChart ? (
-        <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
-          <Text style={{ fontSize: 11, fontWeight: "700", letterSpacing: 1, textTransform: "uppercase", color: colors.textMuted, padding: 14, paddingBottom: 10 }}>
+        <>
+          <Text style={{ fontSize: 11, fontWeight: "700", letterSpacing: 1, textTransform: "uppercase", color: colors.textMuted, paddingHorizontal: 20, marginBottom: 10 }}>
             {latestChart.weekLabel}
           </Text>
-          {latestChart.entries.slice(0, 20).map((e, i) => (
-            <View
-              key={`${e.position}-${e.song.title}`}
-              style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 9, paddingHorizontal: 14, borderBottomWidth: i === Math.min(latestChart.entries.length, 20) - 1 ? 0 : 1, borderBottomColor: colors.dividerSoft }}
-            >
-              <Text style={{ width: 20, fontSize: 13, fontWeight: "800", color: colors.textMuted }}>{e.position}</Text>
-              {e.song.imageUrl ? (
-                <Image source={{ uri: resolveMediaUrl(e.song.imageUrl) }} style={{ width: 36, height: 36, borderRadius: 8 }} />
-              ) : (
-                <View style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: colors.fillSubtle }} />
-              )}
-              <View style={{ flex: 1, minWidth: 0 }}>
-                <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "600", color: colors.text }}>{e.song.title}</Text>
-                <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>{e.song.artist}</Text>
-              </View>
-              <Text style={{ fontSize: 10.5, color: colors.textDisabled }}>
-                {e.weeks} {e.weeks === 1 ? "sem" : "sems"} · pico #{e.peak}
-              </Text>
-            </View>
-          ))}
-        </View>
+          <ChartTable entries={latestChart.entries.slice(0, 20).map((e) => toChartTableEntry(e, navigation))} />
+        </>
       ) : (
         <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 20 }}>Sem parada publicada.</Text>
       )}

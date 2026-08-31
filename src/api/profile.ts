@@ -2,9 +2,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "../lib/apiClient";
 
 export interface ProfileSong {
+  id: string;
   title: string;
   artist: string;
   imageUrl?: string | null;
+  spotifyId?: string | null;
 }
 
 export interface ProfileChartEntry {

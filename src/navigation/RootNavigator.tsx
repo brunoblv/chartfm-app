@@ -21,6 +21,7 @@ import { LastfmScreen } from "../screens/LastfmScreen";
 import { Global100Screen } from "../screens/Global100Screen";
 import { SearchScreen } from "../screens/SearchScreen";
 import { MusicDetailScreen } from "../screens/MusicDetailScreen";
+import { AlbumDetailScreen } from "../screens/AlbumDetailScreen";
 import { UserDetailScreen } from "../screens/UserDetailScreen";
 import { NotificationsScreen } from "../screens/NotificationsScreen";
 import { SettingsScreen } from "../screens/SettingsScreen";
@@ -41,7 +42,8 @@ export type RootStackParamList = {
   Lastfm: undefined;
   Global100: undefined;
   Search: undefined;
-  MusicDetail: undefined;
+  MusicDetail: { songId?: string; spotifyId?: string } | undefined;
+  AlbumDetail: { albumId?: number };
   UserDetail: { handle: string } | undefined;
   Notifications: undefined;
   Settings: undefined;
@@ -118,6 +120,7 @@ export function RootNavigator() {
         <Stack.Screen name="Global100" component={Global100Screen} />
         <Stack.Screen name="Search" component={SearchScreen} />
         <Stack.Screen name="MusicDetail" component={MusicDetailScreen} />
+        <Stack.Screen name="AlbumDetail" component={AlbumDetailScreen} />
         <Stack.Screen name="UserDetail" component={UserDetailScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />

@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import { View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import Svg, { Circle, Line, Path } from "react-native-svg";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { BackHeader } from "../components/BackHeader";
 import { SongRow } from "../components/SongRow";
 import { useGlobalArtistsQuery, useGlobalSongsQuery, songItemToGlobalSong } from "../api/global";
+import { RootStackParamList } from "../navigation/RootNavigator";
+
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 const TABS = [
   { id: "songs", label: "Músicas" },
@@ -26,6 +31,7 @@ function ComingSoon({ label }: { label: string }) {
 
 export function Global100Screen() {
   const { colors } = useAppTheme();
+  const navigation = useNavigation<Nav>();
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("songs");
   const [week, setWeek] = useState<number | undefined>(undefined);
 
@@ -119,15 +125,19 @@ export function Global100Screen() {
                   last={i === (artistsQuery.data?.items.length ?? 0) - 1}
                 />
               ))
-            : songsQuery.data?.items.map((s, i) => (
-                <SongRow
-                  key={`${s.position}-${s.title}`}
-                  song={songItemToGlobalSong(s, i)}
-                  position={s.position}
-                  meta={songItemToGlobalSong(s, i).meta}
-                  last={i === (songsQuery.data?.items.length ?? 0) - 1}
-                />
-              ))}
+            : songsQuery.data?.items.map((s, i) => {
+                const song = songItemToGlobalSong(s, i);
+                return (
+                  <SongRow
+                    key={`${s.position}-${s.title}`}
+                    song={song}
+                    position={s.position}
+                    meta={song.meta}
+                    last={i === (songsQuery.data?.items.length ?? 0) - 1}
+                    onPress={song.songId ? () => navigation.navigate("MusicDetail", { songId: song.songId!, spotifyId: song.spotifyId ?? undefined }) : undefined}
+                  />
+                );
+              })}
         </View>
       )}
     </ScrollView>

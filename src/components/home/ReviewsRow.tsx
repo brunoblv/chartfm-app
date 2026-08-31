@@ -1,27 +1,26 @@
 import React from "react";
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../../theme/ThemeProvider";
 import { HomeReview } from "../../api/homeHub";
 import { resolveMediaUrl } from "../../lib/api";
+import { ScoreSquare } from "../ScoreSquare";
+import { RootStackParamList } from "../../navigation/RootNavigator";
 
-function StarRating({ rating, color }: { rating: number; color: string }) {
-  return (
-    <Text style={{ fontSize: 11, color, letterSpacing: 1 }}>
-      {"★".repeat(Math.round(rating))}
-      {"☆".repeat(5 - Math.round(rating))}
-    </Text>
-  );
-}
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export function ReviewsRow({ reviews }: { reviews: HomeReview[] }) {
   const { colors } = useAppTheme();
+  const navigation = useNavigation<Nav>();
   if (reviews.length === 0) return null;
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
       {reviews.map((r) => (
-        <View
+        <Pressable
           key={r.id}
+          onPress={() => navigation.navigate("AlbumDetail", { albumId: r.albumId })}
           style={{
             width: 240,
             backgroundColor: colors.surface,
@@ -44,7 +43,9 @@ export function ReviewsRow({ reviews }: { reviews: HomeReview[] }) {
               <Text numberOfLines={1} style={{ fontSize: 11, color: colors.textMuted }}>
                 {r.artistName}
               </Text>
-              <StarRating rating={r.rating} color={colors.accent} />
+              <View style={{ marginTop: 4 }}>
+                <ScoreSquare score={r.rating} size={26} />
+              </View>
             </View>
           </View>
           <Text numberOfLines={4} style={{ fontSize: 12, lineHeight: 17, color: colors.textSubtle, marginTop: 10 }}>
@@ -60,7 +61,7 @@ export function ReviewsRow({ reviews }: { reviews: HomeReview[] }) {
               {r.authorName} · {r.helpful} acharam útil
             </Text>
           </View>
-        </View>
+        </Pressable>
       ))}
     </ScrollView>
   );

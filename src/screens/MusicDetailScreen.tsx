@@ -1,43 +1,85 @@
 import React from "react";
-import { View, Text, Pressable, ScrollView } from "react-native";
-import Svg, { Path, Polyline } from "react-native-svg";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, Pressable, ScrollView, Image, ActivityIndicator } from "react-native";
+import Svg, { Path } from "react-native-svg";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { BackHeader } from "../components/BackHeader";
-import { Cover } from "../components/Cover";
-import { PositionNumber } from "../components/PositionNumber";
-import { MovementBadge, MovementStatus } from "../components/MovementBadge";
-import { PEOPLE, TRACK_DETAIL } from "../data/mock";
+import { ScoreSquare } from "../components/ScoreSquare";
+import { resolveMediaUrl } from "../lib/api";
+import { useSongQuery } from "../api/song";
 import { RootStackParamList } from "../navigation/RootNavigator";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
+type Route = RouteProp<RootStackParamList, "MusicDetail">;
 
 export function MusicDetailScreen() {
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
+  const route = useRoute<Route>();
+  const songId = route.params?.songId;
+  const songQuery = useSongQuery(songId);
+  const song = songQuery.data;
+
+  if (!songId) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+        <BackHeader />
+        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>Música não encontrada.</Text>
+      </View>
+    );
+  }
+
+  if (songQuery.isLoading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+        <BackHeader />
+        <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
+      </View>
+    );
+  }
+
+  if (!song) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+        <BackHeader />
+        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
+          Não foi possível carregar essa música.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: 40 }}>
-      <BackHeader
-        action={
-          <Svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke={colors.textMuted} strokeWidth={1.8} strokeLinecap="round">
-            <Path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14" />
-          </Svg>
-        }
-      />
+      <BackHeader />
 
       <View style={{ alignItems: "center", paddingHorizontal: 20, paddingTop: 8, paddingBottom: 18 }}>
-        <Cover cover={TRACK_DETAIL.cover} size={176} rounded={20} />
+        {song.coverUrl ? (
+          <Image source={{ uri: resolveMediaUrl(song.coverUrl) }} style={{ width: 176, height: 176, borderRadius: 20 }} />
+        ) : (
+          <View style={{ width: 176, height: 176, borderRadius: 20, backgroundColor: colors.fillSubtle }} />
+        )}
         <Text style={{ fontSize: 23, fontWeight: "800", letterSpacing: -0.5, color: colors.text, marginTop: 18, textAlign: "center" }}>
-          {TRACK_DETAIL.t}
+          {song.title}
         </Text>
-        <Text style={{ fontSize: 15, color: colors.textMuted, marginTop: 4 }}>{TRACK_DETAIL.a}</Text>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 12 }}>
-          <PositionNumber n={TRACK_DETAIL.p} size={22} />
-          {TRACK_DETAIL.mv && <MovementBadge status={TRACK_DETAIL.mv as MovementStatus} delta={TRACK_DETAIL.d} />}
-          <Text style={{ fontSize: 12.5, color: colors.textMuted }}>· Global 100</Text>
-        </View>
+        <Text style={{ fontSize: 15, color: colors.textMuted, marginTop: 4 }}>{song.artist}</Text>
+        {song.albumTitle ? (
+          <Pressable
+            disabled={song.albumId == null}
+            onPress={() => song.albumId != null && navigation.navigate("AlbumDetail", { albumId: song.albumId })}
+          >
+            <Text style={{ fontSize: 13, color: colors.accent, marginTop: 2 }}>{song.albumTitle}</Text>
+          </Pressable>
+        ) : null}
+        {song.globalStats.weeks > 0 ? (
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 12 }}>
+            <Text style={{ fontSize: 12.5, color: colors.textMuted }}>
+              {song.globalStats.weeks} {song.globalStats.weeks === 1 ? "semana" : "semanas"} no Global 100 · pico #{song.globalStats.peak}
+              {song.globalStats.numberOnes > 0 ? ` · ${song.globalStats.numberOnes}x #1` : ""}
+            </Text>
+          </View>
+        ) : null}
       </View>
 
       <View style={{ flexDirection: "row", gap: 10, paddingHorizontal: 16 }}>
@@ -52,42 +94,34 @@ export function MusicDetailScreen() {
         </View>
       </View>
 
-      <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, paddingHorizontal: 20, paddingTop: 28, paddingBottom: 12 }}>
-        Trajetória no Global 100
-      </Text>
-      <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 18 }}>
-        <Svg width="100%" height={64} viewBox="0 0 300 64" preserveAspectRatio="none">
-          <Polyline
-            points="0,44 40,30 80,36 120,14 160,20 200,6 240,12 300,4"
-            fill="none"
-            stroke={colors.accent}
-            strokeWidth={2.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </Svg>
-        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 8 }}>
-          <Text style={{ fontSize: 11, color: colors.textMuted }}>12 semanas atrás</Text>
-          <Text style={{ fontSize: 11, color: colors.textMuted }}>pico #1</Text>
-          <Text style={{ fontSize: 11, color: colors.textMuted }}>hoje</Text>
+      {song.albumScore ? (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginHorizontal: 16, marginTop: 26, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 16 }}>
+          <ScoreSquare score={song.albumScore.score} size={40} />
+          <Text style={{ flex: 1, fontSize: 13, color: colors.textSubtle }}>
+            Nota do álbum na crítica, com base em {song.albumScore.reviewCount}{" "}
+            {song.albumScore.reviewCount === 1 ? "review" : "reviews"}.
+          </Text>
         </View>
-      </View>
+      ) : null}
 
-      <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, paddingHorizontal: 20, paddingTop: 26, paddingBottom: 12 }}>
-        Quem tem no Top 20
-      </Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingHorizontal: 16 }}>
-        {PEOPLE.map((u) => (
-          <Pressable key={u.handle} onPress={() => navigation.navigate("UserDetail")} style={{ width: 112, alignItems: "center" }}>
-            <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: u.avatar[0], alignItems: "center", justifyContent: "center" }}>
-              <Text style={{ color: "#fff", fontWeight: "800", fontSize: 18 }}>{u.initial}</Text>
+      {song.editorialNote ? (
+        <View style={{ marginHorizontal: 16, marginTop: 26 }}>
+          <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, marginBottom: 10 }}>
+            Contexto
+          </Text>
+          <Text style={{ fontSize: 14, lineHeight: 21, color: colors.textSubtle }}>{song.editorialNote}</Text>
+        </View>
+      ) : null}
+
+      {song.genres.length > 0 ? (
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginHorizontal: 16, marginTop: 20 }}>
+          {song.genres.map((g) => (
+            <View key={g} style={{ backgroundColor: colors.fillSubtle, borderRadius: 100, paddingVertical: 6, paddingHorizontal: 12 }}>
+              <Text style={{ fontSize: 12, fontWeight: "600", color: colors.text }}>{g}</Text>
             </View>
-            <Text numberOfLines={1} style={{ fontSize: 12.5, fontWeight: "700", color: colors.text, marginTop: 8 }}>
-              {u.handle}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
+          ))}
+        </View>
+      ) : null}
     </ScrollView>
   );
 }

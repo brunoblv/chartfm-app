@@ -50,7 +50,7 @@ export function DiscoverScreen() {
       ) : (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
           {trending.map((c) => (
-            <View key={c.key} style={{ width: 150 }}>
+            <Pressable key={c.key} onPress={() => navigation.navigate("MusicDetail", { songId: c.songId })} style={{ width: 150 }}>
               <Cover cover={c.cover} size={150} rounded={14} />
               <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "600", color: colors.text, marginTop: 8 }}>
                 {c.t}
@@ -58,7 +58,7 @@ export function DiscoverScreen() {
               <Text numberOfLines={1} style={{ fontSize: 12, color: colors.textMuted }}>
                 {c.a}
               </Text>
-            </View>
+            </Pressable>
           ))}
           {trending.length === 0 && (
             <Text style={{ fontSize: 13, color: colors.textMuted, paddingVertical: 8 }}>Nada em alta no momento.</Text>
@@ -102,7 +102,12 @@ export function DiscoverScreen() {
       <SectionHeader title="Subindo rápido" />
       <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden", marginHorizontal: 16 }}>
         {climbing.map((s, i) => (
-          <SongRow key={s.t} song={s} last={i === climbing.length - 1} onPress={() => navigation.navigate("MusicDetail")} />
+          <SongRow
+            key={s.t}
+            song={s}
+            last={i === climbing.length - 1}
+            onPress={s.songId ? () => navigation.navigate("MusicDetail", { songId: s.songId!, spotifyId: s.spotifyId ?? undefined }) : undefined}
+          />
         ))}
       </View>
 

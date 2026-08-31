@@ -137,7 +137,7 @@ export function SearchScreen() {
               {(data?.songs ?? []).map((s, i) => (
                 <Pressable
                   key={s.id}
-                  onPress={() => navigation.navigate("MusicDetail")}
+                  onPress={() => navigation.navigate("MusicDetail", { songId: s.id, spotifyId: s.spotifyId ?? undefined })}
                   style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 12, borderBottomWidth: i === (data?.songs.length ?? 0) - 1 ? 0 : 1, borderBottomColor: colors.dividerSoft }}
                 >
                   {s.coverUrl ? (

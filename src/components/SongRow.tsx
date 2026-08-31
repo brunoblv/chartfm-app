@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, ViewStyle } from "react-native";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { Cover } from "./Cover";
 import { PositionNumber } from "./PositionNumber";
@@ -13,6 +13,8 @@ export function SongRow({
   compact,
   last,
   onPress,
+  accessory,
+  style,
 }: {
   song: ChartSong;
   position?: number;
@@ -20,21 +22,28 @@ export function SongRow({
   compact?: boolean;
   last?: boolean;
   onPress?: () => void;
+  /** Conteúdo extra à direita (ex.: botões de remover/arrastar do editor). */
+  accessory?: React.ReactNode;
+  /** Sobrescreve estilo do container (ex.: destaque durante drag no editor). */
+  style?: ViewStyle;
 }) {
   const { colors } = useAppTheme();
   const Wrapper = onPress ? Pressable : View;
   return (
     <Wrapper
       onPress={onPress}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 12,
-        paddingVertical: 11,
-        paddingHorizontal: 14,
-        borderBottomWidth: last ? 0 : 1,
-        borderBottomColor: colors.dividerSoft,
-      }}
+      style={[
+        {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 12,
+          paddingVertical: 11,
+          paddingHorizontal: 14,
+          borderBottomWidth: last ? 0 : 1,
+          borderBottomColor: colors.dividerSoft,
+        },
+        style,
+      ]}
     >
       {position != null && <PositionNumber n={position} size={20} />}
       <Cover cover={song.cover} size={44} />
@@ -50,6 +59,7 @@ export function SongRow({
         ) : null}
       </View>
       {song.mv ? <MovementBadge status={song.mv as MovementStatus} delta={song.d} compact={compact} /> : null}
+      {accessory}
     </Wrapper>
   );
 }

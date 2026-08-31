@@ -16,6 +16,7 @@ export interface TrendingCard {
   a: string;
   why: string;
   cover: CoverArt;
+  songId: string;
 }
 
 function toTrendingCard(item: RecommendationItem, index: number): TrendingCard | null {
@@ -26,6 +27,7 @@ function toTrendingCard(item: RecommendationItem, index: number): TrendingCard |
     a: item.song.artist,
     why: `${item.user.name} recomendou`,
     cover: { palette: ["#1D1D1F", "#5B5B60"], seed: index, imageUrl: item.song.coverUrl ?? undefined },
+    songId: item.song.id,
   };
 }
 

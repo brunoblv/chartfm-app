@@ -67,6 +67,8 @@ export function songItemToGlobalSong(item: SongItem, index: number): GlobalSong 
     cover: coverFromUrl(item.coverUrl, index),
     p: item.position,
     meta: metaFor(item.peak, item.weeks),
+    songId: item.id ?? undefined,
+    spotifyId: item.spotifyId,
   };
 }
 

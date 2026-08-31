@@ -126,7 +126,7 @@ function InicioTab() {
           <SectionHeader title="Em alta para você" />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
             {recommendationsQuery.cards.map((c) => (
-              <View key={c.key} style={{ width: 132 }}>
+              <Pressable key={c.key} onPress={() => navigation.navigate("MusicDetail", { songId: c.songId })} style={{ width: 132 }}>
                 <Cover cover={c.cover} size={132} rounded={14} />
                 <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "600", color: colors.text, marginTop: 8 }}>
                   {c.t}
@@ -135,7 +135,7 @@ function InicioTab() {
                   {c.a}
                 </Text>
                 <Text style={{ fontSize: 11, color: colors.accent, fontWeight: "600", marginTop: 4 }}>{c.why}</Text>
-              </View>
+              </Pressable>
             ))}
           </ScrollView>
         </>
@@ -144,7 +144,13 @@ function InicioTab() {
       <SectionHeader title="Global 100" action="Ver os 100" onAction={() => navigation.navigate("Global100")} />
       <Card>
         {globalTop3.map((s, i) => (
-          <SongRow key={s.t} song={s} position={s.p} last={i === globalTop3.length - 1} />
+          <SongRow
+            key={s.t}
+            song={s}
+            position={s.p}
+            last={i === globalTop3.length - 1}
+            onPress={s.songId ? () => navigation.navigate("MusicDetail", { songId: s.songId!, spotifyId: s.spotifyId ?? undefined }) : undefined}
+          />
         ))}
       </Card>
 
