@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, ScrollView, Image, Pressable } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -6,6 +6,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { BackHeader } from "../components/BackHeader";
 import { ScoreSquare } from "../components/ScoreSquare";
 import { resolveMediaUrl } from "../lib/api";
+import { useToggleReviewHelpfulMutation } from "../api/album";
 import { RootStackParamList } from "../navigation/RootNavigator";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -16,6 +17,15 @@ export function ReviewDetailScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const r = route.params.review;
+  const helpfulMutation = useToggleReviewHelpfulMutation(r.albumId);
+  const [helpful, setHelpful] = useState(r.helpful);
+  const [marked, setMarked] = useState(false);
+
+  const handleHelpful = () => {
+    setHelpful((h) => (marked ? h - 1 : h + 1));
+    setMarked((m) => !m);
+    helpfulMutation.mutate(r.id);
+  };
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: 40 }}>
@@ -51,13 +61,21 @@ export function ReviewDetailScreen() {
           <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: "700", color: colors.text }}>
             {r.authorName}
           </Text>
-          <Text style={{ fontSize: 12, color: colors.textMuted }}>{r.helpful} acharam útil</Text>
         </View>
       </View>
 
       <Text style={{ fontSize: 15, lineHeight: 22, color: colors.text, marginHorizontal: 16, marginTop: 16 }}>
         {r.body}
       </Text>
+
+      <Pressable
+        onPress={handleHelpful}
+        style={{ flexDirection: "row", alignItems: "center", gap: 6, marginHorizontal: 16, marginTop: 16 }}
+      >
+        <Text style={{ fontSize: 12.5, color: marked ? colors.accent : colors.textMuted, fontWeight: "700" }}>
+          👍 {helpful} {helpful === 1 ? "achou útil" : "acharam útil"}
+        </Text>
+      </Pressable>
     </ScrollView>
   );
 }

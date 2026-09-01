@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from "react";
-import { View, Text, Pressable, ActivityIndicator, Alert } from "react-native";
+import { View, Text, Pressable, Image, ActivityIndicator, Alert } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { PillButton } from "../components/PillButton";
+import { resolveMediaUrl } from "../lib/api";
 import { useCopaQuery, useCopaFixturesQuery, useCopaVoteMutation, copaErrorMessage, CopaArtistInfo, CopaFixture } from "../api/copa";
 
 const PHASE_LABELS: Record<string, string> = {
@@ -18,6 +19,14 @@ const PHASE_LABELS: Record<string, string> = {
 };
 
 function ArtistArt({ artist, size }: { artist: CopaArtistInfo; size: number }) {
+  if (artist.artistImage) {
+    return (
+      <Image
+        source={{ uri: resolveMediaUrl(artist.artistImage) }}
+        style={{ width: size, height: size, borderRadius: size * 0.16 }}
+      />
+    );
+  }
   return (
     <View
       style={{

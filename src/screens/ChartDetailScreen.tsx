@@ -104,7 +104,7 @@ export function ChartDetailScreen() {
                     {e.song.artist}
                   </Text>
                 </View>
-                <Text style={{ fontSize: 10.5, color: colors.textDisabled, marginRight: 2 }}>
+                <Text style={{ fontSize: 10.5, color: colors.textMuted, marginRight: 2 }}>
                   {e.weeks} {e.weeks === 1 ? "sem" : "sems"} · pico #{e.peak}
                 </Text>
                 <MovementBadge status={e.status as MovementStatus} delta={e.delta ?? undefined} compact />

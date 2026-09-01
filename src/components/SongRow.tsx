@@ -55,7 +55,7 @@ export function SongRow({
           {song.a}
         </Text>
         {meta ? (
-          <Text style={{ fontSize: 10.5, color: colors.textDisabled, marginTop: 3 }}>{meta}</Text>
+          <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 3 }}>{meta}</Text>
         ) : null}
       </View>
       {song.mv ? <MovementBadge status={song.mv as MovementStatus} delta={song.d} compact={compact} /> : null}

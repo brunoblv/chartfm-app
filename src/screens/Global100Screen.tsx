@@ -61,11 +61,8 @@ export function Global100Screen() {
             <Text style={{ fontSize: 32, fontWeight: "800", letterSpacing: -0.7, color: "#fff", marginTop: 4 }}>Global 100</Text>
           </View>
         </View>
-        <Text style={{ fontSize: 13, lineHeight: 20, color: "rgba(255,255,255,0.8)", marginTop: 14, marginBottom: 12 }}>
-          Sua parada vale pontos: a #1 de cada usuário soma 100 e a #20 soma 1.
-        </Text>
         {header ? (
-          <View style={{ flexDirection: "row", gap: 16 }}>
+          <View style={{ flexDirection: "row", gap: 16, marginTop: 16 }}>
             <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{header.dateRange}</Text>
             <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>·</Text>
             <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{header.items.length} {tab === "artists" ? "artistas" : "músicas"}</Text>

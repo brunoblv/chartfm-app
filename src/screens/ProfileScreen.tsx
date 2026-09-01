@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable, ScrollView, ActivityIndicator, Image } from "react-native";
+import { View, Text, Pressable, ActivityIndicator, Image, Linking } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
@@ -8,11 +8,12 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { useAppState } from "../state/AppState";
 import { useAuth } from "../state/AuthContext";
 import { Screen } from "../components/Screen";
-import { MovementBadge, MovementStatus } from "../components/MovementBadge";
 import { RootStackParamList } from "../navigation/RootNavigator";
-import { useProfileQuery, familyLabel, ProfileFamilyProgress } from "../api/profile";
+import { useProfileQuery, useUserParadasQuery, familyLabel, ProfileFamilyProgress } from "../api/profile";
+import { useUnreadConversationsQuery } from "../api/conversas";
 import { resolveMediaUrl } from "../lib/api";
 import { AchievementDetailModal } from "../components/AchievementDetailModal";
+import { ParadaChartCard } from "../components/ParadaChartCard";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -22,13 +23,27 @@ export function ProfileScreen() {
   const { user } = useAuth();
   const navigation = useNavigation<Nav>();
   const profileQuery = useProfileQuery(user?.handle);
+  const paradasQuery = useUserParadasQuery(user?.handle);
+  const unreadQuery = useUnreadConversationsQuery();
   const profile = profileQuery.data;
-  const latestChart = profile?.user.charts[0];
+  const activeChart = profile?.user.charts[0];
+  const paradas = paradasQuery.data?.paradas ?? [];
   const [selectedFamily, setSelectedFamily] = React.useState<ProfileFamilyProgress | null>(null);
 
   return (
     <Screen>
-      <View style={{ flexDirection: "row", justifyContent: "flex-end", paddingHorizontal: 16, paddingBottom: 4, gap: 6 }}>
+      <View style={{ flexDirection: "row", justifyContent: "flex-end", paddingHorizontal: 16, paddingBottom: 4, gap: 10 }}>
+        <Pressable
+          onPress={() => navigation.navigate("Conversas")}
+          style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: colors.fillInset, alignItems: "center", justifyContent: "center" }}
+        >
+          <Svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={colors.textSubtle} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+            <Path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+          </Svg>
+          {(unreadQuery.data?.unread ?? 0) > 0 && (
+            <View style={{ position: "absolute", top: -2, right: -2, width: 10, height: 10, borderRadius: 5, backgroundColor: colors.accent, borderWidth: 1.5, borderColor: colors.bg }} />
+          )}
+        </Pressable>
         <Pressable
           onPress={() => navigation.navigate("Settings")}
           style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: colors.fillInset, alignItems: "center", justifyContent: "center" }}
@@ -44,7 +59,7 @@ export function ProfileScreen() {
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       ) : (
         <>
-          <View style={{ alignItems: "center", paddingHorizontal: 20, paddingBottom: 20 }}>
+          <View style={{ alignItems: "center", paddingHorizontal: 24, paddingBottom: 20 }}>
             {profile?.imageUrl ? (
               <Image source={{ uri: resolveMediaUrl(profile.imageUrl) }} style={{ width: 82, height: 82, borderRadius: 41 }} />
             ) : (
@@ -58,77 +73,90 @@ export function ProfileScreen() {
               {user?.name ?? user?.handle}
             </Text>
             <Text style={{ fontSize: 14, color: colors.textMuted, marginTop: 1 }}>@{user?.handle}</Text>
+
+            {profile?.user.bio ? (
+              <Text style={{ fontSize: 13.5, lineHeight: 19, color: colors.textSubtle, textAlign: "center", marginTop: 10 }}>
+                {profile.user.bio}
+              </Text>
+            ) : null}
+
+            {(profile?.lastfmUser || profile?.twitterUser || profile?.instagramUser) && (
+              <View style={{ flexDirection: "row", gap: 16, marginTop: 12 }}>
+                {profile.lastfmUser && (
+                  <Pressable onPress={() => Linking.openURL(`https://www.last.fm/user/${profile.lastfmUser}`)}>
+                    <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "600" }}>Last.fm</Text>
+                  </Pressable>
+                )}
+                {profile.twitterUser && (
+                  <Pressable onPress={() => Linking.openURL(`https://x.com/${profile.twitterUser}`)}>
+                    <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "600" }}>X</Text>
+                  </Pressable>
+                )}
+                {profile.instagramUser && (
+                  <Pressable onPress={() => Linking.openURL(`https://instagram.com/${profile.instagramUser}`)}>
+                    <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "600" }}>Instagram</Text>
+                  </Pressable>
+                )}
+              </View>
+            )}
+
             <View style={{ flexDirection: "row", justifyContent: "center", gap: 26, marginTop: 18 }}>
-              {[
-                [String(profile?.totalCharts ?? 0), "paradas"],
-                [String(profile?.progression.unlocked ?? 0), "conquistas"],
-                [String(profile?.user.streak ?? 0), "sequência"],
-              ].map(([n, l]) => (
-                <View key={l} style={{ alignItems: "center" }}>
-                  <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{n}</Text>
-                  <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>{l}</Text>
-                </View>
-              ))}
+              <Pressable
+                onPress={() => user && navigation.navigate("Followers", { handle: user.handle, type: "followers" })}
+                style={{ alignItems: "center" }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
+                  {profile?.user.followers ?? 0}
+                </Text>
+                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>seguidores</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => user && navigation.navigate("Followers", { handle: user.handle, type: "following" })}
+                style={{ alignItems: "center" }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
+                  {profile?.user.following ?? 0}
+                </Text>
+                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>seguindo</Text>
+              </Pressable>
+              <View style={{ alignItems: "center" }}>
+                <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
+                  {profile?.progression.unlocked ?? 0}
+                </Text>
+                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>conquistas</Text>
+              </View>
+              <View style={{ alignItems: "center" }}>
+                <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
+                  {profile?.user.streak ?? 0}
+                </Text>
+                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>sequência</Text>
+              </View>
             </View>
           </View>
 
-          {latestChart ? (
-            <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
-              <Pressable
-                onPress={() => navigation.navigate("ChartDetail", { chartId: latestChart.id })}
-                style={{ flexDirection: "row", alignItems: "baseline", gap: 8, padding: 14, paddingBottom: 10 }}
-              >
-                <Text style={{ flex: 1, fontSize: 11, fontWeight: "700", letterSpacing: 1, textTransform: "uppercase", color: colors.textMuted }}>
-                  {latestChart.weekLabel}
-                </Text>
-                <Pressable onPress={() => navigation.navigate("Editor")}>
-                  <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Editar</Text>
-                </Pressable>
-              </Pressable>
-              {latestChart.entries.slice(0, 10).map((e, i) => (
-                <View
-                  key={`${e.position}-${e.song.title}`}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                    paddingVertical: 9,
-                    paddingHorizontal: 14,
-                    borderBottomWidth: i === Math.min(latestChart.entries.length, 10) - 1 ? 0 : 1,
-                    borderBottomColor: colors.dividerSoft,
-                  }}
-                >
-                  <Text style={{ width: 20, fontSize: 13, fontWeight: "800", color: colors.textMuted }}>{e.position}</Text>
-                  {e.song.imageUrl ? (
-                    <Image source={{ uri: resolveMediaUrl(e.song.imageUrl) }} style={{ width: 36, height: 36, borderRadius: 8 }} />
-                  ) : (
-                    <View style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: colors.fillSubtle }} />
-                  )}
-                  <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "600", color: colors.text }}>
-                      {e.song.title}
-                    </Text>
-                    <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
-                      {e.song.artist}
-                    </Text>
-                  </View>
-                  <Text style={{ fontSize: 10.5, color: colors.textDisabled, marginRight: 2 }}>
-                    {e.weeks} {e.weeks === 1 ? "sem" : "sems"} · pico #{e.peak}
-                  </Text>
-                  <MovementBadge status={e.status as MovementStatus} delta={e.delta ?? undefined} compact />
-                </View>
-              ))}
-              {latestChart.entries.length > 10 && (
-                <Pressable
-                  onPress={() => navigation.navigate("UserDetail", { handle: user!.handle })}
-                  style={{ paddingVertical: 13, alignItems: "center", borderTopWidth: 1, borderTopColor: colors.dividerSoft }}
-                >
-                  <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 13 }}>
-                    Ver todas as {latestChart.entries.length} músicas
-                  </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 16, marginBottom: 8 }}>
+            <Text style={{ fontSize: 15, fontWeight: "800", color: colors.text }}>
+              {paradas.length > 1 ? "Minhas paradas" : "Minha parada"}
+            </Text>
+            <View style={{ flexDirection: "row", gap: 14 }}>
+              {paradas.length > 1 && (
+                <Pressable onPress={() => user && navigation.navigate("ParadasList", { handle: user.handle })}>
+                  <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Ver todas ({paradas.length})</Text>
                 </Pressable>
               )}
+              <Pressable onPress={() => user && navigation.navigate("History", { handle: user.handle })}>
+                <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Histórico</Text>
+              </Pressable>
             </View>
+          </View>
+
+          {activeChart ? (
+            <ParadaChartCard
+              chart={activeChart}
+              onEditPress={() => navigation.navigate("Editor")}
+              onSeeAllPress={() => navigation.navigate("ChartDetail", { chartId: activeChart.id })}
+              onPressEntry={(songId, spotifyId) => navigation.navigate("MusicDetail", { songId, spotifyId: spotifyId ?? undefined })}
+            />
           ) : (
             <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 20, alignItems: "center" }}>
               <Text style={{ color: colors.textMuted, fontSize: 13.5 }}>Você ainda não publicou uma parada.</Text>

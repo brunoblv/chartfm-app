@@ -85,6 +85,64 @@ export function ArtistDetailScreen() {
         </View>
       ) : null}
 
+      {(artist.totalPoints > 0 || artist.number1s > 0) && (
+        <View
+          style={{
+            flexDirection: "row",
+            marginHorizontal: 16,
+            marginBottom: 26,
+            backgroundColor: colors.surface,
+            borderWidth: 1,
+            borderColor: colors.divider,
+            borderRadius: 16,
+            padding: 16,
+          }}
+        >
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.totalPoints}</Text>
+            <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>pontos totais</Text>
+          </View>
+          <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.number1s}</Text>
+            <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>músicas em #1</Text>
+          </View>
+        </View>
+      )}
+
+      {artist.bigFans.length > 0 && (
+        <View style={{ marginBottom: 26 }}>
+          <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, paddingHorizontal: 20, paddingBottom: 12 }}>
+            Maiores fãs
+          </Text>
+          <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
+            {artist.bigFans.map((f, i) => (
+              <Pressable
+                key={f.user.id}
+                onPress={() => navigation.navigate("UserDetail", { handle: f.user.handle })}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 10,
+                  paddingVertical: 10,
+                  paddingHorizontal: 14,
+                  borderBottomWidth: i === artist.bigFans.length - 1 ? 0 : 1,
+                  borderBottomColor: colors.dividerSoft,
+                }}
+              >
+                {f.user.image ? (
+                  <Image source={{ uri: resolveMediaUrl(f.user.image) }} style={{ width: 30, height: 30, borderRadius: 15 }} />
+                ) : (
+                  <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: colors.fillSubtle }} />
+                )}
+                <Text style={{ flex: 1, fontSize: 13.5, fontWeight: "600", color: colors.text }}>{f.user.name}</Text>
+                <Text style={{ fontSize: 12, color: colors.textMuted, fontWeight: "700" }}>{f.points} pts</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      )}
+
       {artist.topSongs.length > 0 ? (
         <>
           <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, paddingHorizontal: 20, paddingBottom: 12 }}>

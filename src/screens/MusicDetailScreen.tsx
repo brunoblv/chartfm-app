@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text, Pressable, ScrollView, Image, ActivityIndicator } from "react-native";
-import Svg, { Path } from "react-native-svg";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
@@ -8,6 +7,7 @@ import { BackHeader } from "../components/BackHeader";
 import { ScoreSquare } from "../components/ScoreSquare";
 import { resolveMediaUrl } from "../lib/api";
 import { useSongQuery } from "../api/song";
+import { useSongVideoClipsQuery } from "../api/videoClips";
 import { RootStackParamList } from "../navigation/RootNavigator";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -19,7 +19,9 @@ export function MusicDetailScreen() {
   const route = useRoute<Route>();
   const songId = route.params?.songId;
   const songQuery = useSongQuery(songId);
+  const clipsQuery = useSongVideoClipsQuery(songId);
   const song = songQuery.data;
+  const clips = clipsQuery.data?.clips ?? [];
 
   if (!songId) {
     return (
@@ -87,18 +89,6 @@ export function MusicDetailScreen() {
         ) : null}
       </View>
 
-      <View style={{ flexDirection: "row", gap: 10, paddingHorizontal: 16 }}>
-        <Pressable style={{ flex: 1, backgroundColor: colors.accent, borderRadius: 100, paddingVertical: 14, alignItems: "center" }}>
-          <Text style={{ color: "#fff", fontWeight: "700", fontSize: 14.5 }}>+ Adicionar à minha parada</Text>
-        </Pressable>
-        <View style={{ width: 48, height: 48, borderRadius: 24, borderWidth: 1, borderColor: colors.dividerStrong, alignItems: "center", justifyContent: "center" }}>
-          <Svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke={colors.text} strokeWidth={1.8} strokeLinecap="round">
-            <Path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1" />
-            <Path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1" />
-          </Svg>
-        </View>
-      </View>
-
       {song.albumScore ? (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginHorizontal: 16, marginTop: 26, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 16 }}>
           <ScoreSquare score={song.albumScore.score} size={40} />
@@ -127,6 +117,57 @@ export function MusicDetailScreen() {
           ))}
         </View>
       ) : null}
+
+      {clips.length > 0 && (
+        <View style={{ marginTop: 26 }}>
+          <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, marginHorizontal: 16, marginBottom: 12 }}>
+            Clipes
+          </Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
+            {clips.map((c) => (
+              <View key={c.id} style={{ width: 150 }}>
+                <Image source={{ uri: resolveMediaUrl(c.imageUrl) }} style={{ width: 150, height: 84, borderRadius: 10, backgroundColor: colors.fillSubtle }} />
+                <Text numberOfLines={1} style={{ fontSize: 11, color: colors.textMuted, marginTop: 5 }}>
+                  {c.votes} {c.votes === 1 ? "voto" : "votos"} · @{c.uploaderHandle}
+                </Text>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      )}
+
+      {song.topUsers.length > 0 && (
+        <View style={{ marginTop: 26 }}>
+          <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, marginHorizontal: 16, marginBottom: 12 }}>
+            Maiores fãs
+          </Text>
+          <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
+            {song.topUsers.map((f, i) => (
+              <Pressable
+                key={f.user.id}
+                onPress={() => navigation.navigate("UserDetail", { handle: f.user.handle })}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 10,
+                  paddingVertical: 10,
+                  paddingHorizontal: 14,
+                  borderBottomWidth: i === song.topUsers.length - 1 ? 0 : 1,
+                  borderBottomColor: colors.dividerSoft,
+                }}
+              >
+                {f.user.image ? (
+                  <Image source={{ uri: resolveMediaUrl(f.user.image) }} style={{ width: 30, height: 30, borderRadius: 15 }} />
+                ) : (
+                  <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: f.user.avatarColor || colors.fillSubtle }} />
+                )}
+                <Text style={{ flex: 1, fontSize: 13.5, fontWeight: "600", color: colors.text }}>{f.user.name}</Text>
+                <Text style={{ fontSize: 12, color: colors.textMuted, fontWeight: "700" }}>{f.points} pts</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 }

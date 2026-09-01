@@ -104,7 +104,11 @@ function InicioTab() {
         <WeekStatusCard
           status={hub.weekStatus}
           onPublish={() => navigation.navigate("Editor")}
-          onViewChart={() => navigation.navigate("Editor")}
+          onViewChart={() =>
+            hub.weekStatus.thisWeekChartId
+              ? navigation.navigate("ChartDetail", { chartId: hub.weekStatus.thisWeekChartId })
+              : navigation.navigate("Editor")
+          }
         />
       )}
 

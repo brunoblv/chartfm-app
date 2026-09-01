@@ -36,6 +36,13 @@ import { ReviewDetailScreen } from "../screens/ReviewDetailScreen";
 import { ChartDetailScreen } from "../screens/ChartDetailScreen";
 import { SpotlightsScreen } from "../screens/SpotlightsScreen";
 import { ParadaWeekPickerSheet } from "../components/ParadaWeekPickerSheet";
+import { ParadasListScreen } from "../screens/ParadasListScreen";
+import { ParadaDetailScreen } from "../screens/ParadaDetailScreen";
+import { FollowersScreen } from "../screens/FollowersScreen";
+import { ConversasScreen } from "../screens/ConversasScreen";
+import { ConversationThreadScreen } from "../screens/ConversationThreadScreen";
+import { HistoryScreen } from "../screens/HistoryScreen";
+import { CreateGuidedScreen } from "../screens/CreateGuidedScreen";
 import { HomeReview } from "../api/homeHub";
 
 export type RootStackParamList = {
@@ -44,6 +51,7 @@ export type RootStackParamList = {
   Cadastro: undefined;
   Main: undefined;
   Editor: undefined;
+  CreateGuided: undefined;
   Copa: undefined;
   CreateSheet: undefined;
   AddSong: undefined;
@@ -66,6 +74,12 @@ export type RootStackParamList = {
   ChartDetail: { chartId: string };
   Spotlights: undefined;
   ParadaWeekPicker: undefined;
+  ParadasList: { handle: string };
+  ParadaDetail: { handle: string; paradaId: string; paradaName: string };
+  Followers: { handle: string; type?: "followers" | "following" };
+  Conversas: undefined;
+  ConversationThread: { conversationId: string; handle: string; name?: string };
+  History: { handle: string };
 };
 
 export type MainTabParamList = {
@@ -130,6 +144,7 @@ export function RootNavigator() {
         <Stack.Screen name="Cadastro" component={SignupScreen} />
         <Stack.Screen name="Main" component={MainTabs} />
         <Stack.Screen name="Editor" component={EditorScreen} />
+        <Stack.Screen name="CreateGuided" component={CreateGuidedScreen} />
         <Stack.Screen name="Copa" component={CopaScreen} />
         <Stack.Screen name="Lastfm" component={LastfmScreen} />
         <Stack.Screen name="Global100" component={Global100Screen} />
@@ -147,6 +162,12 @@ export function RootNavigator() {
         <Stack.Screen name="ChartDetail" component={ChartDetailScreen} />
         <Stack.Screen name="Spotlights" component={SpotlightsScreen} />
         <Stack.Screen name="ReviewDetail" component={ReviewDetailScreen} />
+        <Stack.Screen name="ParadasList" component={ParadasListScreen} />
+        <Stack.Screen name="ParadaDetail" component={ParadaDetailScreen} />
+        <Stack.Screen name="Followers" component={FollowersScreen} />
+        <Stack.Screen name="Conversas" component={ConversasScreen} />
+        <Stack.Screen name="ConversationThread" component={ConversationThreadScreen} />
+        <Stack.Screen name="History" component={HistoryScreen} />
         <Stack.Screen
           name="CreateSheet"
           component={CreateSheetScreen}

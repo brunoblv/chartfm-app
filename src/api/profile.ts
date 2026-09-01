@@ -40,16 +40,22 @@ export interface ProfilePayload {
     handle: string;
     name: string;
     avatar: string;
+    bio: string;
     followers: number;
     following: number;
     streak: number;
     verified: boolean;
+    isStaff: boolean;
     charts: ProfileChart[];
   };
   imageUrl: string | null;
   isFollowing: boolean;
   totalCharts: number;
   genres: string[];
+  lastfmUser: string | null;
+  twitterUser: string | null;
+  instagramUser: string | null;
+  activeParadaId: string | null;
   statsSummary?: {
     totalRankedSlots: number;
     numberOnes: number;
@@ -62,10 +68,72 @@ export interface ProfilePayload {
   };
 }
 
-export function useProfileQuery(handle: string | undefined) {
+export function useProfileQuery(handle: string | undefined, paradaId?: string | null) {
   return useQuery({
-    queryKey: ["profile", handle],
-    queryFn: () => apiRequest<ProfilePayload>(`/api/profile/${encodeURIComponent(handle!)}`),
+    queryKey: ["profile", handle, paradaId ?? null],
+    queryFn: () =>
+      apiRequest<ProfilePayload>(
+        `/api/profile/${encodeURIComponent(handle!)}${paradaId ? `?paradaId=${encodeURIComponent(paradaId)}` : ""}`,
+      ),
+    enabled: Boolean(handle),
+  });
+}
+
+export interface ParadaCard {
+  id: string;
+  name: string;
+  logo: string | null;
+  genres: string[];
+  isPrimary: boolean;
+  sortOrder: number;
+  chartSize: number;
+  cadence: "weekly" | "daily";
+  stats: { weeks: number; numberOnes: number; songs: number };
+  lastWeekLabel: string | null;
+}
+
+export interface UserParadasResponse {
+  handle: string;
+  paradas: ParadaCard[];
+  canCreate: boolean;
+  isOwn: boolean;
+}
+
+export function useUserParadasQuery(handle: string | undefined) {
+  return useQuery({
+    queryKey: ["profile-paradas", handle],
+    queryFn: () => apiRequest<UserParadasResponse>(`/api/profile/${encodeURIComponent(handle!)}/paradas`),
+    enabled: Boolean(handle),
+  });
+}
+
+export interface ProfileFollowUser {
+  id: string;
+  handle: string;
+  name: string;
+  avatarColor: string;
+  image: string | null;
+  verified: boolean;
+  followers: number;
+  bio: string | null;
+  isFollowing: boolean;
+}
+
+export interface ProfileFollowersResponse {
+  users: ProfileFollowUser[];
+  total: number;
+  page: number;
+  perPage: number;
+  hasMore: boolean;
+}
+
+export function useProfileFollowersQuery(handle: string | undefined, type: "followers" | "following") {
+  return useQuery({
+    queryKey: ["profile-followers", handle, type],
+    queryFn: () =>
+      apiRequest<ProfileFollowersResponse>(
+        `/api/profile/${encodeURIComponent(handle!)}/followers?type=${type}`,
+      ),
     enabled: Boolean(handle),
   });
 }

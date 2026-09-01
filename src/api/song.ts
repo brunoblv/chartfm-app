@@ -7,6 +7,11 @@ export interface SongGlobalStats {
   numberOnes: number;
 }
 
+export interface SongTopUser {
+  user: { id: string; handle: string; name: string; avatarColor: string; image: string | null };
+  points: number;
+}
+
 export interface SongDetail {
   songId: string;
   title: string;
@@ -22,6 +27,7 @@ export interface SongDetail {
   albumScore: { score: number; reviewCount: number } | null;
   artistPath: string;
   albumPath: string | null;
+  topUsers: SongTopUser[];
 }
 
 export function useSongQuery(songId: string | undefined) {

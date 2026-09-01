@@ -18,6 +18,11 @@ export interface ArtistAlbum {
   releaseYear: number | null;
 }
 
+export interface ArtistFan {
+  user: { id: string; handle: string; name: string; avatar: string; image: string | null };
+  points: number;
+}
+
 export interface ArtistDetail {
   artistId: number;
   name: string;
@@ -28,6 +33,9 @@ export interface ArtistDetail {
   monthlyListeners: number | null;
   topSongs: ArtistTopSong[];
   albums: ArtistAlbum[];
+  totalPoints: number;
+  number1s: number;
+  bigFans: ArtistFan[];
 }
 
 export function useArtistQuery(artistId: number | undefined) {

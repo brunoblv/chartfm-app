@@ -13,8 +13,9 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
  * as mesmas três ações, na mesma ordem — montar parada, recomendar música,
  * avaliar álbum. O app tinha 4 itens antigos (ranking de álbuns/artistas,
  * desativados, e Last.fm como ação própria); ranking não existe no site e saiu,
- * e o Last.fm virou um atalho dentro do editor (`EditorScreen`), porque lá é
- * uma forma de montar a parada, não uma ação separada.
+ * e o Last.fm virou uma das opções de `CreateGuidedScreen` (espelha
+ * `/create/start`), porque lá é uma forma de montar a parada, não uma ação
+ * separada.
  */
 export function CreateSheetScreen() {
   const { colors } = useAppTheme();
@@ -63,7 +64,7 @@ export function CreateSheetScreen() {
           label="Montar uma parada"
           onPress={() => {
             navigation.goBack();
-            navigation.navigate("Editor");
+            navigation.navigate("CreateGuided");
           }}
         />
         <Row
