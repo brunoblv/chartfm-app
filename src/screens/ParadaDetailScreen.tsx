@@ -29,6 +29,7 @@ export function ParadaDetailScreen() {
         <ParadaChartCard
           chart={chart}
           onPressEntry={(songId, spotifyId) => navigation.navigate("MusicDetail", { songId, spotifyId: spotifyId ?? undefined })}
+          onPressArtist={(artistId) => navigation.navigate("ArtistDetail", { artistId })}
           onSeeAllPress={() => navigation.navigate("ChartDetail", { chartId: chart.id })}
         />
       ) : (

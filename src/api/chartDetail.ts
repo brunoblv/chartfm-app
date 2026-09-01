@@ -17,6 +17,7 @@ export interface ChartDetailSong {
   artist: string;
   imageUrl?: string | null;
   spotifyId?: string | null;
+  artistRefId?: number | null;
 }
 
 export interface ChartDetailEntry {

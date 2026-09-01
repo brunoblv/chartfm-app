@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, Pressable, ScrollView, Image, ActivityIndicator } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
@@ -25,35 +26,36 @@ export function MusicDetailScreen() {
 
   if (!songId) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>Música não encontrada.</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (songQuery.isLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (!song) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
           Não foi possível carregar essa música.
         </Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: 40 }}>
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
+    <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
       <BackHeader />
 
       <View style={{ alignItems: "center", paddingHorizontal: 20, paddingTop: 8, paddingBottom: 18 }}>
@@ -169,5 +171,6 @@ export function MusicDetailScreen() {
         </View>
       )}
     </ScrollView>
+    </SafeAreaView>
   );
 }

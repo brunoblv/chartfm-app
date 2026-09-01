@@ -10,6 +10,7 @@ export interface ChartTableEntry {
   position?: number;
   meta?: string;
   onPress?: () => void;
+  onArtistPress?: () => void;
   accessory?: React.ReactNode;
 }
 
@@ -41,6 +42,7 @@ export function ChartTable({ entries, style }: { entries: ChartTableEntry[]; sty
           meta={e.meta}
           last={i === entries.length - 1}
           onPress={e.onPress}
+          onArtistPress={e.onArtistPress}
           accessory={e.accessory}
         />
       ))}

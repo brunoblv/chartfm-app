@@ -13,6 +13,7 @@ export function SongRow({
   compact,
   last,
   onPress,
+  onArtistPress,
   accessory,
   style,
 }: {
@@ -22,6 +23,8 @@ export function SongRow({
   compact?: boolean;
   last?: boolean;
   onPress?: () => void;
+  /** Quando presente, o nome do artista vira um alvo de toque próprio (leva pra página dele). */
+  onArtistPress?: () => void;
   /** Conteúdo extra à direita (ex.: botões de remover/arrastar do editor). */
   accessory?: React.ReactNode;
   /** Sobrescreve estilo do container (ex.: destaque durante drag no editor). */
@@ -51,9 +54,17 @@ export function SongRow({
         <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: "600", color: colors.text }}>
           {song.t}
         </Text>
-        <Text numberOfLines={1} style={{ fontSize: 12, color: colors.textMuted, marginTop: 1 }}>
-          {song.a}
-        </Text>
+        {onArtistPress ? (
+          <Pressable onPress={onArtistPress} hitSlop={4}>
+            <Text numberOfLines={1} style={{ fontSize: 12, color: colors.textMuted, marginTop: 1 }}>
+              {song.a}
+            </Text>
+          </Pressable>
+        ) : (
+          <Text numberOfLines={1} style={{ fontSize: 12, color: colors.textMuted, marginTop: 1 }}>
+            {song.a}
+          </Text>
+        )}
         {meta ? (
           <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 3 }}>{meta}</Text>
         ) : null}

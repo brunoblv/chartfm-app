@@ -7,10 +7,12 @@ import { Screen } from "../components/Screen";
 import { BackHeader } from "../components/BackHeader";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { RootStackParamList } from "../navigation/RootNavigator";
-import { useProfileQuery, useFollowMutation, useUserParadasQuery } from "../api/profile";
+import { useProfileQuery, useFollowMutation, useUserParadasQuery, familyLabel, ProfileFamilyProgress } from "../api/profile";
 import { useStartConversationMutation } from "../api/conversas";
 import { resolveMediaUrl } from "../lib/api";
 import { ParadaChartCard } from "../components/ParadaChartCard";
+import { AchievementDetailModal } from "../components/AchievementDetailModal";
+import { SocialIcon } from "../components/SocialIcon";
 
 type Route = RouteProp<RootStackParamList, "UserDetail">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -26,6 +28,7 @@ export function UserDetailScreen() {
   const startConversation = useStartConversationMutation();
   const profile = profileQuery.data;
   const paradas = paradasQuery.data?.paradas ?? [];
+  const [selectedFamily, setSelectedFamily] = React.useState<ProfileFamilyProgress | null>(null);
 
   if (!handle) {
     return (
@@ -84,21 +87,31 @@ export function UserDetailScreen() {
           </Text>
         ) : null}
 
+        {profile.genres.length > 0 && (
+          <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 6, marginTop: 10 }}>
+            {profile.genres.map((g) => (
+              <View key={g} style={{ backgroundColor: colors.fillSubtle, borderRadius: 100, paddingVertical: 5, paddingHorizontal: 11 }}>
+                <Text style={{ fontSize: 11.5, fontWeight: "600", color: colors.text }}>{g}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
         {(profile.lastfmUser || profile.twitterUser || profile.instagramUser) && (
           <View style={{ flexDirection: "row", gap: 16, marginTop: 12 }}>
             {profile.lastfmUser && (
-              <Pressable onPress={() => Linking.openURL(`https://www.last.fm/user/${profile.lastfmUser}`)}>
-                <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "600" }}>Last.fm</Text>
+              <Pressable onPress={() => Linking.openURL(`https://www.last.fm/user/${profile.lastfmUser}`)} hitSlop={8}>
+                <SocialIcon name="lastfm" size={18} />
               </Pressable>
             )}
             {profile.twitterUser && (
-              <Pressable onPress={() => Linking.openURL(`https://x.com/${profile.twitterUser}`)}>
-                <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "600" }}>X</Text>
+              <Pressable onPress={() => Linking.openURL(`https://x.com/${profile.twitterUser}`)} hitSlop={8}>
+                <SocialIcon name="x-twitter" size={18} color={colors.text} />
               </Pressable>
             )}
             {profile.instagramUser && (
-              <Pressable onPress={() => Linking.openURL(`https://instagram.com/${profile.instagramUser}`)}>
-                <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "600" }}>Instagram</Text>
+              <Pressable onPress={() => Linking.openURL(`https://instagram.com/${profile.instagramUser}`)} hitSlop={8}>
+                <SocialIcon name="instagram" size={18} />
               </Pressable>
             )}
           </View>
@@ -114,8 +127,12 @@ export function UserDetailScreen() {
             <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>seguindo</Text>
           </Pressable>
           <View style={{ alignItems: "center" }}>
-            <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{profile.totalCharts}</Text>
-            <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>paradas</Text>
+            <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{profile.progression.unlocked}</Text>
+            <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>conquistas</Text>
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{profile.user.streak}</Text>
+            <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>sequência</Text>
           </View>
         </View>
 
@@ -153,6 +170,39 @@ export function UserDetailScreen() {
         </View>
       </View>
 
+      {profile.statsSummary && (
+        <View
+          style={{
+            marginHorizontal: 16,
+            marginBottom: 20,
+            backgroundColor: colors.surface,
+            borderWidth: 1,
+            borderColor: colors.divider,
+            borderRadius: 16,
+            padding: 16,
+            flexDirection: "row",
+          }}
+        >
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
+              {profile.statsSummary.totalRankedSlots}
+            </Text>
+            <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 2, textAlign: "center" }}>
+              posições ocupadas{"\n"}em todas as paradas
+            </Text>
+          </View>
+          <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
+              {profile.statsSummary.numberOnes}
+            </Text>
+            <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 2, textAlign: "center" }}>
+              músicas em{"\n"}#1
+            </Text>
+          </View>
+        </View>
+      )}
+
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 16, marginBottom: 8 }}>
         <Text style={{ fontSize: 15, fontWeight: "800", color: colors.text }}>Paradas</Text>
         <View style={{ flexDirection: "row", gap: 14 }}>
@@ -172,10 +222,51 @@ export function UserDetailScreen() {
           chart={activeChart}
           onSeeAllPress={() => navigation.navigate("ChartDetail", { chartId: activeChart.id })}
           onPressEntry={(songId, spotifyId) => navigation.navigate("MusicDetail", { songId, spotifyId: spotifyId ?? undefined })}
+          onPressArtist={(artistId) => navigation.navigate("ArtistDetail", { artistId })}
         />
       ) : (
         <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 20 }}>Sem parada publicada.</Text>
       )}
+
+      <View style={{ paddingHorizontal: 20, paddingTop: 26, paddingBottom: 12 }}>
+        <Text style={{ fontSize: 19, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>
+          Conquistas · Nível {profile.progression.level.level}
+        </Text>
+      </View>
+      <View style={{ marginHorizontal: 16, flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+        {profile.progression.families.map((f) => (
+          <Pressable
+            key={f.code}
+            onPress={() => setSelectedFamily(f)}
+            style={{
+              width: "47%",
+              backgroundColor: colors.surface,
+              borderWidth: 1,
+              borderColor: colors.divider,
+              borderRadius: 14,
+              padding: 14,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+              opacity: f.tier ? 1 : 0.5,
+            }}
+          >
+            <View style={{ width: 34, height: 34, borderRadius: 10, backgroundColor: colors.accentTint, alignItems: "center", justifyContent: "center" }}>
+              <Text style={{ fontWeight: "800", fontSize: 11, color: colors.accent }}>{f.unlockedTiers}/4</Text>
+            </View>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text numberOfLines={1} style={{ fontSize: 12.5, fontWeight: "700", color: colors.text }}>
+                {familyLabel(f.code)}
+              </Text>
+              <Text numberOfLines={1} style={{ fontSize: 10.5, color: colors.textMuted }}>
+                {f.isComplete ? "Completo" : `${f.value} / ${f.nextThreshold}`}
+              </Text>
+            </View>
+          </Pressable>
+        ))}
+      </View>
+
+      <AchievementDetailModal family={selectedFamily} onClose={() => setSelectedFamily(null)} />
     </Screen>
   );
 }

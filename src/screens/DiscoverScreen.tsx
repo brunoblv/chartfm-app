@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, Pressable, ActivityIndicator, ScrollView, Image, Alert } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
@@ -9,11 +9,12 @@ import { Screen } from "../components/Screen";
 import { SectionHeader } from "../components/SectionHeader";
 import { Cover } from "../components/Cover";
 import { SongRow } from "../components/SongRow";
-import { PEOPLE } from "../data/mock";
+import { resolveMediaUrl } from "../lib/api";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useRecommendationsQuery } from "../api/discover";
 import { useGlobalSongsQuery, songItemToGlobalSong } from "../api/global";
-import { useHomeDiscoveryQuery } from "../api/homeHub";
+import { useHomeDiscoveryQuery, useHomeHubQuery } from "../api/homeHub";
+import { useFollowMutation } from "../api/profile";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -23,6 +24,9 @@ export function DiscoverScreen() {
   const { cards: trending, isLoading: isTrendingLoading } = useRecommendationsQuery();
   const songsQuery = useGlobalSongsQuery("weekly");
   const discoveryQuery = useHomeDiscoveryQuery();
+  const hubQuery = useHomeHubQuery(true);
+  const followMutation = useFollowMutation();
+  const people = hubQuery.data?.people ?? [];
   const popularCharts = discoveryQuery.data?.charts ?? [];
   const climbing = (songsQuery.data?.items ?? [])
     .filter((s) => s.movement === "up")
@@ -130,28 +134,46 @@ export function DiscoverScreen() {
         ))}
       </View>
 
-      <SectionHeader title="Pessoas com gosto parecido" />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
-        {PEOPLE.map((u) => (
-          <View
-            key={u.handle}
-            style={{ width: 132, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 16, alignItems: "center" }}
-          >
-            <Pressable onPress={() => navigation.navigate("UserDetail")}>
-              <LinearGradient colors={u.avatar} style={{ width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center" }}>
-                <Text style={{ color: "#fff", fontWeight: "800", fontSize: 18 }}>{u.initial}</Text>
-              </LinearGradient>
-            </Pressable>
-            <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: "700", color: colors.text, marginTop: 10 }}>
-              {u.handle}
-            </Text>
-            <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 2 }}>{u.match}</Text>
-            <Pressable style={{ marginTop: 11, backgroundColor: colors.accent, borderRadius: 100, paddingVertical: 9, width: "100%", alignItems: "center" }}>
-              <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>Seguir</Text>
-            </Pressable>
-          </View>
-        ))}
-      </ScrollView>
+      {people.length > 0 && (
+        <>
+          <SectionHeader title="Pessoas com gosto parecido" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
+            {people.map((u) => (
+              <View
+                key={u.id}
+                style={{ width: 140, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 16, alignItems: "center" }}
+              >
+                <Pressable onPress={() => navigation.navigate("UserDetail", { handle: u.handle })}>
+                  {u.image ? (
+                    <Image source={{ uri: resolveMediaUrl(u.image) }} style={{ width: 52, height: 52, borderRadius: 26 }} />
+                  ) : (
+                    <LinearGradient colors={[u.avatarColor || "#8BC34A", "#CDDC39"]} style={{ width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center" }}>
+                      <Text style={{ color: "#fff", fontWeight: "800", fontSize: 18 }}>{u.name.charAt(0).toUpperCase()}</Text>
+                    </LinearGradient>
+                  )}
+                </Pressable>
+                <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: "700", color: colors.text, marginTop: 10 }}>
+                  {u.name}
+                </Text>
+                <Text numberOfLines={1} style={{ fontSize: 11, color: colors.textMuted, marginTop: 2 }}>
+                  {u.commonGenres.length > 0 ? u.commonGenres.slice(0, 2).join(", ") : `${u.chartsPublished} paradas`}
+                </Text>
+                <Pressable
+                  disabled={followMutation.isPending}
+                  onPress={() =>
+                    followMutation.mutate(u.id, {
+                      onError: () => Alert.alert("Não foi possível seguir", "Tente novamente."),
+                    })
+                  }
+                  style={{ marginTop: 11, backgroundColor: colors.accent, borderRadius: 100, paddingVertical: 9, width: "100%", alignItems: "center" }}
+                >
+                  <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>Seguir</Text>
+                </Pressable>
+              </View>
+            ))}
+          </ScrollView>
+        </>
+      )}
     </Screen>
   );
 }

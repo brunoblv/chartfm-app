@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, ScrollView, Image, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
@@ -28,7 +29,8 @@ export function ReviewDetailScreen() {
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: 40 }}>
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
+    <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
       <BackHeader />
 
       <Pressable
@@ -77,5 +79,6 @@ export function ReviewDetailScreen() {
         </Text>
       </Pressable>
     </ScrollView>
+    </SafeAreaView>
   );
 }

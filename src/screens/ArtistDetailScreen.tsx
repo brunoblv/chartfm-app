@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, ScrollView, Image, Pressable, ActivityIndicator } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
@@ -21,35 +22,36 @@ export function ArtistDetailScreen() {
 
   if (artistId == null) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>Artista não encontrado.</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (artistQuery.isLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (!artist) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
           Não foi possível carregar esse artista.
         </Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: 40 }}>
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
+    <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
       <BackHeader />
 
       <View style={{ alignItems: "center", paddingHorizontal: 20, paddingTop: 8, paddingBottom: 18 }}>
@@ -77,35 +79,78 @@ export function ArtistDetailScreen() {
         ) : null}
       </View>
 
-      {artist.bio ? (
+      {artist.resumo ? (
         <View style={{ marginHorizontal: 16, marginBottom: 26 }}>
-          <Text style={{ fontSize: 14, lineHeight: 21, color: colors.textSubtle }} numberOfLines={8}>
-            {artist.bio}
+          <Text style={{ fontSize: 14, lineHeight: 21, color: colors.textSubtle }}>
+            {artist.resumo}
           </Text>
         </View>
       ) : null}
 
-      {(artist.totalPoints > 0 || artist.number1s > 0) && (
-        <View
-          style={{
-            flexDirection: "row",
-            marginHorizontal: 16,
-            marginBottom: 26,
-            backgroundColor: colors.surface,
-            borderWidth: 1,
-            borderColor: colors.divider,
-            borderRadius: 16,
-            padding: 16,
-          }}
-        >
-          <View style={{ flex: 1, alignItems: "center" }}>
-            <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.totalPoints}</Text>
-            <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>pontos totais</Text>
+      {(artist.totalPoints > 0 || artist.number1s > 0 || artist.listenersCount > 0) && (
+        <View style={{ marginBottom: 26 }}>
+          <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.4, textTransform: "uppercase", color: colors.textMuted, paddingHorizontal: 20, paddingBottom: 8 }}>
+            No Global 100
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginHorizontal: 16,
+              backgroundColor: colors.surface,
+              borderWidth: 1,
+              borderColor: colors.divider,
+              borderRadius: 16,
+              padding: 16,
+            }}
+          >
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.totalPoints}</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>pontos totais</Text>
+            </View>
+            <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.listenersCount}</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>ouvintes únicos</Text>
+            </View>
+            <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.number1s}</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>músicas em #1</Text>
+            </View>
           </View>
-          <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
-          <View style={{ flex: 1, alignItems: "center" }}>
-            <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.number1s}</Text>
-            <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>músicas em #1</Text>
+        </View>
+      )}
+
+      {artist.myStats && (
+        <View style={{ marginBottom: 26 }}>
+          <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.4, textTransform: "uppercase", color: colors.textMuted, paddingHorizontal: 20, paddingBottom: 8 }}>
+            Na sua parada
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginHorizontal: 16,
+              backgroundColor: colors.surface,
+              borderWidth: 1,
+              borderColor: colors.divider,
+              borderRadius: 16,
+              padding: 16,
+            }}
+          >
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.myStats.appearances}</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>aparições</Text>
+            </View>
+            <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.myStats.totalPoints}</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>seus pontos</Text>
+            </View>
+            <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.myStats.number1s}</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>seus #1</Text>
+            </View>
           </View>
         </View>
       )}
@@ -205,5 +250,6 @@ export function ArtistDetailScreen() {
         </>
       ) : null}
     </ScrollView>
+    </SafeAreaView>
   );
 }

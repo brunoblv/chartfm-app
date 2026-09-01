@@ -14,6 +14,7 @@ import { useUnreadConversationsQuery } from "../api/conversas";
 import { resolveMediaUrl } from "../lib/api";
 import { AchievementDetailModal } from "../components/AchievementDetailModal";
 import { ParadaChartCard } from "../components/ParadaChartCard";
+import { SocialIcon } from "../components/SocialIcon";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -80,21 +81,37 @@ export function ProfileScreen() {
               </Text>
             ) : null}
 
+            {profile && profile.genres.length > 0 && (
+              <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 6, marginTop: 10 }}>
+                {profile.genres.map((g) => (
+                  <View key={g} style={{ backgroundColor: colors.fillSubtle, borderRadius: 100, paddingVertical: 5, paddingHorizontal: 11 }}>
+                    <Text style={{ fontSize: 11.5, fontWeight: "600", color: colors.text }}>{g}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
             {(profile?.lastfmUser || profile?.twitterUser || profile?.instagramUser) && (
               <View style={{ flexDirection: "row", gap: 16, marginTop: 12 }}>
                 {profile.lastfmUser && (
-                  <Pressable onPress={() => Linking.openURL(`https://www.last.fm/user/${profile.lastfmUser}`)}>
-                    <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "600" }}>Last.fm</Text>
+                  <Pressable
+                    onPress={() => Linking.openURL(`https://www.last.fm/user/${profile.lastfmUser}`)}
+                    hitSlop={8}
+                  >
+                    <SocialIcon name="lastfm" size={18} />
                   </Pressable>
                 )}
                 {profile.twitterUser && (
-                  <Pressable onPress={() => Linking.openURL(`https://x.com/${profile.twitterUser}`)}>
-                    <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "600" }}>X</Text>
+                  <Pressable onPress={() => Linking.openURL(`https://x.com/${profile.twitterUser}`)} hitSlop={8}>
+                    <SocialIcon name="x-twitter" size={18} color={colors.text} />
                   </Pressable>
                 )}
                 {profile.instagramUser && (
-                  <Pressable onPress={() => Linking.openURL(`https://instagram.com/${profile.instagramUser}`)}>
-                    <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "600" }}>Instagram</Text>
+                  <Pressable
+                    onPress={() => Linking.openURL(`https://instagram.com/${profile.instagramUser}`)}
+                    hitSlop={8}
+                  >
+                    <SocialIcon name="instagram" size={18} />
                   </Pressable>
                 )}
               </View>
@@ -156,6 +173,7 @@ export function ProfileScreen() {
               onEditPress={() => navigation.navigate("Editor")}
               onSeeAllPress={() => navigation.navigate("ChartDetail", { chartId: activeChart.id })}
               onPressEntry={(songId, spotifyId) => navigation.navigate("MusicDetail", { songId, spotifyId: spotifyId ?? undefined })}
+              onPressArtist={(artistId) => navigation.navigate("ArtistDetail", { artistId })}
             />
           ) : (
             <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 20, alignItems: "center" }}>

@@ -10,12 +10,14 @@ export function ParadaChartCard({
   onEditPress,
   onSeeAllPress,
   onPressEntry,
+  onPressArtist,
   limit = 10,
 }: {
   chart: ProfileChart;
   onEditPress?: () => void;
   onSeeAllPress?: () => void;
   onPressEntry: (songId: string, spotifyId?: string | null) => void;
+  onPressArtist?: (artistId: number) => void;
   limit?: number;
 }) {
   const { colors } = useAppTheme();
@@ -57,13 +59,21 @@ export function ParadaChartCard({
             <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "600", color: colors.text }}>
               {e.song.title}
             </Text>
-            <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
-              {e.song.artist}
+            {onPressArtist && e.song.artistRefId != null ? (
+              <Pressable onPress={() => onPressArtist(e.song.artistRefId!)} hitSlop={4}>
+                <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
+                  {e.song.artist}
+                </Text>
+              </Pressable>
+            ) : (
+              <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
+                {e.song.artist}
+              </Text>
+            )}
+            <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 1 }}>
+              {e.weeks} {e.weeks === 1 ? "sem" : "sems"} · pico #{e.peak}
             </Text>
           </View>
-          <Text style={{ fontSize: 10.5, color: colors.textMuted, marginRight: 2 }}>
-            {e.weeks} {e.weeks === 1 ? "sem" : "sems"} · pico #{e.peak}
-          </Text>
           <MovementBadge status={e.status as MovementStatus} delta={e.delta ?? undefined} compact />
         </Pressable>
       ))}

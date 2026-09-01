@@ -7,6 +7,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { ChartFMLogo } from "../components/ChartFMLogo";
 import { AuthField } from "../components/AuthField";
 import { PillButton } from "../components/PillButton";
+import { SocialIcon } from "../components/SocialIcon";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useAuth } from "../state/AuthContext";
 
@@ -110,18 +111,24 @@ export function LoginScreen({ navigation }: Props) {
             onPress={handleGoogleLogin}
             disabled={isGoogleLoading}
             style={{
+              flexDirection: "row",
               borderWidth: 1,
               borderColor: colors.dividerStrong,
               borderRadius: 12,
               paddingVertical: 13,
               alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
               opacity: isGoogleLoading ? 0.6 : 1,
             }}
           >
             {isGoogleLoading ? (
               <ActivityIndicator color={colors.text} />
             ) : (
-              <Text style={{ fontWeight: "700", fontSize: 14, color: colors.text }}>Google</Text>
+              <>
+                <SocialIcon name="google" size={16} />
+                <Text style={{ fontWeight: "700", fontSize: 14, color: colors.text }}>Google</Text>
+              </>
             )}
           </Pressable>
         </View>

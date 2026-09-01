@@ -1,6 +1,8 @@
 import React from "react";
-import { View, Text, ScrollView, ActivityIndicator, Image } from "react-native";
-import { useRoute, RouteProp } from "@react-navigation/native";
+import { View, Text, ScrollView, ActivityIndicator, Image, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { BackHeader } from "../components/BackHeader";
 import { MovementBadge, MovementStatus } from "../components/MovementBadge";
@@ -10,11 +12,13 @@ import { useChartDetailQuery } from "../api/chartDetail";
 import { RootStackParamList } from "../navigation/RootNavigator";
 
 type Route = RouteProp<RootStackParamList, "ChartDetail">;
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 const SPOTLIGHT_ORDER: SpotlightKind[] = ["flashback", "destaque", "nacional", "push", "radar"];
 
 export function ChartDetailScreen() {
   const { colors } = useAppTheme();
+  const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const chartId = route.params?.chartId;
   const detailQuery = useChartDetailQuery(chartId);
@@ -27,7 +31,7 @@ export function ChartDetailScreen() {
     : [];
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.bg }}>
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
       <BackHeader title={data?.chart.paradaNome ?? "Parada"} />
 
       {detailQuery.isLoading ? (
@@ -78,8 +82,12 @@ export function ChartDetailScreen() {
             }}
           >
             {data.chart.entries.map((e, i) => (
-              <View
+              <Pressable
                 key={`${e.position}-${e.song.title}`}
+                onPress={() =>
+                  e.song.id &&
+                  navigation.navigate("MusicDetail", { songId: e.song.id, spotifyId: e.song.spotifyId ?? undefined })
+                }
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
@@ -100,19 +108,27 @@ export function ChartDetailScreen() {
                   <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "600", color: colors.text }}>
                     {e.song.title}
                   </Text>
-                  <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
-                    {e.song.artist}
+                  {e.song.artistRefId != null ? (
+                    <Pressable onPress={() => navigation.navigate("ArtistDetail", { artistId: e.song.artistRefId! })} hitSlop={4}>
+                      <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
+                        {e.song.artist}
+                      </Text>
+                    </Pressable>
+                  ) : (
+                    <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
+                      {e.song.artist}
+                    </Text>
+                  )}
+                  <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 1 }}>
+                    {e.weeks} {e.weeks === 1 ? "sem" : "sems"} · pico #{e.peak}
                   </Text>
                 </View>
-                <Text style={{ fontSize: 10.5, color: colors.textMuted, marginRight: 2 }}>
-                  {e.weeks} {e.weeks === 1 ? "sem" : "sems"} · pico #{e.peak}
-                </Text>
                 <MovementBadge status={e.status as MovementStatus} delta={e.delta ?? undefined} compact />
-              </View>
+              </Pressable>
             ))}
           </View>
         </ScrollView>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

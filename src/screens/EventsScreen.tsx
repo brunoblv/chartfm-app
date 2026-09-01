@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Linking } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -7,6 +7,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { Screen } from "../components/Screen";
 import { Cover } from "../components/Cover";
 import { CLUBE_COVER } from "../data/mock";
+import { API_BASE_URL } from "../lib/api";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useCopaQuery, useCopaFixturesQuery } from "../api/copa";
 import { usePushRoundQuery, pushPhaseLabel } from "../api/push";
@@ -89,10 +90,10 @@ export function EventsScreen() {
         </View>
         {pushRound?.phase === "SUBMISSION" ? (
           <Pressable
-            onPress={() => navigation.navigate("PushSubmit")}
+            onPress={() => Linking.openURL(`${API_BASE_URL}/votacao-da-semana`)}
             style={{ marginTop: 14, backgroundColor: colors.btnDarkBg, borderRadius: 100, paddingVertical: 13, alignItems: "center" }}
           >
-            <Text style={{ color: colors.btnDarkFg, fontWeight: "700", fontSize: 13.5 }}>Indicar música</Text>
+            <Text style={{ color: colors.btnDarkFg, fontWeight: "700", fontSize: 13.5 }}>Ver enquetes da semana</Text>
           </Pressable>
         ) : pushRound?.phase === "LISTENING" || pushRound?.phase === "RANKING" ? (
           <Pressable

@@ -23,10 +23,16 @@ export interface ArtistFan {
   points: number;
 }
 
+export interface ArtistMyStats {
+  appearances: number;
+  totalPoints: number;
+  number1s: number;
+}
+
 export interface ArtistDetail {
   artistId: number;
   name: string;
-  bio: string | null;
+  resumo: string | null;
   imageUrl: string | null;
   spotifyUrl: string | null;
   genres: string[];
@@ -34,14 +40,16 @@ export interface ArtistDetail {
   topSongs: ArtistTopSong[];
   albums: ArtistAlbum[];
   totalPoints: number;
+  listenersCount: number;
   number1s: number;
   bigFans: ArtistFan[];
+  myStats: ArtistMyStats | null;
 }
 
 export function useArtistQuery(artistId: number | undefined) {
   return useQuery({
     queryKey: ["artist", artistId],
-    queryFn: () => apiRequest<ArtistDetail>(`/api/artist/${artistId}`, { auth: false }),
+    queryFn: () => apiRequest<ArtistDetail>(`/api/artist/${artistId}`),
     enabled: artistId != null,
   });
 }

@@ -31,6 +31,7 @@ export interface AlbumDetail {
   artistPath: string;
   stats: { label: string; value: number; color: string }[];
   topFans: AlbumFan[];
+  resumo: string | null;
 }
 
 export function useAlbumQuery(albumId: number | undefined) {

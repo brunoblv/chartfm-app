@@ -11,6 +11,7 @@ import { useNotificationPrefsQuery, useUpdateNotificationPrefsMutation, NotifPre
 import { Screen } from "../components/Screen";
 import { BackHeader } from "../components/BackHeader";
 import { Toggle } from "../components/Toggle";
+import { SocialIcon } from "../components/SocialIcon";
 import { RootStackParamList } from "../navigation/RootNavigator";
 
 const NOTIF_ROWS: { category: NotifPrefCategory | null; label: string; note: string }[] = [
@@ -164,7 +165,7 @@ export function SettingsScreen() {
       <View style={{ marginHorizontal: 16, marginBottom: 20, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}>
           <View style={{ width: 38, height: 38, borderRadius: 11, backgroundColor: colors.fillSubtle, alignItems: "center", justifyContent: "center" }}>
-            <Text style={{ fontWeight: "700", fontSize: 10.5, color: colors.textMuted }}>last.fm</Text>
+            <SocialIcon name="lastfm" size={19} />
           </View>
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Last.fm</Text>
@@ -178,7 +179,7 @@ export function SettingsScreen() {
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 14 }}>
           <View style={{ width: 38, height: 38, borderRadius: 11, backgroundColor: colors.fillSubtle, alignItems: "center", justifyContent: "center" }}>
-            <Text style={{ fontWeight: "700", fontSize: 10.5, color: colors.textMuted }}>SPFY</Text>
+            <SocialIcon name="spotify" size={19} />
           </View>
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Spotify</Text>

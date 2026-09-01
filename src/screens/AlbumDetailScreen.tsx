@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, ScrollView, Image, Pressable, ActivityIndicator, Linking } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
@@ -24,35 +25,36 @@ export function AlbumDetailScreen() {
 
   if (albumId == null) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>Álbum não encontrado.</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (albumQuery.isLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (!album) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
           Não foi possível carregar esse álbum.
         </Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: 40 }}>
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
+    <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
       <BackHeader
         action={
           <Pressable
@@ -105,6 +107,12 @@ export function AlbumDetailScreen() {
           </Pressable>
         )}
       </View>
+
+      {album.resumo ? (
+        <Text style={{ fontSize: 13.5, lineHeight: 20, color: colors.textSubtle, marginHorizontal: 16, marginBottom: 20 }}>
+          {album.resumo}
+        </Text>
+      ) : null}
 
       {album.reception ? (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 16 }}>
@@ -246,5 +254,6 @@ export function AlbumDetailScreen() {
         </View>
       )}
     </ScrollView>
+    </SafeAreaView>
   );
 }
