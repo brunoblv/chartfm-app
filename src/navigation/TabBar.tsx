@@ -58,11 +58,25 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
         const focused = state.index === index;
         const color = focused ? colors.accent : colors.textMuted;
 
+        // Barra customizada não emite `tabPress` sozinha. Sem isso o listener
+        // do RootNavigator nunca corre, o "+" navega para a aba `Create`
+        // (`Blank` = tela branca) e "Eu" abre o perfil em vez da folha.
+        const onPress = () => {
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true,
+          });
+          if (!event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
         if (isCreate) {
           return (
             <Pressable
               key={route.key}
-              onPress={() => navigation.navigate(route.name)}
+              onPress={onPress}
               style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 6 }}
             >
               <View
@@ -90,7 +104,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
         return (
           <Pressable
             key={route.key}
-            onPress={() => navigation.navigate(route.name)}
+            onPress={onPress}
             style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 3, paddingVertical: 10, minHeight: 56 }}
           >
             {icons[route.name]?.(color)}

@@ -170,7 +170,7 @@ export function ProfileScreen() {
           {activeChart ? (
             <ParadaChartCard
               chart={activeChart}
-              onEditPress={() => navigation.navigate("Editor")}
+              onEditPress={() => navigation.navigate("ChooseParada", { next: "Editor" })}
               onSeeAllPress={() => navigation.navigate("ChartDetail", { chartId: activeChart.id })}
               onPressEntry={(songId, spotifyId) => navigation.navigate("MusicDetail", { songId, spotifyId: spotifyId ?? undefined })}
               onPressArtist={(artistId) => navigation.navigate("ArtistDetail", { artistId })}

@@ -4,6 +4,8 @@ import Svg, { Path } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
+import { useAppState } from "../state/AppState";
+import { useParadasQuery } from "../api/paradas";
 import { BackHeader } from "../components/BackHeader";
 import { RootStackParamList } from "../navigation/RootNavigator";
 
@@ -58,13 +60,16 @@ function OptionCard({
 export function CreateGuidedScreen() {
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
+  const { paradaId } = useAppState();
+  const paradasQuery = useParadasQuery();
+  const selected = paradasQuery.data?.paradas.find((p) => p.id === paradaId);
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      <BackHeader title="Nova parada" />
+      <BackHeader title={selected?.name ?? "Nova parada"} />
       <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
         <Text style={{ fontSize: 14, color: colors.textMuted, lineHeight: 20 }}>
-          Como você quer montar sua parada essa semana?
+          Como você quer montar {selected ? selected.name : "sua parada"} essa semana?
         </Text>
       </View>
       <View style={{ paddingHorizontal: 16, gap: 12 }}>

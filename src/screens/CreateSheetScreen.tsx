@@ -64,7 +64,7 @@ export function CreateSheetScreen() {
           label="Montar uma parada"
           onPress={() => {
             navigation.goBack();
-            navigation.navigate("CreateGuided");
+            navigation.navigate("ChooseParada", { next: "CreateGuided" });
           }}
         />
         <Row

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Pressable, ScrollView, ActivityIndicator, Alert, Image } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { useAppTheme } from "../theme/ThemeProvider";
@@ -37,6 +37,7 @@ function songToChartSong(s: LastfmImportSong, seed: number): ChartSong {
 
 export function LastfmScreen() {
   const { colors } = useAppTheme();
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const { setChart } = useAppState();
   const statusQuery = useLastfmStatusQuery();
@@ -83,7 +84,7 @@ export function LastfmScreen() {
         ))}
       </View>
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 100 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 100 + insets.bottom }}>
         {step === 0 && (
           <View style={{ paddingHorizontal: 20 }}>
             <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 18, padding: 24, alignItems: "center" }}>
@@ -170,7 +171,7 @@ export function LastfmScreen() {
         )}
       </ScrollView>
 
-      <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: 16, backgroundColor: colors.bgTopbar, borderTopWidth: 0.5, borderTopColor: colors.divider }}>
+      <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: 16, paddingBottom: 16 + insets.bottom, backgroundColor: colors.bgTopbar, borderTopWidth: 0.5, borderTopColor: colors.divider }}>
         <PillButton label={ctaLabel} onPress={onCta} loading={ctaLoading} />
       </View>
     </SafeAreaView>

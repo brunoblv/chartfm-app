@@ -103,7 +103,7 @@ function InicioTab() {
       {hub?.weekStatus && (
         <WeekStatusCard
           status={hub.weekStatus}
-          onPublish={() => navigation.navigate("Editor")}
+          onPublish={() => navigation.navigate("ChooseParada", { next: "Editor" })}
           onViewChart={() =>
             hub.weekStatus.thisWeekChartId
               ? navigation.navigate("ChartDetail", { chartId: hub.weekStatus.thisWeekChartId })
@@ -302,9 +302,9 @@ export function HomeScreen() {
           <Text style={{ fontSize: 14, lineHeight: 21, color: "#fff", opacity: 0.9, marginTop: 10, marginBottom: 20, maxWidth: 270 }}>
             Escolha suas favoritas, monte sua parada pessoal e descubra como você se compara com outros fãs.
           </Text>
-          <PillButton label="Criar meu primeiro Chart" variant="white" onPress={() => navigation.navigate("Editor")} />
+          <PillButton label="Criar meu primeiro Chart" variant="white" onPress={() => navigation.navigate("ChooseParada", { next: "Editor" })} />
           <Pressable
-            onPress={() => navigation.navigate("Lastfm")}
+            onPress={() => navigation.navigate("ChooseParada", { next: "Lastfm" })}
             style={{
               marginTop: 10,
               backgroundColor: "rgba(255,255,255,0.16)",

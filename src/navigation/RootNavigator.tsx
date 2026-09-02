@@ -1,6 +1,6 @@
 import React from "react";
 import { View, ActivityIndicator } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useAppTheme } from "../theme/ThemeProvider";
@@ -44,7 +44,10 @@ import { ConversasScreen } from "../screens/ConversasScreen";
 import { ConversationThreadScreen } from "../screens/ConversationThreadScreen";
 import { HistoryScreen } from "../screens/HistoryScreen";
 import { CreateGuidedScreen } from "../screens/CreateGuidedScreen";
+import { ChooseParadaSheet } from "../screens/ChooseParadaSheet";
 import { HomeReview } from "../api/homeHub";
+
+export type ChartFlowNext = "Editor" | "CreateGuided" | "Lastfm";
 
 export type RootStackParamList = {
   Onboarding: undefined;
@@ -56,6 +59,7 @@ export type RootStackParamList = {
   Copa: undefined;
   Events: undefined;
   CreateSheet: undefined;
+  ChooseParada: { next: ChartFlowNext };
   ProfileSheet: undefined;
   AddSong: undefined;
   Lastfm: undefined;
@@ -97,6 +101,15 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 function Blank() {
+  const navigation = useNavigation();
+  React.useEffect(() => {
+    // Rede de segurança: se esta aba ficar em foco (estado antigo, ou o
+    // `tabPress` não impedir a navegação), sai da tela vazia e abre a folha.
+    return navigation.addListener("focus", () => {
+      navigation.navigate("Home" as never);
+      navigation.getParent()?.navigate("CreateSheet" as never);
+    });
+  }, [navigation]);
   return null;
 }
 
@@ -109,13 +122,13 @@ function MainTabs() {
     <Tab.Navigator
       screenOptions={{ headerShown: false }}
       tabBar={(props) => <TabBar {...props} />}
-      screenListeners={({ navigation }) => ({
+      screenListeners={({ navigation, route }) => ({
         tabPress: (e) => {
-          if (e.target?.includes("Create")) {
+          if (route.name === "Create") {
             e.preventDefault();
             navigation.getParent()?.navigate("CreateSheet");
           }
-          if (e.target?.includes("Profile")) {
+          if (route.name === "Profile") {
             e.preventDefault();
             navigation.getParent()?.navigate("ProfileSheet");
           }
@@ -183,6 +196,11 @@ export function RootNavigator() {
         <Stack.Screen
           name="CreateSheet"
           component={CreateSheetScreen}
+          options={{ presentation: "transparentModal", animation: "fade" }}
+        />
+        <Stack.Screen
+          name="ChooseParada"
+          component={ChooseParadaSheet}
           options={{ presentation: "transparentModal", animation: "fade" }}
         />
         <Stack.Screen

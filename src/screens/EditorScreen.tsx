@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { useAppState } from "../state/AppState";
 import { useAuth } from "../state/AuthContext";
@@ -19,8 +19,8 @@ import {
   existingChartIdFromConflict,
   publishErrorMessage,
 } from "../api/charts";
-import { useHomeHubQuery } from "../api/homeHub";
 import { useProfileQuery, ProfileChartEntry } from "../api/profile";
+import { useParadasQuery } from "../api/paradas";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -36,15 +36,21 @@ function entryToChartSong(e: ProfileChartEntry, seed: number): ChartSong {
 
 export function EditorScreen() {
   const { colors } = useAppTheme();
+  const insets = useSafeAreaInsets();
   const { chart, setChart, removeSong, paradaId, weekDate, spotlights, resetDraft } = useAppState();
   const { user } = useAuth();
   const navigation = useNavigation<Nav>();
   const publishMutation = usePublishChartMutation();
   const updateMutation = useUpdateChartMutation();
-  const homeHubQuery = useHomeHubQuery(Boolean(user));
-  const profileQuery = useProfileQuery(user?.handle);
+  const paradasQuery = useParadasQuery();
+  const selectedParada =
+    paradasQuery.data?.paradas.find((p) => p.id === paradaId) ??
+    paradasQuery.data?.paradas.find((p) => p.isPrimary) ??
+    paradasQuery.data?.paradas[0];
+  const profileQuery = useProfileQuery(user?.handle, paradaId ?? selectedParada?.id);
   const latestChart = profileQuery.data?.user.charts[0];
   const prefilledRef = useRef(false);
+  const lastParadaRef = useRef(paradaId);
 
   // Reseta a flag de pre-fill sempre que a tela ganha foco, para que abrir o
   // editor de novo (ex.: via "Atualizar meu Chart") ressincronize com o que
@@ -55,6 +61,13 @@ export function EditorScreen() {
       if (chart.length === 0) prefilledRef.current = false;
     }, [chart.length])
   );
+
+  useEffect(() => {
+    if (lastParadaRef.current === paradaId) return;
+    lastParadaRef.current = paradaId;
+    prefilledRef.current = false;
+    setChart([]);
+  }, [paradaId, setChart]);
 
   useEffect(() => {
     if (prefilledRef.current) return;
@@ -73,7 +86,7 @@ export function EditorScreen() {
 
   const handlePublish = () => {
     if (isSaving) return;
-    const vars = { songs: chart, paradaId, weekDate, spotlights };
+    const vars = { songs: chart, paradaId: paradaId ?? selectedParada?.id ?? null, weekDate, spotlights };
     publishMutation.mutate(vars, {
       onSuccess: () => {
         resetDraft();
@@ -147,7 +160,7 @@ export function EditorScreen() {
           </Pressable>
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
-              {homeHubQuery.data?.weekStatus.paradaNome ?? "Minha parada"}
+              {selectedParada?.name ?? "Minha parada"}
             </Text>
             <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 1 }}>
               {periodLabel ?? latestChart?.weekLabel ?? "Carregando…"} · {chart.length} {chart.length === 1 ? "música" : "músicas"}
@@ -220,7 +233,7 @@ export function EditorScreen() {
             renderItem={renderItem}
             onDragEnd={({ data }) => setChart(data)}
             containerStyle={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}
-            contentContainerStyle={{ paddingBottom: 96 }}
+            contentContainerStyle={{ paddingBottom: 96 + insets.bottom }}
             ListFooterComponent={
               <Pressable
                 onPress={() => navigation.navigate("AddSong")}
@@ -232,7 +245,7 @@ export function EditorScreen() {
           />
         )}
 
-        <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: 16, backgroundColor: colors.bgTopbar, borderTopWidth: 0.5, borderTopColor: colors.divider }}>
+        <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: 16, paddingBottom: 16 + insets.bottom, backgroundColor: colors.bgTopbar, borderTopWidth: 0.5, borderTopColor: colors.divider }}>
           <PillButton label="Publicar parada" onPress={handlePublish} loading={isSaving} />
         </View>
       </SafeAreaView>
