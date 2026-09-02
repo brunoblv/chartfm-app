@@ -16,6 +16,7 @@ import { ProfileScreen } from "../screens/ProfileScreen";
 import { EditorScreen } from "../screens/EditorScreen";
 import { CopaScreen } from "../screens/CopaScreen";
 import { CreateSheetScreen } from "../screens/CreateSheetScreen";
+import { ProfileSheetScreen } from "../screens/ProfileSheetScreen";
 import { AddSongScreen } from "../screens/AddSongScreen";
 import { LastfmScreen } from "../screens/LastfmScreen";
 import { Global100Screen } from "../screens/Global100Screen";
@@ -53,7 +54,9 @@ export type RootStackParamList = {
   Editor: undefined;
   CreateGuided: undefined;
   Copa: undefined;
+  Events: undefined;
   CreateSheet: undefined;
+  ProfileSheet: undefined;
   AddSong: undefined;
   Lastfm: undefined;
   Global100: undefined;
@@ -84,9 +87,9 @@ export type RootStackParamList = {
 
 export type MainTabParamList = {
   Home: undefined;
-  Discover: undefined;
+  Global: undefined;
   Create: undefined;
-  Events: undefined;
+  Discover: undefined;
   Profile: undefined;
 };
 
@@ -95,6 +98,10 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 
 function Blank() {
   return null;
+}
+
+function GlobalTab() {
+  return <Global100Screen asTab />;
 }
 
 function MainTabs() {
@@ -108,13 +115,17 @@ function MainTabs() {
             e.preventDefault();
             navigation.getParent()?.navigate("CreateSheet");
           }
+          if (e.target?.includes("Profile")) {
+            e.preventDefault();
+            navigation.getParent()?.navigate("ProfileSheet");
+          }
         },
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Discover" component={DiscoverScreen} />
+      <Tab.Screen name="Global" component={GlobalTab} />
       <Tab.Screen name="Create" component={Blank} />
-      <Tab.Screen name="Events" component={EventsScreen} />
+      <Tab.Screen name="Discover" component={DiscoverScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
@@ -146,6 +157,7 @@ export function RootNavigator() {
         <Stack.Screen name="Editor" component={EditorScreen} />
         <Stack.Screen name="CreateGuided" component={CreateGuidedScreen} />
         <Stack.Screen name="Copa" component={CopaScreen} />
+        <Stack.Screen name="Events" component={EventsScreen} />
         <Stack.Screen name="Lastfm" component={LastfmScreen} />
         <Stack.Screen name="Global100" component={Global100Screen} />
         <Stack.Screen name="Search" component={SearchScreen} />
@@ -171,6 +183,11 @@ export function RootNavigator() {
         <Stack.Screen
           name="CreateSheet"
           component={CreateSheetScreen}
+          options={{ presentation: "transparentModal", animation: "fade" }}
+        />
+        <Stack.Screen
+          name="ProfileSheet"
+          component={ProfileSheetScreen}
           options={{ presentation: "transparentModal", animation: "fade" }}
         />
         <Stack.Screen

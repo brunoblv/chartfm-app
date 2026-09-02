@@ -3,6 +3,7 @@ import { View, Text, Pressable, ScrollView, ActivityIndicator } from "react-nati
 import Svg, { Circle, Line, Path } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { BackHeader } from "../components/BackHeader";
 import { SongRow } from "../components/SongRow";
@@ -29,8 +30,9 @@ function ComingSoon({ label }: { label: string }) {
   );
 }
 
-export function Global100Screen() {
+export function Global100Screen({ asTab }: { asTab?: boolean } = {}) {
   const { colors } = useAppTheme();
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("songs");
   const [week, setWeek] = useState<number | undefined>(undefined);
@@ -43,7 +45,9 @@ export function Global100Screen() {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ paddingBottom: 24 }}>
-      <BackHeader />
+      {/* Como aba (mirror do /global do site), a raiz da tab não tem para onde
+          voltar — goBack() aqui vazaria para fora da Main e sairia do tab flow. */}
+      {asTab ? <View style={{ height: insets.top + 8 }} /> : <BackHeader />}
 
       <View style={{ marginHorizontal: 16, backgroundColor: "#1D1D1F", borderRadius: 18, padding: 20 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>

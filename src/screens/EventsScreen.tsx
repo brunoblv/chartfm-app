@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { Screen } from "../components/Screen";
+import { BackHeader } from "../components/BackHeader";
 import { Cover } from "../components/Cover";
 import { CLUBE_COVER } from "../data/mock";
 import { API_BASE_URL } from "../lib/api";
@@ -37,8 +38,8 @@ export function EventsScreen() {
 
   return (
     <Screen>
+      <BackHeader title="Eventos" />
       <View style={{ paddingHorizontal: 20, paddingBottom: 16 }}>
-        <Text style={{ fontSize: 30, fontWeight: "800", letterSpacing: -0.8, color: colors.text }}>Eventos</Text>
         <Text style={{ fontSize: 13.5, color: colors.textMuted, marginTop: 6 }}>
           {[copa, pushRound].filter(Boolean).length} acontecendo agora
         </Text>

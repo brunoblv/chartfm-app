@@ -18,10 +18,10 @@ const icons: Record<string, (color: string) => React.ReactNode> = {
       <Path d="M18.5 15.5l.8 1.9 1.9.8-1.9.8-.8 1.9-.8-1.9-1.9-.8 1.9-.8z" />
     </Svg>
   ),
-  Events: (color) => (
+  Global: (color) => (
     <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round">
-      <Path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z" />
-      <Path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
+      <Path d="M3 3v18h18" />
+      <Path d="M18 17V9M13 17V5M8 17v-4" />
     </Svg>
   ),
   Profile: (color) => (
@@ -34,8 +34,8 @@ const icons: Record<string, (color: string) => React.ReactNode> = {
 
 const labels: Record<string, string> = {
   Home: "Home",
+  Global: "Charts",
   Discover: "Discover",
-  Events: "Eventos",
   Profile: "Eu",
 };
 
