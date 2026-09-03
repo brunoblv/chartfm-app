@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
-import { ChartSong } from "../data/mock";
+import { ChartSong, sameChartSong } from "../data/mock";
 import { CoverArt } from "../components/Cover";
 
 export interface SpotlightSong {
@@ -25,6 +25,7 @@ interface AppStateValue {
   setChart: (songs: ChartSong[]) => void;
   addSong: (song: ChartSong) => void;
   removeSong: (index: number) => void;
+  moveSong: (from: number, to: number) => void;
   showGamification: boolean;
   setShowGamification: (v: boolean) => void;
   copaVote: "a" | "b" | null;
@@ -75,11 +76,21 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const setChart = useCallback((songs: ChartSong[]) => setChartState(songs), []);
 
   const addSong = useCallback((song: ChartSong) => {
-    setChartState((prev) => (prev.some((s) => s.t === song.t) ? prev : [...prev, song]));
+    setChartState((prev) => (prev.some((s) => sameChartSong(s, song)) ? prev : [...prev, song]));
   }, []);
 
   const removeSong = useCallback((index: number) => {
     setChartState((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const moveSong = useCallback((from: number, to: number) => {
+    setChartState((prev) => {
+      if (from === to || from < 0 || to < 0 || from >= prev.length || to >= prev.length) return prev;
+      const next = [...prev];
+      const [item] = next.splice(from, 1);
+      next.splice(to, 0, item);
+      return next;
+    });
   }, []);
 
   const setSpotlight = useCallback((category: SpotlightCategory, song: SpotlightDraft) => {
@@ -99,6 +110,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       setChart,
       addSong,
       removeSong,
+      moveSong,
       showGamification,
       setShowGamification,
       copaVote,
@@ -130,6 +142,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       setChart,
       addSong,
       removeSong,
+      moveSong,
       setSpotlight,
       resetDraft,
     ]

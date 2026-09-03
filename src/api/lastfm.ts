@@ -51,12 +51,25 @@ export interface LastfmImportSong {
   imageUrl: string | null;
 }
 
+export type LastfmImportPeriod = "7days" | "30days";
+
+export interface LastfmImportParams {
+  period: LastfmImportPeriod;
+  limit: number;
+  weekDate?: string | null;
+}
+
 export function useLastfmImportMutation() {
   return useMutation({
-    mutationFn: (period: "7days" | "30days") =>
+    mutationFn: ({ period, limit, weekDate }: LastfmImportParams) =>
       apiRequest<{ songs: LastfmImportSong[]; total: number; periodLabel: string }>("/api/lastfm/import", {
         method: "POST",
-        body: { period, limit: 20 },
+        body: {
+          period,
+          limit: Math.min(200, Math.max(1, Math.round(limit))),
+          filterNewHits: false,
+          ...(weekDate ? { weekDate } : {}),
+        },
       }),
   });
 }

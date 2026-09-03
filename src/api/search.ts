@@ -57,3 +57,29 @@ export function useSearchQuery(query: string) {
     enabled: debounced.length >= 2,
   });
 }
+
+export interface SpotifySearchTrack {
+  spotifyId: string;
+  title: string;
+  artist: string;
+  album: string;
+  imageUrl: string | null;
+}
+
+export interface SpotifySearchResponse {
+  tracks: SpotifySearchTrack[];
+  configured?: boolean;
+  unavailable?: boolean;
+  error?: string;
+}
+
+/** Mesma busca da tela de criar parada no site: catálogo com Spotify + API do Spotify. */
+export function useSpotifyTrackSearch(query: string) {
+  const debounced = useDebouncedValue(query.trim(), 350);
+  return useQuery({
+    queryKey: ["spotify-search", debounced],
+    queryFn: () =>
+      apiRequest<SpotifySearchResponse>(`/api/spotify/search?q=${encodeURIComponent(debounced)}&limit=12`),
+    enabled: debounced.length >= 2,
+  });
+}

@@ -15,6 +15,16 @@ export interface ChartSong {
   songId?: string | null;
 }
 
+export function sameChartSong(a: ChartSong, b: ChartSong): boolean {
+  if (a.spotifyId && b.spotifyId && a.spotifyId === b.spotifyId) return true;
+  if (a.songId && b.songId && a.songId === b.songId) return true;
+  return a.t.trim().toLowerCase() === b.t.trim().toLowerCase() && a.a.trim().toLowerCase() === b.a.trim().toLowerCase();
+}
+
+export function chartSongKey(song: ChartSong): string {
+  return song.spotifyId ?? song.songId ?? `${song.t}|||${song.a}`;
+}
+
 export interface GlobalSong extends ChartSong {
   p: number;
   meta: string;
