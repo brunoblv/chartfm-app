@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="design_doc_mode" content="canvas">
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/styles.css">
+  <script src="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; background: #e8e8ea; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+  </style>
+</helmet>
+
+<section style="padding: 56px; display: flex; flex-direction: column; gap: 24px; font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif;">
+  <div style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #6b6b70; font-weight: 600;">Turn 3 · Fundos por editoria · 1080×1920</div>
+
+  <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
+
+    <div id="3a" style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">3a</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Global 100</span>
+      </div>
+      <div id="bg-3a" data-theme="dark" style="width: 1080px; height: 1920px; background: #07070C; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 100px 72px;">
+        <div style="position: absolute; top: 520px; left: 50%; transform: translateX(-50%); width: 1100px; height: 1100px; border-radius: 999px; background: radial-gradient(closest-side, rgba(43,92,230,0.34), rgba(43,92,230,0) 72%);"></div>
+        <div style="position: absolute; top: 300px; left: 50%; transform: translateX(-50%); width: 900px; height: 900px; border-radius: 999px; border: 2px solid rgba(255,255,255,0.10);"></div>
+        <div style="position: absolute; top: 460px; left: 50%; transform: translateX(-50%); width: 640px; height: 640px; border-radius: 999px; border: 2px solid rgba(255,255,255,0.08);"></div>
+        <div style="position: absolute; top: 620px; left: 50%; transform: translateX(-50%); width: 380px; height: 380px; border-radius: 999px; border: 2px solid rgba(250,36,60,0.5);"></div>
+        <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 120px);"></div>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 22px;">
+          <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ logoMid }}" hint-size="300px,70px"></x-import>
+          <div style="font-size: 120px; font-weight: 800; color: #fff; letter-spacing: -0.04em; line-height: 0.9;">GLOBAL</div>
+          <div style="font-size: 168px; font-weight: 800; color: var(--accent); letter-spacing: -0.05em; line-height: 0.82;">100</div>
+        </div>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px;">
+          <div style="font-size: 26px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(255,255,255,0.45); font-weight: 600;">o ranking mundial</div>
+          <div style="font-size: 40px; font-weight: 600; color: #fff;">{{ site }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="3b" style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">3b</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Clube do Disco</span>
+      </div>
+      <div id="bg-3b" data-theme="light" style="width: 1080px; height: 1920px; background: #F3EDE4; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 100px 72px;">
+        <div style="position: absolute; top: 700px; left: 50%; transform: translateX(-50%); width: 820px; height: 820px; border-radius: 999px; background: #E9DFD1;"></div>
+        <div style="position: absolute; top: 830px; left: 50%; transform: translateX(-50%); width: 560px; height: 560px; border-radius: 999px; border: 3px solid rgba(0,0,0,0.07);"></div>
+        <div style="position: absolute; top: 950px; left: 50%; transform: translateX(-50%); width: 320px; height: 320px; border-radius: 999px; border: 3px solid rgba(0,0,0,0.07);"></div>
+        <div style="position: absolute; top: 1078px; left: 50%; transform: translateX(-50%); width: 64px; height: 64px; border-radius: 999px; background: var(--accent);"></div>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 26px;">
+          <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ logoMid }}" hint-size="300px,70px"></x-import>
+          <div style="font-size: 96px; font-weight: 300; color: #2A241D; letter-spacing: -0.03em; line-height: 1;">Clube</div>
+          <div style="font-size: 96px; font-weight: 800; color: #2A241D; letter-spacing: -0.04em; line-height: 0.9; margin-top: -18px;">do Disco</div>
+          <div style="width: 120px; height: 3px; background: var(--accent);"></div>
+        </div>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 16px;">
+          <div style="font-size: 26px; letter-spacing: 0.28em; text-transform: uppercase; color: #8A7F71; font-weight: 600;">um álbum por semana</div>
+          <div style="font-size: 40px; font-weight: 600; color: #2A241D;">{{ site }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="3c" style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">3c</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Retrospectiva</span>
+      </div>
+      <div id="bg-3c" data-theme="dark" style="width: 1080px; height: 1920px; background: #120A18; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 100px 72px;">
+        <div style="position: absolute; top: -160px; left: -200px; width: 900px; height: 900px; background: radial-gradient(closest-side, rgba(122,59,224,0.45), rgba(122,59,224,0) 70%);"></div>
+        <div style="position: absolute; bottom: -240px; right: -220px; width: 1000px; height: 1000px; background: radial-gradient(closest-side, rgba(250,36,60,0.4), rgba(250,36,60,0) 70%);"></div>
+        <div style="position: absolute; top: 640px; left: 50%; transform: translateX(-50%); width: 720px; height: 720px; border-radius: 999px; border: 2px solid rgba(255,255,255,0.09);"></div>
+        <div style="position: absolute; top: 820px; left: 50%; transform: translateX(-50%); width: 360px; height: 360px; border-radius: 999px; border: 2px solid rgba(255,255,255,0.07);"></div>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+          <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ logoMid }}" hint-size="300px,70px"></x-import>
+          <div style="font-size: 78px; font-weight: 800; color: #fff; letter-spacing: -0.035em; line-height: 1; text-align: center;">Retrospectiva</div>
+          <div style="width: 120px; height: 3px; background: var(--accent);"></div>
+        </div>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px;">
+          <div style="font-size: 26px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(255,255,255,0.5); font-weight: 600;">o ano em música</div>
+          <div style="font-size: 40px; font-weight: 600; color: #fff;">{{ site }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="3d" style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">3d</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Notícia</span>
+      </div>
+      <div id="bg-3d" data-theme="light" style="width: 1080px; height: 1920px; background: var(--bg); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 0;">
+        <div style="background: #101014; padding: 72px 72px 56px; display: flex; flex-direction: column; gap: 28px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ logoMid }}" hint-size="300px,70px"></x-import>
+            <div style="background: var(--accent); color: #fff; font-size: 26px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; padding: 12px 24px; border-radius: 8px;">notícia</div>
+          </div>
+          <div style="width: 100%; height: 3px; background: var(--accent);"></div>
+        </div>
+        <div style="flex: 1; position: relative; display: flex; align-items: center; justify-content: center;">
+          <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(180deg, rgba(0,0,0,0.05) 0 1px, transparent 1px 110px);"></div>
+          <div style="position: absolute; top: 60px; left: 50%; transform: translateX(-50%); width: 1200px; height: 700px; background: radial-gradient(closest-side, rgba(250,36,60,0.12), rgba(250,36,60,0) 70%);"></div>
+        </div>
+        <div style="background: #101014; padding: 44px 72px 72px; display: flex; flex-direction: column; gap: 22px;">
+          <div style="width: 100%; height: 3px; background: rgba(255,255,255,0.14);"></div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <div style="font-size: 40px; font-weight: 600; color: #fff;">{{ site }}</div>
+            <div style="font-size: 26px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.45); font-weight: 600;">todo dia</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="3e" style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">3e</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Lançamento</span>
+      </div>
+      <div id="bg-3e" data-theme="dark" style="width: 1080px; height: 1920px; background: #0A0A0F; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 100px 72px;">
+        <div style="position: absolute; bottom: -260px; left: 50%; transform: translateX(-50%); width: 1300px; height: 1000px; background: radial-gradient(closest-side, rgba(250,36,60,0.5), rgba(250,36,60,0) 72%);"></div>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 900px; background: linear-gradient(0deg, rgba(255,255,255,0.06), transparent);"></div>
+        <sc-for list="{{ rays }}" as="ray" hint-placeholder-count="7">
+          <div style="position: absolute; bottom: 420px; left: 50%; width: 3px; height: 620px; transform-origin: bottom center; transform: rotate({{ ray.rot }}); background: linear-gradient(0deg, rgba(255,255,255,0.22), transparent);"></div>
+        </sc-for>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+          <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ logoMid }}" hint-size="300px,70px"></x-import>
+          <div style="display: flex; align-items: center; gap: 16px; background: var(--accent); border-radius: 999px; padding: 16px 40px;">
+            <div style="width: 14px; height: 14px; border-radius: 999px; background: #fff;"></div>
+            <div style="font-size: 34px; font-weight: 800; color: #fff; letter-spacing: 0.16em; text-transform: uppercase;">lançamento</div>
+          </div>
+          <div style="font-size: 96px; font-weight: 800; color: #fff; letter-spacing: -0.04em; line-height: 1; text-align: center;">Chegou</div>
+        </div>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px;">
+          <div style="font-size: 26px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(255,255,255,0.55); font-weight: 600;">novidade na parada</div>
+          <div style="font-size: 40px; font-weight: 600; color: #fff;">{{ site }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="3f" style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">3f</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Editorial</span>
+      </div>
+      <div id="bg-3f" data-theme="light" style="width: 1080px; height: 1920px; background: var(--surface); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 96px 80px;">
+        <div style="position: absolute; top: 0; left: 80px; width: 3px; bottom: 0; background: var(--divider);"></div>
+        <div style="position: absolute; top: 0; right: 80px; width: 3px; bottom: 0; background: var(--divider);"></div>
+        <div style="position: absolute; top: 620px; left: 80px; right: 80px; height: 640px; background: var(--fill-inset);"></div>
+        <div style="position: absolute; top: 620px; left: 80px; right: 80px; height: 3px; background: var(--accent);"></div>
+        <div style="position: relative; display: flex; flex-direction: column; gap: 30px;">
+          <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ logoMid }}" hint-size="300px,70px"></x-import>
+          <div style="font-size: 26px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); font-weight: 700;">editorial</div>
+          <div style="font-size: 84px; font-weight: 300; color: var(--text); letter-spacing: -0.03em; line-height: 1.05; text-wrap: pretty;">Opinião<br>e análise</div>
+        </div>
+        <div style="position: relative; display: flex; flex-direction: column; gap: 22px;">
+          <div style="width: 100%; height: 3px; background: var(--divider-strong);"></div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <div style="font-size: 40px; font-weight: 600; color: var(--text);">{{ site }}</div>
+            <div style="width: 14px; height: 14px; border-radius: 999px; background: var(--accent);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #6b6b70; font-weight: 600; margin-top: 32px;">Turn 2 · 9:16 vídeo backgrounds · 1080×1920</div>
+
+  <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
+
+    <div id="2a" style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">2a</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Noite / glow</span>
+      </div>
+      <div id="bg-2a" data-theme="dark" style="width: 1080px; height: 1920px; background: #0B0B0F; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 96px 72px;">
+        <div style="position: absolute; top: -280px; left: 50%; transform: translateX(-50%); width: 1200px; height: 900px; background: radial-gradient(closest-side, rgba(250,36,60,0.55), rgba(250,36,60,0) 70%); filter: blur(20px);"></div>
+        <div style="position: absolute; bottom: -220px; left: -180px; width: 900px; height: 900px; background: radial-gradient(closest-side, rgba(122,59,224,0.35), rgba(122,59,224,0) 70%); filter: blur(20px);"></div>
+        <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(180deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 96px);"></div>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 26px;">
+          <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ logoBig }}" hint-size="360px,84px"></x-import>
+          <div style="font-size: 30px; letter-spacing: 0.34em; text-transform: uppercase; color: rgba(255,255,255,0.5); font-weight: 600;">as paradas da semana</div>
+        </div>
+        <div style="position: relative; display: flex; align-items: flex-end; gap: 18px; height: 300px; opacity: 0.5;">
+          <sc-for list="{{ bars }}" as="bar" hint-placeholder-count="9">
+            <div style="width: 54px; border-radius: 12px 12px 0 0; background: linear-gradient(180deg, var(--accent), rgba(250,36,60,0.05)); height: {{ bar.h }};"></div>
+          </sc-for>
+        </div>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 20px;">
+          <div style="width: 200px; height: 2px; background: rgba(255,255,255,0.16);"></div>
+          <div style="font-size: 40px; font-weight: 600; color: #fff; letter-spacing: 0.02em;">{{ site }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="2b" style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">2b</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Capas flutuantes</span>
+      </div>
+      <div id="bg-2b" data-theme="light" style="width: 1080px; height: 1920px; background: var(--bg); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 96px 72px;">
+        <div style="position: absolute; top: 380px; left: 50%; transform: translateX(-50%); width: 1400px; height: 1000px; background: radial-gradient(closest-side, rgba(250,36,60,0.14), rgba(250,36,60,0) 70%);"></div>
+        <sc-for list="{{ floats }}" as="f" hint-placeholder-count="6">
+          <div style="position: absolute; top: {{ f.top }}; left: {{ f.left }}; transform: rotate({{ f.rot }}); filter: blur({{ f.blur }}); opacity: {{ f.op }};">
+            <x-import component-from-global-scope="ChartFM.Cover" cover="{{ f.cover }}" size="{{ f.size }}" rounded="{{ r24 }}" hint-size="200px,200px"></x-import>
+          </div>
+        </sc-for>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+          <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ logoBig }}" hint-size="360px,84px"></x-import>
+          <div style="font-size: 30px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">top 50 · toda semana</div>
+        </div>
+        <div style="position: relative; display: flex; align-items: center; gap: 20px; background: var(--surface-elevated); border: 1px solid var(--divider); border-radius: 999px; padding: 22px 44px; box-shadow: var(--shadow-hero);">
+          <div style="width: 14px; height: 14px; border-radius: 999px; background: var(--accent);"></div>
+          <div style="font-size: 40px; font-weight: 600; color: var(--text);">{{ site }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="2c" style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">2c</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Vermelho cheio</span>
+      </div>
+      <div id="bg-2c" data-theme="dark" style="width: 1080px; height: 1920px; background: var(--gradient-hero); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 96px 72px;">
+        <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(115deg, rgba(255,255,255,0.07) 0 2px, transparent 2px 34px);"></div>
+        <div style="position: absolute; top: 640px; left: 50%; transform: translate(-50%, 0); width: 760px; height: 760px; border-radius: 999px; border: 2px solid rgba(255,255,255,0.22);"></div>
+        <div style="position: absolute; top: 760px; left: 50%; transform: translate(-50%, 0); width: 520px; height: 520px; border-radius: 999px; border: 2px solid rgba(255,255,255,0.16);"></div>
+        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 22px;">
+          <div style="background: rgba(255,255,255,0.96); border-radius: 28px; padding: 30px 44px; box-shadow: 0 24px 60px rgba(0,0,0,0.22);">
+            <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ logoMid }}" hint-size="300px,70px"></x-import>
+          </div>
+          <div style="font-size: 30px; letter-spacing: 0.32em; text-transform: uppercase; color: rgba(255,255,255,0.8); font-weight: 600;">quem subiu, quem caiu</div>
+        </div>
+        <div style="position: relative; display: flex; gap: 28px;">
+          <sc-for list="{{ dots }}" as="d" hint-placeholder-count="3">
+            <div style="width: 16px; height: 16px; border-radius: 999px; background: rgba(255,255,255,0.55);"></div>
+          </sc-for>
+        </div>
+        <div style="position: relative; font-size: 42px; font-weight: 700; color: #fff; letter-spacing: 0.02em;">{{ site }}</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;site&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;chartfm.com.br&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const heights = [120, 200, 96, 260, 168, 300, 140, 224, 110];
+    const pal = [
+      ["#FA243C", "#FF6B4A"], ["#2B5CE6", "#6FA8FF"], ["#12A150", "#7BE0A5"],
+      ["#7A3BE0", "#C08BFF"], ["#E08A12", "#FFD37A"], ["#0F7B8A", "#5FD3E0"],
+    ];
+    const spots = [
+      { top: "640px",  left: "-70px",  rot: "-12deg", size: 300, blur: "2px", op: 0.5 },
+      { top: "880px",  left: "760px",  rot: "9deg",   size: 340, blur: "3px", op: 0.45 },
+      { top: "1180px", left: "80px",   rot: "6deg",   size: 260, blur: "1px", op: 0.55 },
+      { top: "1420px", left: "560px",  rot: "-8deg",  size: 300, blur: "4px", op: 0.4 },
+      { top: "420px",  left: "820px",  rot: "14deg",  size: 220, blur: "5px", op: 0.32 },
+      { top: "1000px", left: "380px",  rot: "-4deg",  size: 200, blur: "6px", op: 0.28 },
+    ];
+    return {
+      site: this.props.site ?? "chartfm.com.br",
+      logoBig: 84, logoMid: 70, r24: 24,
+      bars: heights.map(h => ({ h: h + "px" })),
+      dots: [0, 1, 2],
+      rays: [-42, -28, -14, 0, 14, 28, 42].map(d => ({ rot: d + "deg" })),
+      floats: spots.map((s, i) => ({ ...s, cover: { palette: pal[i % pal.length], seed: i * 3 + 2 } })),
+    };
+  }
+}
+</script>
+</body>
+</html>

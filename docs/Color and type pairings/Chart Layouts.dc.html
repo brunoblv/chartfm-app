@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="design_doc_mode" content="canvas">
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/styles.css">
+  <script src="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; background: #e8e8ea; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+  </style>
+</helmet>
+
+<section style="padding: 56px; display: flex; flex-direction: column; gap: 28px; font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif;">
+  <div style="display: flex; flex-direction: column; gap: 6px;">
+    <div style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #6b6b70; font-weight: 600;">Turn 1 · Chart screen, layout variety</div>
+    <div style="font-size: 15px; color: #8a8a90; max-width: 620px;">Same ChartFM components and tokens throughout — only composition changes. Reference <a href="#1a">1a</a>, <a href="#1b">1b</a>, <a href="#1c">1c</a> in chat.</div>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start;">
+
+    <div id="1a" style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">1a</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Dense ledger</span>
+        <span style="font-size: 13px; color: #8a8a90;">rank-first, scannable</span>
+      </div>
+      <div data-theme="light" style="width: 390px; background: var(--bg); border-radius: 22px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.14);">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px 18px 12px; background: var(--surface); border-bottom: 1px solid var(--divider);">
+          <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ logoSize }}" hint-size="120px,26px"></x-import>
+          <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted);">Top 50 · Week 34</div>
+        </div>
+        <sc-for list="{{ rows }}" as="row" hint-placeholder-count="6">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--divider-soft);">
+            <div style="width: 26px; display: flex; justify-content: flex-end;">
+              <x-import component-from-global-scope="ChartFM.PositionNumber" n="{{ row.n }}" size="{{ rankSm }}" hint-size="24px,22px"></x-import>
+            </div>
+            <x-import component-from-global-scope="ChartFM.Cover" cover="{{ row.cover }}" size="{{ coverSm }}" rounded="{{ r8 }}" hint-size="44px,44px"></x-import>
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+              <div style="font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ row.title }}</div>
+              <div style="font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ row.artist }}</div>
+            </div>
+            <x-import component-from-global-scope="ChartFM.MovementBadge" status="{{ row.status }}" delta="{{ row.delta }}" compact="{{ true }}" hint-size="40px,20px"></x-import>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div id="1b" style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">1b</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Hero + list</span>
+        <span style="font-size: 13px; color: #8a8a90;">celebrates #1</span>
+      </div>
+      <div data-theme="light" style="width: 390px; background: var(--bg); border-radius: 22px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.14);">
+        <div style="padding: 20px 20px 24px; background: var(--gradient-hero); display: flex; flex-direction: column; gap: 18px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.85);">Number one</div>
+            <x-import component-from-global-scope="ChartFM.MovementBadge" status="same" compact="{{ true }}" hint-size="34px,20px"></x-import>
+          </div>
+          <div style="display: flex; align-items: flex-end; gap: 16px;">
+            <x-import component-from-global-scope="ChartFM.Cover" cover="{{ heroCover }}" size="{{ coverLg }}" rounded="{{ r14 }}" hint-size="104px,104px"></x-import>
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+              <div style="font-size: 22px; font-weight: 700; color: #fff; line-height: 1.15; text-wrap: pretty;">{{ hero.title }}</div>
+              <div style="font-size: 15px; color: rgba(255,255,255,0.82);">{{ hero.artist }}</div>
+              <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px;">4 weeks at #1</div>
+            </div>
+          </div>
+        </div>
+        <sc-for list="{{ restRows }}" as="row" hint-placeholder-count="5">
+          <div style="display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: var(--surface); border-bottom: 1px solid var(--divider-soft);">
+            <x-import component-from-global-scope="ChartFM.PositionNumber" n="{{ row.n }}" size="{{ rankMd }}" hint-size="26px,26px"></x-import>
+            <x-import component-from-global-scope="ChartFM.Cover" cover="{{ row.cover }}" size="{{ coverMd }}" rounded="{{ r10 }}" hint-size="52px,52px"></x-import>
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ row.title }}</div>
+              <div style="font-size: 13px; color: var(--text-muted);">{{ row.artist }}</div>
+            </div>
+            <x-import component-from-global-scope="ChartFM.MovementBadge" status="{{ row.status }}" delta="{{ row.delta }}" hint-size="52px,24px"></x-import>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div id="1c" style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; background: var(--accent); color: #fff; padding: 4px 8px; border-radius: 6px;">1c</span>
+        <span style="font-size: 15px; font-weight: 600; color: #3a3a3f;">Editorial grid</span>
+        <span style="font-size: 13px; color: #8a8a90;">dark, cover-led</span>
+      </div>
+      <div data-theme="dark" style="width: 390px; background: var(--bg); border-radius: 22px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.3);">
+        <div style="padding: 20px 18px 14px; background: var(--bg-topbar); display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid var(--divider);">
+          <div style="font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.02em;">Movers</div>
+          <div style="font-size: 13px; color: var(--text-muted);">Biggest climbs this week</div>
+        </div>
+        <div style="padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <sc-for list="{{ gridRows }}" as="row" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+              <div style="position: relative;">
+                <x-import component-from-global-scope="ChartFM.Cover" cover="{{ row.cover }}" size="{{ coverGrid }}" rounded="{{ r12 }}" hint-size="163px,163px"></x-import>
+                <div style="position: absolute; left: 8px; bottom: 8px; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); border-radius: 8px; padding: 2px 8px; color: #fff; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ row.label }}</div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 3px;">
+                <div style="font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ row.title }}</div>
+                <div style="font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ row.artist }}</div>
+              </div>
+              <x-import component-from-global-scope="ChartFM.MovementBadge" status="{{ row.status }}" delta="{{ row.delta }}" compact="{{ true }}" hint-size="44px,20px"></x-import>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const data = [
+      { n: 1, title: "Static Bloom", artist: "Neon Vestibule", status: "same", palette: ["#FA243C", "#FF6B4A"], seed: 2 },
+      { n: 2, title: "Copper Weather", artist: "Ada Rill", status: "up", delta: 3, palette: ["#2B5CE6", "#6FA8FF"], seed: 7 },
+      { n: 3, title: "Long Way From Anywhere", artist: "The Fold", status: "down", delta: 1, palette: ["#12A150", "#7BE0A5"], seed: 11 },
+      { n: 4, title: "Marble Hours", artist: "Sena Kai", status: "new", palette: ["#7A3BE0", "#C08BFF"], seed: 4 },
+      { n: 5, title: "Tidewater", artist: "Oberon Grey", status: "up", delta: 8, palette: ["#E08A12", "#FFD37A"], seed: 9 },
+      { n: 6, title: "Sirens In Reverse", artist: "Halva", status: "return", palette: ["#0F7B8A", "#5FD3E0"], seed: 13 },
+    ];
+    const rows = data.map(d => ({ ...d, cover: { palette: d.palette, seed: d.seed } }));
+    return {
+      rows,
+      hero: rows[0],
+      heroCover: { palette: ["#1B1B22", "#4A4A5A"], seed: 2 },
+      restRows: rows.slice(1, 6),
+      gridRows: rows.slice(1, 5).map(r => ({ ...r, label: "#" + r.n })),
+      logoSize: 26, rankSm: 20, rankMd: 24,
+      coverSm: 44, coverMd: 52, coverLg: 104, coverGrid: 163,
+      r8: 8, r10: 10, r12: 12, r14: 14,
+    };
+  }
+}
+</script>
+</body>
+</html>

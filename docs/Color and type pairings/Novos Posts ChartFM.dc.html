@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/styles.css">
+  <script src="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.js"></script>
+  <style>body{margin:0}</style>
+</helmet>
+<div style="background:#0b0b0d;min-height:100vh;padding:48px;font-family:-apple-system,'SF Pro Display','Inter',system-ui;color:#fff;box-sizing:border-box">
+  <div style="max-width:1400px;margin:0 auto 40px">
+    <div style="font-size:13px;letter-spacing:0.08em;color:#FA243C;font-weight:800;text-transform:uppercase;margin-bottom:8px">ChartFM — novos formatos de post</div>
+    <h1 style="font-size:30px;font-weight:800;margin:0 0 8px">Nostalgia, estatísticas do site e Global 100</h1>
+    <p style="font-size:15px;color:#9a9aa5;max-width:760px;margin:0">Textos entre colchetes são placeholders para preencher com dados reais. O exemplo do Disk MTV de 30/08/1996 já usa a parada real que você enviou; os demais são exemplos ilustrativos do template.</p>
+  </div>
+
+  <div style="max-width:1400px;margin:0 auto">
+    <div style="font-size:20px;font-weight:800;margin-bottom:16px;padding-top:24px;border-top:1px solid #22222a">Chart Throwback — Disk MTV, Hot 100, TRL, Global 100</div>
+    <sc-for list="{{groupA}}" as="item" hint-placeholder-count="8">
+      <div style="margin-bottom:16px">
+        <div style="display:inline-block;font-size:13px;font-weight:700;color:#c9c9d1;background:#1a1a20;padding:4px 10px;border-radius:6px">{{item.kicker}} · {{item.sub}}</div>
+      </div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:36px">
+        <sc-for list="{{formats}}" as="fmt" hint-placeholder-count="3">
+          <div style="width:{{fmt.fw}}px;height:{{fmt.fh}}px;overflow:hidden;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.4);position:relative;flex-shrink:0;background:#0b0b0d">
+            <div style="transform:scale(0.27);transform-origin:top left;position:absolute;top:0;left:0">
+              <div style="width:{{fmt.w}}px;height:{{fmt.h}}px;background:linear-gradient(165deg,#15151a 0%,#0b0b0d 70%);position:relative;display:flex;flex-direction:column;padding:{{fmt.pad}}px;box-sizing:border-box;font-family:-apple-system,'SF Pro Display','Inter',system-ui;color:#fff">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:{{fmt.padTop}}px">
+                  <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{fmt.logo}}" hint-size="40px,40px"></x-import>
+                  <div style="font-size:{{fmt.kicker}}px;font-weight:800;letter-spacing:0.06em;color:#FA243C;text-transform:uppercase">{{item.kicker}}</div>
+                </div>
+                <div style="font-size:{{fmt.title}}px;font-weight:800;line-height:1.08;margin-bottom:4px">{{item.heading}}</div>
+                <div style="font-size:{{fmt.body}}px;color:#a3a3ad;margin-bottom:{{fmt.padBottom}}px">{{item.sub}}</div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:{{fmt.listGap}}px;justify-content:center;overflow:hidden">
+                  <sc-for list="{{item.rows}}" as="row" hint-placeholder-count="5">
+                    <div style="display:flex;align-items:center;gap:16px">
+                      <x-import component-from-global-scope="ChartFM.PositionNumber" n="{{row.rank}}" size="{{fmt.title}}" hint-size="40px,40px"></x-import>
+                      <x-import component-from-global-scope="ChartFM.Cover" cover="{{row.cover}}" size="{{fmt.rowCover}}" rounded="8" hint-size="52px,52px"></x-import>
+                      <div style="flex:1;min-width:0">
+                        <div style="font-size:{{fmt.body}}px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{row.artist}}</div>
+                        <div style="font-size:{{fmt.small}}px;color:#a3a3ad;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{row.track}}</div>
+                      </div>
+                      <sc-if value="{{row.hasBadge}}" hint-placeholder-val="{{false}}">
+                        <x-import component-from-global-scope="ChartFM.MovementBadge" status="{{row.badgeStatus}}" delta="{{row.badgeDelta}}" compact="{{true}}" hint-size="60px,28px"></x-import>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="margin-top:{{fmt.padBottom}}px;padding-top:{{fmt.padTop}}px;border-top:1px solid #26262e;display:flex;justify-content:space-between;align-items:center;font-size:{{fmt.small}}px;color:#6f6f78">
+                  <span>chartfm.app</span>
+                  <span style="max-width:60%;text-align:right">{{item.cta}}</span>
+                </div>
+              </div>
+            </div>
+            <div style="position:absolute;bottom:6px;left:8px;font-size:10px;color:#c9c9d1;background:rgba(0,0,0,0.55);padding:2px 6px;border-radius:4px">{{fmt.label}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+
+    <div style="font-size:20px;font-weight:800;margin-bottom:16px;padding-top:24px;border-top:1px solid #22222a">Aniversário de Álbum</div>
+    <sc-for list="{{groupB}}" as="item" hint-placeholder-count="2">
+      <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:36px">
+        <sc-for list="{{formats}}" as="fmt" hint-placeholder-count="3">
+          <div style="width:{{fmt.fw}}px;height:{{fmt.fh}}px;overflow:hidden;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.4);position:relative;flex-shrink:0;background:#0b0b0d">
+            <div style="transform:scale(0.27);transform-origin:top left;position:absolute;top:0;left:0">
+              <div style="width:{{fmt.w}}px;height:{{fmt.h}}px;background:radial-gradient(circle at 50% 20%,#1c1c22 0%,#0b0b0d 70%);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:{{fmt.pad}}px;box-sizing:border-box;color:#fff;font-family:-apple-system,'SF Pro Display','Inter',system-ui">
+                <div style="position:absolute;top:{{fmt.padTop}}px;left:{{fmt.pad}}px">
+                  <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{fmt.logo}}" hint-size="40px,40px"></x-import>
+                </div>
+                <x-import component-from-global-scope="ChartFM.Cover" cover="{{item.cover}}" size="{{fmt.heroCover}}" rounded="20" hint-size="340px,340px"></x-import>
+                <div style="font-size:{{fmt.kicker}}px;font-weight:800;letter-spacing:0.06em;color:#FA243C;text-transform:uppercase;margin-top:{{fmt.padTop}}px">{{item.kicker}}</div>
+                <div style="font-size:{{fmt.titleBig}}px;font-weight:800;line-height:1.08;margin-top:8px">{{item.album}} completa {{item.years}} anos</div>
+                <div style="font-size:{{fmt.body}}px;color:#a3a3ad;margin-top:8px">{{item.artist}} • lançado em {{item.year}}</div>
+                <div style="font-size:{{fmt.small}}px;color:#c9c9d1;margin-top:{{fmt.padBottom}}px">Maiores hits: {{item.hitsLine}}</div>
+                <div style="margin-top:auto;padding-top:{{fmt.padBottom}}px;font-size:{{fmt.small}}px;color:#6f6f78">{{item.cta}}</div>
+              </div>
+            </div>
+            <div style="position:absolute;bottom:6px;left:8px;font-size:10px;color:#c9c9d1;background:rgba(0,0,0,0.55);padding:2px 6px;border-radius:4px">{{fmt.label}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+
+    <div style="font-size:20px;font-weight:800;margin-bottom:16px;padding-top:24px;border-top:1px solid #22222a">Por Onde Anda?</div>
+    <sc-for list="{{groupC}}" as="item" hint-placeholder-count="2">
+      <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:36px">
+        <sc-for list="{{formats}}" as="fmt" hint-placeholder-count="3">
+          <div style="width:{{fmt.fw}}px;height:{{fmt.fh}}px;overflow:hidden;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.4);position:relative;flex-shrink:0;background:#0b0b0d">
+            <div style="transform:scale(0.27);transform-origin:top left;position:absolute;top:0;left:0">
+              <div style="width:{{fmt.w}}px;height:{{fmt.h}}px;background:radial-gradient(circle at 50% 20%,#1c1c22 0%,#0b0b0d 70%);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:{{fmt.pad}}px;box-sizing:border-box;color:#fff;font-family:-apple-system,'SF Pro Display','Inter',system-ui">
+                <div style="position:absolute;top:{{fmt.padTop}}px;left:{{fmt.pad}}px">
+                  <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{fmt.logo}}" hint-size="40px,40px"></x-import>
+                </div>
+                <x-import component-from-global-scope="ChartFM.Cover" cover="{{item.cover}}" size="{{fmt.heroCover}}" rounded="20" hint-size="340px,340px"></x-import>
+                <div style="font-size:{{fmt.kicker}}px;font-weight:800;letter-spacing:0.06em;color:#FA243C;text-transform:uppercase;margin-top:{{fmt.padTop}}px">{{item.kicker}}</div>
+                <div style="font-size:{{fmt.titleBig}}px;font-weight:800;line-height:1.08;margin-top:8px">{{item.artist}}</div>
+                <div style="font-size:{{fmt.body}}px;color:#a3a3ad;margin-top:8px">Não lança álbum desde {{item.lastYear}}</div>
+                <div style="font-size:{{fmt.small}}px;color:#c9c9d1;margin-top:8px">Último hit: {{item.lastHit}}</div>
+                <div style="margin-top:{{fmt.padBottom}}px">
+                  <x-import component-from-global-scope="ChartFM.MovementBadge" status="return" compact="{{false}}" hint-size="80px,32px"></x-import>
+                </div>
+                <div style="margin-top:auto;padding-top:{{fmt.padBottom}}px;font-size:{{fmt.small}}px;color:#6f6f78">{{item.cta}}</div>
+              </div>
+            </div>
+            <div style="position:absolute;bottom:6px;left:8px;font-size:10px;color:#c9c9d1;background:rgba(0,0,0,0.55);padding:2px 6px;border-radius:4px">{{fmt.label}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+
+    <div style="font-size:20px;font-weight:800;margin-bottom:16px;padding-top:24px;border-top:1px solid #22222a">Nota de Álbum — Estatísticas do Site</div>
+    <sc-for list="{{groupD}}" as="item" hint-placeholder-count="2">
+      <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:36px">
+        <sc-for list="{{formats}}" as="fmt" hint-placeholder-count="3">
+          <div style="width:{{fmt.fw}}px;height:{{fmt.fh}}px;overflow:hidden;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.4);position:relative;flex-shrink:0;background:#0b0b0d">
+            <div style="transform:scale(0.27);transform-origin:top left;position:absolute;top:0;left:0">
+              <div style="width:{{fmt.w}}px;height:{{fmt.h}}px;background:radial-gradient(circle at 50% 20%,#1c1c22 0%,#0b0b0d 70%);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:{{fmt.pad}}px;box-sizing:border-box;color:#fff;font-family:-apple-system,'SF Pro Display','Inter',system-ui">
+                <div style="position:absolute;top:{{fmt.padTop}}px;left:{{fmt.pad}}px">
+                  <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{fmt.logo}}" hint-size="40px,40px"></x-import>
+                </div>
+                <div style="font-size:{{fmt.kicker}}px;font-weight:800;letter-spacing:0.06em;color:#FA243C;text-transform:uppercase">{{item.kicker}}</div>
+                <div style="font-size:{{fmt.ratingSize}}px;font-weight:800;color:#FA243C;line-height:1;margin-top:8px">{{item.rating}}</div>
+                <x-import component-from-global-scope="ChartFM.Cover" cover="{{item.cover}}" size="{{fmt.rowCover}}" rounded="10" hint-size="52px,52px"></x-import>
+                <div style="font-size:{{fmt.body}}px;font-weight:700;margin-top:8px">{{item.album}} — {{item.artist}}</div>
+                <div style="font-size:{{fmt.small}}px;color:#a3a3ad;margin-top:4px">Após 10 reviews da comunidade</div>
+                <div style="margin-top:auto;padding-top:{{fmt.padBottom}}px;font-size:{{fmt.small}}px;color:#6f6f78">{{item.cta}}</div>
+              </div>
+            </div>
+            <div style="position:absolute;bottom:6px;left:8px;font-size:10px;color:#c9c9d1;background:rgba(0,0,0,0.55);padding:2px 6px;border-radius:4px">{{fmt.label}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const pA = ["#FA243C", "#FF6B6B"];
+    const pB = ["#2E2E38", "#FA243C"];
+
+    const formats = [
+      {key:'post',label:'Instagram Post',w:1080,h:1080,fw:292,fh:292,pad:72,padTop:30,padBottom:36,kicker:28,title:56,titleBig:64,body:26,small:22,logo:40,listGap:18,rowCover:52,heroCover:340,ratingSize:150},
+      {key:'story',label:'Instagram Story',w:1080,h:1920,fw:292,fh:518,pad:88,padTop:36,padBottom:44,kicker:30,title:60,titleBig:70,body:28,small:24,logo:44,listGap:22,rowCover:56,heroCover:380,ratingSize:160},
+      {key:'fb',label:'Facebook Post',w:1200,h:630,fw:324,fh:170,pad:56,padTop:20,padBottom:24,kicker:22,title:42,titleBig:48,body:20,small:18,logo:32,listGap:12,rowCover:40,heroCover:220,ratingSize:110},
+    ];
+
+    const mkRow = (rank, artist, track, seed, palette, badge) => ({
+      rank, artist, track,
+      cover: {palette, seed},
+      hasBadge: !!badge,
+      badgeStatus: badge ? badge.status : 'same',
+      badgeDelta: badge ? (badge.delta || 0) : 0,
+    });
+    const placeholderRows = (seedBase, palette) => [5,4,3,2,1].map((r,i) => mkRow(r, '[Artista]', '[Música]', (seedBase+i)%5, palette));
+
+    const groupA = [
+      { kicker:'DISK MTV', sub:'30/08/1996 • Parada de sucessos', heading:'Relembra dessa parada?', cta:'Marque quem também lembra dessa parada.',
+        rows:[
+          mkRow(5,'Bon Jovi','Hey God',0,pA),
+          mkRow(4,'Skank','Garota Nacional',1,pB),
+          mkRow(3,'The Smashing Pumpkins','Tonight Tonight',2,pA),
+          mkRow(2,'Chico Science & Nação Zumbi','Maracatu Atômico',3,pB),
+          mkRow(1,'Os Paralamas Do Sucesso','Loirin',4,pA),
+        ]},
+      { kicker:'DISK MTV', sub:'[DD/MM/AAAA] • Parada de sucessos', heading:'Relembra dessa parada?', cta:'Marque quem também lembra dessa parada.', rows: placeholderRows(0,pB) },
+      { kicker:'HOT 100', sub:'Top 5 de [1999]', heading:'O Top 5 daquele ano', cta:'Qual desses você ainda escuta?', rows: placeholderRows(1,pA) },
+      { kicker:'HOT 100', sub:'Top 5 de [2010]', heading:'O Top 5 daquele ano', cta:'Qual desses você ainda escuta?', rows: placeholderRows(2,pB) },
+      { kicker:'TRL', sub:'Total Request Live • [2001]', heading:'O Top 5 do TRL', cta:'Você votava todo dia?', rows: placeholderRows(3,pA) },
+      { kicker:'TRL', sub:'Total Request Live • [2003]', heading:'O Top 5 do TRL', cta:'Você votava todo dia?', rows: placeholderRows(4,pB) },
+      { kicker:'GLOBAL 100', sub:'Top 5 da semana • [DD/MM]', heading:'Quem dominou essa semana', cta:'Assista ao vídeo completo no app.',
+        rows:[
+          mkRow(5,'[Artista]','[Música]',0,pA,{status:'same'}),
+          mkRow(4,'[Artista]','[Música]',1,pB,{status:'down',delta:1}),
+          mkRow(3,'[Artista]','[Música]',2,pA,{status:'up',delta:2}),
+          mkRow(2,'[Artista]','[Música]',3,pB,{status:'new'}),
+          mkRow(1,'[Artista]','[Música]',4,pA,{status:'up',delta:4}),
+        ]},
+      { kicker:'GLOBAL 100', sub:'Top 5 da semana • [DD/MM] (semana seguinte)', heading:'Quem dominou essa semana', cta:'Assista ao vídeo completo no app.',
+        rows:[
+          mkRow(5,'[Artista]','[Música]',1,pB,{status:'new'}),
+          mkRow(4,'[Artista]','[Música]',2,pA,{status:'up',delta:1}),
+          mkRow(3,'[Artista]','[Música]',3,pB,{status:'same'}),
+          mkRow(2,'[Artista]','[Música]',4,pA,{status:'down',delta:2}),
+          mkRow(1,'[Artista]','[Música]',0,pB,{status:'up',delta:1}),
+        ]},
+    ];
+
+    const groupB = [
+      {kicker:'ARQUIVO CHARTFM',album:'[ÁLBUM]',artist:'[ARTISTA]',years:'[20]',year:'20[XX]',hitsLine:'[Hit 1] • [Hit 2] • [Hit 3]',cover:{palette:pA,seed:2},cta:'Relembre esse álbum no ChartFM.'},
+      {kicker:'ARQUIVO CHARTFM',album:'[ÁLBUM]',artist:'[ARTISTA]',years:'[10]',year:'20[XX]',hitsLine:'[Hit 1] • [Hit 2] • [Hit 3]',cover:{palette:pB,seed:0},cta:'Relembre esse álbum no ChartFM.'},
+    ];
+
+    const groupC = [
+      {kicker:'POR ONDE ANDA?',artist:'[ARTISTA]',lastYear:'[ANO]',lastHit:'[MÚSICA]',cover:{palette:pA,seed:3},cta:'Conta pra gente se você lembra.'},
+      {kicker:'POR ONDE ANDA?',artist:'[ARTISTA]',lastYear:'[ANO]',lastHit:'[MÚSICA]',cover:{palette:pB,seed:1},cta:'Conta pra gente se você lembra.'},
+    ];
+
+    const groupD = [
+      {kicker:'NOTA CHARTFM',album:'[ÁLBUM]',artist:'[ARTISTA]',rating:'[N.N]',cover:{palette:pA,seed:4},cta:'Avalie você também no ChartFM.'},
+      {kicker:'NOTA CHARTFM',album:'[ÁLBUM]',artist:'[ARTISTA]',rating:'[N.N]',cover:{palette:pB,seed:2},cta:'Avalie você também no ChartFM.'},
+    ];
+
+    return {formats, groupA, groupB, groupC, groupD};
+  }
+}
+</script>
+</body>
+</html>
