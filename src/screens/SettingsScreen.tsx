@@ -198,6 +198,12 @@ export function SettingsScreen() {
           </View>
           <Toggle on={isPublicProfile} onToggle={() => setIsPublicProfile(!isPublicProfile)} />
         </View>
+        <Pressable
+          onPress={() => navigation.navigate("BlockedUsers")}
+          style={{ flexDirection: "row", alignItems: "center", padding: 14, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}
+        >
+          <Text style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text }}>Contas bloqueadas</Text>
+        </Pressable>
         <View style={{ flexDirection: "row", alignItems: "center", padding: 14 }}>
           <Text style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text }}>Baixar meus dados</Text>
         </View>

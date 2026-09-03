@@ -45,6 +45,9 @@ import { ConversationThreadScreen } from "../screens/ConversationThreadScreen";
 import { HistoryScreen } from "../screens/HistoryScreen";
 import { CreateGuidedScreen } from "../screens/CreateGuidedScreen";
 import { ChooseParadaSheet } from "../screens/ChooseParadaSheet";
+import { UserActionsSheet } from "../screens/UserActionsSheet";
+import { BlockedUsersScreen } from "../screens/BlockedUsersScreen";
+import { ReportSheet } from "../screens/ReportSheet";
 import { HomeReview } from "../api/homeHub";
 
 export type ChartFlowNext = "Editor" | "CreateGuided" | "Lastfm";
@@ -87,6 +90,9 @@ export type RootStackParamList = {
   Conversas: undefined;
   ConversationThread: { conversationId: string; handle: string; name?: string };
   History: { handle: string };
+  UserActionsSheet: { userId: string; handle: string; initialMuted?: boolean };
+  ReportSheet: { targetType: "user" | "post"; targetId: string; label?: string };
+  BlockedUsers: undefined;
 };
 
 export type MainTabParamList = {
@@ -193,6 +199,7 @@ export function RootNavigator() {
         <Stack.Screen name="Conversas" component={ConversasScreen} />
         <Stack.Screen name="ConversationThread" component={ConversationThreadScreen} />
         <Stack.Screen name="History" component={HistoryScreen} />
+        <Stack.Screen name="BlockedUsers" component={BlockedUsersScreen} />
         <Stack.Screen
           name="CreateSheet"
           component={CreateSheetScreen}
@@ -226,6 +233,16 @@ export function RootNavigator() {
         <Stack.Screen
           name="ParadaWeekPicker"
           component={ParadaWeekPickerSheet}
+          options={{ presentation: "transparentModal", animation: "fade" }}
+        />
+        <Stack.Screen
+          name="UserActionsSheet"
+          component={UserActionsSheet}
+          options={{ presentation: "transparentModal", animation: "fade" }}
+        />
+        <Stack.Screen
+          name="ReportSheet"
+          component={ReportSheet}
           options={{ presentation: "transparentModal", animation: "fade" }}
         />
       </Stack.Navigator>

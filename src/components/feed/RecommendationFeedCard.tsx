@@ -1,10 +1,16 @@
 import React from "react";
 import { View, Text, Pressable, Image, Alert } from "react-native";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Path, Circle } from "react-native-svg";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../../theme/ThemeProvider";
 import { Cover } from "../Cover";
 import { FeedRecommendationItem, useLikeRecommendationMutation, feedErrorMessage } from "../../api/feed";
 import { resolveMediaUrl } from "../../lib/api";
+import { RootStackParamList } from "../../navigation/RootNavigator";
+import { useAuth } from "../../state/AuthContext";
+
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 function HeartIcon({ filled, color }: { filled: boolean; color: string }) {
   return (
@@ -25,6 +31,8 @@ const TYPE_LABEL: Record<string, string> = {
 
 export function RecommendationFeedCard({ item }: { item: FeedRecommendationItem }) {
   const { colors } = useAppTheme();
+  const navigation = useNavigation<Nav>();
+  const { user: currentUser } = useAuth();
   const likeMutation = useLikeRecommendationMutation();
   const [liked, setLiked] = React.useState(item.liked);
   const [likes, setLikes] = React.useState(item.likes);
@@ -61,6 +69,19 @@ export function RecommendationFeedCard({ item }: { item: FeedRecommendationItem 
           </Text>
           <Text style={{ fontSize: 11, color: colors.textMuted }}>{item.postedAgo}</Text>
         </View>
+        {currentUser?.id !== item.user.id && (
+          <Pressable
+            onPress={() => navigation.navigate("UserActionsSheet", { userId: item.user.id, handle: item.user.handle })}
+            hitSlop={8}
+            style={{ padding: 4 }}
+          >
+            <Svg width={16} height={4} viewBox="0 0 16 4">
+              <Circle cx={2} cy={2} r={1.8} fill={colors.textMuted} />
+              <Circle cx={8} cy={2} r={1.8} fill={colors.textMuted} />
+              <Circle cx={14} cy={2} r={1.8} fill={colors.textMuted} />
+            </Svg>
+          </Pressable>
+        )}
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginTop: 12 }}>

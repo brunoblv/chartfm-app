@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Pressable, Image, Alert } from "react-native";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Path, Circle } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../../theme/ThemeProvider";
@@ -8,6 +8,7 @@ import { Cover } from "../Cover";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { FeedChartItem, useLikeChartMutation, useRepostChartMutation, feedErrorMessage } from "../../api/feed";
 import { resolveMediaUrl } from "../../lib/api";
+import { useAuth } from "../../state/AuthContext";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -41,6 +42,7 @@ function CommentIcon({ color }: { color: string }) {
 export function ChartFeedCard({ item }: { item: FeedChartItem }) {
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
+  const { user: currentUser } = useAuth();
   const likeMutation = useLikeChartMutation();
   const repostMutation = useRepostChartMutation();
   const [optimisticLiked, setOptimisticLiked] = React.useState(item.isLiked);
@@ -68,26 +70,41 @@ export function ChartFeedCard({ item }: { item: FeedChartItem }) {
 
   return (
     <View style={{ marginHorizontal: 16, marginBottom: 14, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
-      <Pressable
-        onPress={() => navigation.navigate("UserDetail", { handle: item.user.handle })}
-        style={{ flexDirection: "row", alignItems: "center", gap: 10, padding: 14, paddingBottom: 10 }}
-      >
-        {item.user.imageUrl ? (
-          <Image source={{ uri: resolveMediaUrl(item.user.imageUrl) }} style={{ width: 36, height: 36, borderRadius: 18 }} />
-        ) : (
-          <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: item.user.avatar, alignItems: "center", justifyContent: "center" }}>
-            <Text style={{ color: "#fff", fontWeight: "800", fontSize: 14 }}>{item.user.name.charAt(0).toUpperCase()}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", paddingRight: 14 }}>
+        <Pressable
+          onPress={() => navigation.navigate("UserDetail", { handle: item.user.handle })}
+          style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 10, padding: 14, paddingBottom: 10 }}
+        >
+          {item.user.imageUrl ? (
+            <Image source={{ uri: resolveMediaUrl(item.user.imageUrl) }} style={{ width: 36, height: 36, borderRadius: 18 }} />
+          ) : (
+            <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: item.user.avatar, alignItems: "center", justifyContent: "center" }}>
+              <Text style={{ color: "#fff", fontWeight: "800", fontSize: 14 }}>{item.user.name.charAt(0).toUpperCase()}</Text>
+            </View>
+          )}
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "700", color: colors.text }}>
+              {item.user.name}
+            </Text>
+            <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
+              publicou {item.chart.paradaNome} · {item.postedAgo}
+            </Text>
           </View>
+        </Pressable>
+        {currentUser?.id !== item.user.id && (
+          <Pressable
+            onPress={() => navigation.navigate("UserActionsSheet", { userId: item.user.id, handle: item.user.handle })}
+            hitSlop={8}
+            style={{ padding: 4 }}
+          >
+            <Svg width={16} height={4} viewBox="0 0 16 4">
+              <Circle cx={2} cy={2} r={1.8} fill={colors.textMuted} />
+              <Circle cx={8} cy={2} r={1.8} fill={colors.textMuted} />
+              <Circle cx={14} cy={2} r={1.8} fill={colors.textMuted} />
+            </Svg>
+          </Pressable>
         )}
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "700", color: colors.text }}>
-            {item.user.name}
-          </Text>
-          <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
-            publicou {item.chart.paradaNome} · {item.postedAgo}
-          </Text>
-        </View>
-      </Pressable>
+      </View>
 
       <View style={{ paddingHorizontal: 14, paddingBottom: 10 }}>
         {item.chart.entries.slice(0, 5).map((e) => (

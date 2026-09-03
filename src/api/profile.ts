@@ -150,6 +150,53 @@ export function useFollowMutation() {
   });
 }
 
+export function useBlockMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (targetId: string) =>
+      apiRequest<{ blocked: boolean }>("/api/user/block", { method: "POST", body: { targetId } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["blocked-users"] });
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
+    },
+  });
+}
+
+export function useMuteMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (targetId: string) =>
+      apiRequest<{ muted: boolean }>("/api/user/mute", { method: "POST", body: { targetId } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
+    },
+  });
+}
+
+export function useReportMutation() {
+  return useMutation({
+    mutationFn: (vars: { targetType: "USER" | "POST"; targetId: string; reason: string }) =>
+      apiRequest<{ ok: true }>("/api/report", { method: "POST", body: vars }),
+  });
+}
+
+export interface BlockedUser {
+  id: string;
+  handle: string;
+  name: string;
+  avatarColor: string;
+  image: string | null;
+  verified: boolean;
+}
+
+export function useBlockedUsersQuery() {
+  return useQuery({
+    queryKey: ["blocked-users"],
+    queryFn: () => apiRequest<{ users: BlockedUser[] }>("/api/user/blocked"),
+  });
+}
+
 export function familyLabel(code: string): string {
   return code
     .toLowerCase()

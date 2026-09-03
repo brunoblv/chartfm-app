@@ -9,10 +9,12 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useProfileQuery, useFollowMutation, useUserParadasQuery, familyLabel, ProfileFamilyProgress } from "../api/profile";
 import { useStartConversationMutation } from "../api/conversas";
+import { useAuth } from "../state/AuthContext";
 import { resolveMediaUrl } from "../lib/api";
 import { ParadaChartCard } from "../components/ParadaChartCard";
 import { AchievementDetailModal } from "../components/AchievementDetailModal";
 import { SocialIcon } from "../components/SocialIcon";
+import Svg, { Circle } from "react-native-svg";
 
 type Route = RouteProp<RootStackParamList, "UserDetail">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -21,6 +23,7 @@ export function UserDetailScreen() {
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
+  const { user: currentUser } = useAuth();
   const handle = route.params?.handle;
   const profileQuery = useProfileQuery(handle);
   const paradasQuery = useUserParadasQuery(handle);
@@ -66,9 +69,27 @@ export function UserDetailScreen() {
     });
   };
 
+  const isOwnProfile = currentUser?.id === profile.user.id;
+
   return (
     <Screen>
-      <BackHeader />
+      <BackHeader
+        action={
+          !isOwnProfile ? (
+            <Pressable
+              onPress={() => navigation.navigate("UserActionsSheet", { userId: profile.user.id, handle })}
+              hitSlop={8}
+              style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: colors.fillInset, alignItems: "center", justifyContent: "center" }}
+            >
+              <Svg width={18} height={4} viewBox="0 0 18 4">
+                <Circle cx={2} cy={2} r={2} fill={colors.text} />
+                <Circle cx={9} cy={2} r={2} fill={colors.text} />
+                <Circle cx={16} cy={2} r={2} fill={colors.text} />
+              </Svg>
+            </Pressable>
+          ) : undefined
+        }
+      />
 
       <View style={{ alignItems: "center", paddingHorizontal: 24, paddingBottom: 20 }}>
         {profile.imageUrl ? (
