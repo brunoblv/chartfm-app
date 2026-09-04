@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Linking } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, CommonActions } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -13,6 +13,7 @@ import { BackHeader } from "../components/BackHeader";
 import { Toggle } from "../components/Toggle";
 import { SocialIcon } from "../components/SocialIcon";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { API_BASE_URL } from "../lib/api";
 
 const NOTIF_ROWS: { category: NotifPrefCategory | null; label: string; note: string }[] = [
   { category: "chart", label: "Minha parada", note: "Lembrete semanal de atualizar" },
@@ -213,9 +214,24 @@ export function SettingsScreen() {
         <Text style={{ padding: 14, fontSize: 14.5, fontWeight: "600", color: colors.text, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}>
           Ajuda e suporte
         </Text>
-        <Text style={{ padding: 14, fontSize: 14.5, fontWeight: "600", color: colors.text, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}>
-          Termos e privacidade
-        </Text>
+        <Pressable
+          onPress={() => Linking.openURL(`${API_BASE_URL}/terms-of-use`)}
+          style={{ padding: 14, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}
+        >
+          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Termos de uso</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => Linking.openURL(`${API_BASE_URL}/privacy-policy`)}
+          style={{ padding: 14, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}
+        >
+          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Política de privacidade</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => Linking.openURL(`${API_BASE_URL}/child-safety-standards`)}
+          style={{ padding: 14, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}
+        >
+          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Padrões de segurança infantil</Text>
+        </Pressable>
         <Pressable onPress={handleSignOut}>
           <Text style={{ padding: 14, fontSize: 14.5, fontWeight: "600", color: colors.accent }}>Sair da conta</Text>
         </Pressable>

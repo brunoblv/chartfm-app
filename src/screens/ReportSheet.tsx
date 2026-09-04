@@ -7,6 +7,17 @@ import { RootStackParamList } from "../navigation/RootNavigator";
 import { useReportMutation } from "../api/profile";
 import { accountErrorMessage } from "../api/account";
 
+const CHILD_SAFETY_REASON_PREFIX = "[child_safety]";
+
+type ReasonId = "child_safety" | "harassment" | "spam" | "other";
+
+const REASONS: { id: ReasonId; label: string }[] = [
+  { id: "child_safety", label: "Abuso ou exploração sexual infantil" },
+  { id: "harassment", label: "Assédio ou ódio" },
+  { id: "spam", label: "Spam ou conta falsa" },
+  { id: "other", label: "Outro" },
+];
+
 type Route = RouteProp<RootStackParamList, "ReportSheet">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -16,16 +27,35 @@ export function ReportSheet() {
   const route = useRoute<Route>();
   const { targetType, targetId, label } = route.params;
   const reportMutation = useReportMutation();
-  const [reason, setReason] = React.useState("");
+  const [reasonId, setReasonId] = React.useState<ReasonId | null>(null);
+  const [details, setDetails] = React.useState("");
   const [sent, setSent] = React.useState(false);
 
+  const buildReason = (): string | null => {
+    if (!reasonId) return null;
+    const item = REASONS.find((r) => r.id === reasonId)!;
+    const extra = details.trim();
+    if (reasonId === "child_safety") {
+      return extra
+        ? `${CHILD_SAFETY_REASON_PREFIX} ${item.label}. ${extra}`
+        : `${CHILD_SAFETY_REASON_PREFIX} ${item.label}`;
+    }
+    if (reasonId === "other") return extra || null;
+    return extra ? `${item.label}. ${extra}` : item.label;
+  };
+
   const submit = () => {
-    if (reason.trim().length < 5) {
+    if (!reasonId) {
+      Alert.alert("Escolha um motivo", "Selecione o tipo de denúncia.");
+      return;
+    }
+    const reason = buildReason();
+    if (!reason || reason.length < 5) {
       Alert.alert("Motivo muito curto", "Escreva um motivo com pelo menos 5 caracteres.");
       return;
     }
     reportMutation.mutate(
-      { targetType: targetType === "user" ? "USER" : "POST", targetId, reason: reason.trim() },
+      { targetType: targetType === "user" ? "USER" : "POST", targetId, reason },
       {
         onSuccess: () => setSent(true),
         onError: (e) => Alert.alert("Não foi possível enviar", accountErrorMessage(e)),
@@ -52,7 +82,7 @@ export function ReportSheet() {
         </View>
 
         <Text style={{ fontSize: 17, fontWeight: "800", color: colors.text, marginTop: 12 }}>
-          {targetType === "user" ? `Denunciar ${label ?? "perfil"}` : "Denunciar post"}
+          {targetType === "user" ? `Denunciar ${label ?? "perfil"}` : "Denunciar publicação"}
         </Text>
 
         {sent ? (
@@ -62,11 +92,54 @@ export function ReportSheet() {
         ) : (
           <>
             <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 6, marginBottom: 12 }}>
-              Descreva o motivo da denúncia. Isso ajuda a moderação a analisar o caso.
+              Escolha o motivo. Isso ajuda a moderação a analisar o caso.
+            </Text>
+            <View style={{ gap: 8, marginBottom: 12 }}>
+              {REASONS.map((r) => {
+                const active = reasonId === r.id;
+                const danger = r.id === "child_safety";
+                return (
+                  <Pressable
+                    key={r.id}
+                    onPress={() => setReasonId(r.id)}
+                    style={{
+                      paddingVertical: 10,
+                      paddingHorizontal: 12,
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: active
+                        ? danger
+                          ? colors.downFg
+                          : colors.accent
+                        : colors.divider,
+                      backgroundColor: active
+                        ? danger
+                          ? "rgba(229, 72, 77, 0.10)"
+                          : colors.fillSubtle
+                        : "transparent",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 13.5,
+                        fontWeight: "600",
+                        color: danger ? colors.downFg : colors.text,
+                      }}
+                    >
+                      {r.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            <Text style={{ fontSize: 12, color: colors.textMuted, marginBottom: 6 }}>
+              {reasonId === "child_safety"
+                ? "Se puder, descreva o que viu. Não envie imagens do conteúdo."
+                : "Detalhes"}
             </Text>
             <TextInput
-              value={reason}
-              onChangeText={setReason}
+              value={details}
+              onChangeText={setDetails}
               placeholder="O que está acontecendo?"
               placeholderTextColor={colors.textMuted}
               multiline
@@ -76,7 +149,7 @@ export function ReportSheet() {
                 borderColor: colors.divider,
                 borderRadius: 12,
                 padding: 12,
-                minHeight: 100,
+                minHeight: 88,
                 fontSize: 14,
                 color: colors.text,
                 textAlignVertical: "top",

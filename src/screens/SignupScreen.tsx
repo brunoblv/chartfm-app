@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, Alert } from "react-native";
+import { View, Text, Pressable, Alert, Linking } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -8,6 +8,7 @@ import { AuthField } from "../components/AuthField";
 import { PillButton } from "../components/PillButton";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useAuth } from "../state/AuthContext";
+import { API_BASE_URL } from "../lib/api";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Cadastro">;
 
@@ -80,7 +81,21 @@ export function SignupScreen({ navigation }: Props) {
           <PillButton label="Criar conta" style={{ marginTop: 22 }} onPress={handleSignup} loading={isLoading} />
 
           <Text style={{ fontSize: 11.5, color: colors.textDisabled, textAlign: "center", marginTop: 14, lineHeight: 17 }}>
-            Ao continuar, você aceita os Termos e a Política de Privacidade.
+            Ao continuar, você aceita os{" "}
+            <Text
+              onPress={() => Linking.openURL(`${API_BASE_URL}/terms-of-use`)}
+              style={{ color: colors.accent, fontWeight: "600" }}
+            >
+              Termos
+            </Text>
+            {" "}e a{" "}
+            <Text
+              onPress={() => Linking.openURL(`${API_BASE_URL}/privacy-policy`)}
+              style={{ color: colors.accent, fontWeight: "600" }}
+            >
+              Política de Privacidade
+            </Text>
+            .
           </Text>
         </View>
       </View>
