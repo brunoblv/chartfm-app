@@ -14,6 +14,19 @@ Formato de cada entrada: o que mudou, pensado para o texto de "Notas da versão"
 
 ---
 
+## 1.0.1 (2026-09-04)
+
+### Notas da versão (Play Console)
+- Denúncia agora pede um motivo, inclusive abuso ou exploração sexual infantil.
+- Link para os padrões de segurança infantil nas configurações.
+
+### Técnico
+- `ReportSheet` passou a exigir motivo. O de segurança infantil grava o prefixo `[child_safety]`.
+- Configurações ganhou o link para `/child-safety-standards`.
+- `versionName` 1.0.1. O `versionCode` sobe no EAS (`appVersionSource: remote`).
+
+---
+
 ## 1.0.0 (2026-09-03)
 
 ### Notas da versão (Play Console)

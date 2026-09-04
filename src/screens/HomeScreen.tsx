@@ -99,7 +99,7 @@ function InicioTab() {
   const discovery = discoveryQuery.data;
 
   return (
-    <View style={{ opacity: isOffline ? 0.55 : 1 }} pointerEvents={isOffline ? "none" : "auto"}>
+    <View style={{ opacity: isOffline ? 0.55 : 1 }}>
       {hub?.weekStatus && (
         <WeekStatusCard
           status={hub.weekStatus}

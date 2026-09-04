@@ -8,6 +8,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { useAuth } from "../state/AuthContext";
 import { useProfileQuery } from "../api/profile";
 import { resolveMediaUrl } from "../lib/api";
+import { SheetScaffold } from "../components/SheetScaffold";
 import { RootStackParamList } from "../navigation/RootNavigator";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -55,19 +56,18 @@ export function ProfileSheetScreen() {
   const stroke = (color: string) => ({ fill: "none" as const, stroke: color, strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const });
 
   return (
-    <View style={{ flex: 1 }}>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.45)" }} onPress={() => navigation.goBack()} />
-      <View
-        style={{
-          backgroundColor: colors.surfaceElevated,
-          borderTopLeftRadius: 18,
-          borderTopRightRadius: 18,
-          borderTopWidth: 0.5,
-          borderTopColor: colors.divider,
-          paddingBottom: 20,
-          maxHeight: "82%",
-        }}
-      >
+    <SheetScaffold
+      onClose={() => navigation.goBack()}
+      sheetStyle={{
+        backgroundColor: colors.surfaceElevated,
+        borderTopLeftRadius: 18,
+        borderTopRightRadius: 18,
+        borderTopWidth: 0.5,
+        borderTopColor: colors.divider,
+        paddingBottom: 20,
+        maxHeight: "82%",
+      }}
+    >
         <View style={{ alignItems: "center", paddingVertical: 10 }}>
           <View style={{ width: 38, height: 4, borderRadius: 2, backgroundColor: colors.dividerStrong }} />
         </View>
@@ -138,7 +138,6 @@ export function ProfileSheetScreen() {
           danger
           onPress={() => go(() => signOut())}
         />
-      </View>
-    </View>
+    </SheetScaffold>
   );
 }

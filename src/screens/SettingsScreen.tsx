@@ -243,7 +243,7 @@ export function SettingsScreen() {
         </View>
       )}
 
-      <Text style={{ textAlign: "center", fontSize: 11.5, color: colors.textDisabled, paddingTop: 22 }}>ChartFM 1.0 (240)</Text>
+      <Text style={{ textAlign: "center", fontSize: 11.5, color: colors.textDisabled, paddingTop: 22 }}>ChartFM 1.0.1</Text>
     </Screen>
   );
 }

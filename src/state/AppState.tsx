@@ -68,7 +68,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      setIsOffline(state.isConnected === false || state.isInternetReachable === false);
+      // `isInternetReachable` falha com USB/ADB (celular espelhado): vem `false`
+      // mesmo com wifi. Tratar isso como offline desliga `pointerEvents` na home
+      // e o mouse no espelho para de clicar. Só `isConnected` vale aqui.
+      setIsOffline(state.isConnected === false);
     });
     return unsubscribe;
   }, []);

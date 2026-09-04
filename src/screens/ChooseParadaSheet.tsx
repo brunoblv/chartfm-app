@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { useAppState } from "../state/AppState";
 import { useParadasQuery } from "../api/paradas";
+import { SheetScaffold } from "../components/SheetScaffold";
 import { RootStackParamList } from "../navigation/RootNavigator";
 
 type Nav = NativeStackNavigationProp<RootStackParamList, "ChooseParada">;
@@ -49,19 +50,18 @@ export function ChooseParadaSheet() {
   const waiting = paradasQuery.isLoading || paradas.length <= 1;
 
   return (
-    <View style={{ flex: 1 }}>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.45)" }} onPress={() => navigation.goBack()} />
-      <View
-        style={{
-          backgroundColor: colors.surfaceElevated,
-          borderTopLeftRadius: 18,
-          borderTopRightRadius: 18,
-          borderTopWidth: 0.5,
-          borderTopColor: colors.divider,
-          paddingBottom: 16 + insets.bottom,
-          maxHeight: "70%",
-        }}
-      >
+    <SheetScaffold
+      onClose={() => navigation.goBack()}
+      sheetStyle={{
+        backgroundColor: colors.surfaceElevated,
+        borderTopLeftRadius: 18,
+        borderTopRightRadius: 18,
+        borderTopWidth: 0.5,
+        borderTopColor: colors.divider,
+        paddingBottom: 16 + insets.bottom,
+        maxHeight: "70%",
+      }}
+    >
         <View style={{ alignItems: "center", paddingVertical: 10 }}>
           <View style={{ width: 38, height: 4, borderRadius: 2, backgroundColor: colors.dividerStrong }} />
         </View>
@@ -106,7 +106,6 @@ export function ChooseParadaSheet() {
             })}
           </ScrollView>
         )}
-      </View>
-    </View>
+    </SheetScaffold>
   );
 }

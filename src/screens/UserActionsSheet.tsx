@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useBlockMutation, useMuteMutation } from "../api/profile";
+import { SheetScaffold } from "../components/SheetScaffold";
 
 type Route = RouteProp<RootStackParamList, "UserActionsSheet">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -84,24 +85,22 @@ export function UserActionsSheet() {
   };
 
   const handleReport = () => {
-    navigation.goBack();
-    navigation.navigate("ReportSheet", { targetType: "user", targetId: userId, label: `@${handle}` });
+    navigation.replace("ReportSheet", { targetType: "user", targetId: userId, label: `@${handle}` });
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.45)" }} onPress={() => navigation.goBack()} />
-      <View
-        style={{
-          backgroundColor: colors.surfaceElevated,
-          borderTopLeftRadius: 18,
-          borderTopRightRadius: 18,
-          borderTopWidth: 0.5,
-          borderTopColor: colors.divider,
-          paddingBottom: 20,
-          maxHeight: "60%",
-        }}
-      >
+    <SheetScaffold
+      onClose={() => navigation.goBack()}
+      sheetStyle={{
+        backgroundColor: colors.surfaceElevated,
+        borderTopLeftRadius: 18,
+        borderTopRightRadius: 18,
+        borderTopWidth: 0.5,
+        borderTopColor: colors.divider,
+        paddingBottom: 20,
+        maxHeight: "60%",
+      }}
+    >
         <View style={{ alignItems: "center", paddingVertical: 10 }}>
           <View style={{ width: 38, height: 4, borderRadius: 2, backgroundColor: colors.dividerStrong }} />
         </View>
@@ -148,7 +147,6 @@ export function UserActionsSheet() {
           label="Denunciar"
           onPress={handleReport}
         />
-      </View>
-    </View>
+    </SheetScaffold>
   );
 }

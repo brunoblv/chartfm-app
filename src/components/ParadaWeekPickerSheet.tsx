@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { useAppState } from "../state/AppState";
 import { useParadasQuery } from "../api/paradas";
+import { SheetScaffold } from "./SheetScaffold";
 
 function toDateInput(d: Date): string {
   const y = d.getFullYear();
@@ -50,18 +51,17 @@ export function ParadaWeekPickerSheet() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.45)" }} onPress={() => navigation.goBack()} />
-      <View
-        style={{
-          backgroundColor: colors.surfaceElevated,
-          borderTopLeftRadius: 18,
-          borderTopRightRadius: 18,
-          borderTopWidth: 0.5,
-          borderTopColor: colors.divider,
-          paddingBottom: 24,
-        }}
-      >
+    <SheetScaffold
+      onClose={() => navigation.goBack()}
+      sheetStyle={{
+        backgroundColor: colors.surfaceElevated,
+        borderTopLeftRadius: 18,
+        borderTopRightRadius: 18,
+        borderTopWidth: 0.5,
+        borderTopColor: colors.divider,
+        paddingBottom: 24,
+      }}
+    >
         <View style={{ alignItems: "center", paddingVertical: 10 }}>
           <View style={{ width: 38, height: 4, borderRadius: 2, backgroundColor: colors.dividerStrong }} />
         </View>
@@ -152,7 +152,6 @@ export function ParadaWeekPickerSheet() {
         >
           <Text style={{ color: "#fff", fontWeight: "700", fontSize: 14.5 }}>Confirmar</Text>
         </Pressable>
-      </View>
-    </View>
+    </SheetScaffold>
   );
 }

@@ -106,6 +106,14 @@ export type MainTabParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
+/** Sem fundo opaco o Android deixa uma camada invisível que engole o clique
+ *  do mouse no celular espelhado (scrcpy, Phone Link, Device Mirroring). */
+const sheetScreenOptions = {
+  presentation: "transparentModal" as const,
+  animation: "fade" as const,
+  contentStyle: { backgroundColor: "transparent" },
+};
+
 function Blank() {
   const navigation = useNavigation();
   React.useEffect(() => {
@@ -200,51 +208,15 @@ export function RootNavigator() {
         <Stack.Screen name="ConversationThread" component={ConversationThreadScreen} />
         <Stack.Screen name="History" component={HistoryScreen} />
         <Stack.Screen name="BlockedUsers" component={BlockedUsersScreen} />
-        <Stack.Screen
-          name="CreateSheet"
-          component={CreateSheetScreen}
-          options={{ presentation: "transparentModal", animation: "fade" }}
-        />
-        <Stack.Screen
-          name="ChooseParada"
-          component={ChooseParadaSheet}
-          options={{ presentation: "transparentModal", animation: "fade" }}
-        />
-        <Stack.Screen
-          name="ProfileSheet"
-          component={ProfileSheetScreen}
-          options={{ presentation: "transparentModal", animation: "fade" }}
-        />
-        <Stack.Screen
-          name="AddSong"
-          component={AddSongScreen}
-          options={{ presentation: "transparentModal", animation: "fade" }}
-        />
-        <Stack.Screen
-          name="RecommendSong"
-          component={RecommendSongScreen}
-          options={{ presentation: "transparentModal", animation: "fade" }}
-        />
-        <Stack.Screen
-          name="WriteReview"
-          component={WriteReviewScreen}
-          options={{ presentation: "transparentModal", animation: "fade" }}
-        />
-        <Stack.Screen
-          name="ParadaWeekPicker"
-          component={ParadaWeekPickerSheet}
-          options={{ presentation: "transparentModal", animation: "fade" }}
-        />
-        <Stack.Screen
-          name="UserActionsSheet"
-          component={UserActionsSheet}
-          options={{ presentation: "transparentModal", animation: "fade" }}
-        />
-        <Stack.Screen
-          name="ReportSheet"
-          component={ReportSheet}
-          options={{ presentation: "transparentModal", animation: "fade" }}
-        />
+        <Stack.Screen name="CreateSheet" component={CreateSheetScreen} options={sheetScreenOptions} />
+        <Stack.Screen name="ChooseParada" component={ChooseParadaSheet} options={sheetScreenOptions} />
+        <Stack.Screen name="ProfileSheet" component={ProfileSheetScreen} options={sheetScreenOptions} />
+        <Stack.Screen name="AddSong" component={AddSongScreen} options={sheetScreenOptions} />
+        <Stack.Screen name="RecommendSong" component={RecommendSongScreen} options={sheetScreenOptions} />
+        <Stack.Screen name="WriteReview" component={WriteReviewScreen} options={sheetScreenOptions} />
+        <Stack.Screen name="ParadaWeekPicker" component={ParadaWeekPickerSheet} options={sheetScreenOptions} />
+        <Stack.Screen name="UserActionsSheet" component={UserActionsSheet} options={sheetScreenOptions} />
+        <Stack.Screen name="ReportSheet" component={ReportSheet} options={sheetScreenOptions} />
       </Stack.Navigator>
     </NavigationContainer>
   );

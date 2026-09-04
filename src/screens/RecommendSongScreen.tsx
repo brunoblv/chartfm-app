@@ -8,6 +8,7 @@ import { useSearchQuery, SearchSong } from "../api/search";
 import { useCreateRecommendationMutation, createErrorMessage } from "../api/create";
 import { resolveMediaUrl } from "../lib/api";
 import { PillButton } from "../components/PillButton";
+import { SheetScaffold } from "../components/SheetScaffold";
 import { RootStackParamList } from "../navigation/RootNavigator";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -46,22 +47,21 @@ export function RecommendSongScreen() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.45)" }} onPress={() => navigation.goBack()} />
-      <View
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          top: 64,
-          backgroundColor: colors.surfaceElevated,
-          borderTopLeftRadius: 18,
-          borderTopRightRadius: 18,
-          borderTopWidth: 0.5,
-          borderTopColor: colors.divider,
-        }}
-      >
+    <SheetScaffold
+      onClose={() => navigation.goBack()}
+      sheetStyle={{
+        position: "absolute",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        top: 64,
+        backgroundColor: colors.surfaceElevated,
+        borderTopLeftRadius: 18,
+        borderTopRightRadius: 18,
+        borderTopWidth: 0.5,
+        borderTopColor: colors.divider,
+      }}
+    >
         <View style={{ alignItems: "center", paddingVertical: 10 }}>
           <View style={{ width: 38, height: 4, borderRadius: 2, backgroundColor: colors.dividerStrong }} />
         </View>
@@ -190,7 +190,6 @@ export function RecommendSongScreen() {
             </ScrollView>
           </>
         )}
-      </View>
-    </View>
+    </SheetScaffold>
   );
 }

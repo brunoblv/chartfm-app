@@ -6,6 +6,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useReportMutation } from "../api/profile";
 import { accountErrorMessage } from "../api/account";
+import { SheetScaffold } from "../components/SheetScaffold";
 
 const CHILD_SAFETY_REASON_PREFIX = "[child_safety]";
 
@@ -65,9 +66,9 @@ export function ReportSheet() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.45)" }} onPress={() => navigation.goBack()} />
-      <View
-        style={{
+      <SheetScaffold
+        onClose={() => navigation.goBack()}
+        sheetStyle={{
           backgroundColor: colors.surfaceElevated,
           borderTopLeftRadius: 18,
           borderTopRightRadius: 18,
@@ -171,7 +172,7 @@ export function ReportSheet() {
             </Pressable>
           </>
         )}
-      </View>
+      </SheetScaffold>
     </KeyboardAvoidingView>
   );
 }

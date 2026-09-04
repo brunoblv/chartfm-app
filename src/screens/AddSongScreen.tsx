@@ -10,6 +10,7 @@ import { useGlobalSongsQuery } from "../api/global";
 import type { ChartSong } from "../data/mock";
 import { sameChartSong } from "../data/mock";
 import { resolveMediaUrl } from "../lib/api";
+import { SheetScaffold } from "../components/SheetScaffold";
 
 function catalogToChartSong(song: SearchSong, seed: number): ChartSong {
   return {
@@ -155,22 +156,21 @@ export function AddSongScreen() {
   const isAdded = (song: ChartSong) => chart.some((row) => sameChartSong(row, song));
 
   return (
-    <View style={{ flex: 1 }}>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.45)" }} onPress={() => navigation.goBack()} />
-      <View
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          top: 64,
-          backgroundColor: colors.surfaceElevated,
-          borderTopLeftRadius: 18,
-          borderTopRightRadius: 18,
-          borderTopWidth: 0.5,
-          borderTopColor: colors.divider,
-        }}
-      >
+    <SheetScaffold
+      onClose={() => navigation.goBack()}
+      sheetStyle={{
+        position: "absolute",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        top: 64,
+        backgroundColor: colors.surfaceElevated,
+        borderTopLeftRadius: 18,
+        borderTopRightRadius: 18,
+        borderTopWidth: 0.5,
+        borderTopColor: colors.divider,
+      }}
+    >
         <View style={{ alignItems: "center", paddingVertical: 10 }}>
           <View style={{ width: 38, height: 4, borderRadius: 2, backgroundColor: colors.dividerStrong }} />
         </View>
@@ -322,7 +322,6 @@ export function AddSongScreen() {
             </View>
           )}
         </ScrollView>
-      </View>
-    </View>
+    </SheetScaffold>
   );
 }
