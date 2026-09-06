@@ -111,6 +111,24 @@ export function EventsScreen() {
       </View>
 
       <Pressable
+        onPress={() => navigation.navigate("CriticsFM")}
+        style={{ marginHorizontal: 16, marginTop: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 18, flexDirection: "row", alignItems: "center", gap: 14 }}
+      >
+        <View style={{ width: 54, height: 54, borderRadius: 12, backgroundColor: colors.accentTint, alignItems: "center", justifyContent: "center" }}>
+          <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={colors.accent} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+            <Path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <Path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          </Svg>
+        </View>
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <Text style={{ fontSize: 16, fontWeight: "700", color: colors.text }}>CriticsFM</Text>
+          <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 4 }}>
+            Reviews, lançamentos e Clube do Álbum
+          </Text>
+        </View>
+      </Pressable>
+
+      <Pressable
         onPress={() => navigation.navigate("Clube")}
         style={{ marginHorizontal: 16, marginTop: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 18, flexDirection: "row", alignItems: "center", gap: 14 }}
       >

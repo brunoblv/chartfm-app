@@ -11,7 +11,15 @@ export function scoreColor(score: number): string {
 }
 
 /** Espelha c:\ChartFM\components\ui\ScoreSquare.tsx — nota numérica em quadrado colorido. */
-export function ScoreSquare({ score, size = 34 }: { score: number; size?: number }) {
+export function ScoreSquare({
+  score,
+  size = 34,
+  overlay = false,
+}: {
+  score: number;
+  size?: number;
+  overlay?: boolean;
+}) {
   return (
     <View
       style={{
@@ -21,6 +29,11 @@ export function ScoreSquare({ score, size = 34 }: { score: number; size?: number
         backgroundColor: scoreColor(score),
         alignItems: "center",
         justifyContent: "center",
+        shadowColor: "#000",
+        shadowOpacity: overlay ? 0.35 : 0,
+        shadowRadius: overlay ? 6 : 0,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: overlay ? 4 : 0,
       }}
     >
       <Text style={{ color: "#fff", fontWeight: "800", fontSize: size * 0.4 }}>{Math.round(score)}</Text>

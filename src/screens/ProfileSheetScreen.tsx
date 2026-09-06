@@ -17,9 +17,8 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
  * Espelha a `ProfileSheet` do site (`components/layout/BottomNav.tsx`): folha
  * que sobe ao tocar em "Eu", com cabeçalho (avatar, nome, level/XP) e uma
  * lista de atalhos. Itens sem tela correspondente no app (Biblioteca,
- * Estatísticas, Bolha, Comunidades, Loja) ficaram de fora — Copa, Push e
- * Clube do site viraram um único atalho "Eventos", porque o app já consolida
- * os três na `EventsScreen`.
+ * Estatísticas, Bolha, Comunidades, Loja) ficaram de fora. Copa, Push e
+ * Clube do site viraram o atalho "Eventos". CriticsFM tem tela própria.
  */
 export function ProfileSheetScreen() {
   const { colors } = useAppTheme();
@@ -118,6 +117,11 @@ export function ProfileSheetScreen() {
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Path d="M12 8v4l3 3" /><Circle cx={12} cy={12} r={9} /></Svg>}
           label="Histórico"
           onPress={() => go(() => navigation.navigate("History", { handle: user?.handle ?? "" }))}
+        />
+        <Row
+          icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><Path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></Svg>}
+          label="CriticsFM"
+          onPress={() => go(() => navigation.navigate("CriticsFM"))}
         />
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z" /><Path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" /></Svg>}

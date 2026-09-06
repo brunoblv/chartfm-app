@@ -30,6 +30,7 @@ import { SettingsScreen } from "../screens/SettingsScreen";
 import { PushSubmitScreen } from "../screens/PushSubmitScreen";
 import { PushRankScreen } from "../screens/PushRankScreen";
 import { ClubeScreen } from "../screens/ClubeScreen";
+import { CriticsFMScreen } from "../screens/CriticsFMScreen";
 import { EditProfileScreen } from "../screens/EditProfileScreen";
 import { RecommendSongScreen } from "../screens/RecommendSongScreen";
 import { WriteReviewScreen } from "../screens/WriteReviewScreen";
@@ -77,6 +78,7 @@ export type RootStackParamList = {
   PushSubmit: undefined;
   PushRank: undefined;
   Clube: undefined;
+  CriticsFM: undefined;
   EditProfile: undefined;
   RecommendSong: undefined;
   WriteReview: { albumId?: number; title?: string; artist?: string; coverUrl?: string | null } | undefined;
@@ -197,6 +199,7 @@ export function RootNavigator() {
         <Stack.Screen name="PushSubmit" component={PushSubmitScreen} />
         <Stack.Screen name="PushRank" component={PushRankScreen} />
         <Stack.Screen name="Clube" component={ClubeScreen} />
+        <Stack.Screen name="CriticsFM" component={CriticsFMScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="ChartDetail" component={ChartDetailScreen} />
         <Stack.Screen name="Spotlights" component={SpotlightsScreen} />

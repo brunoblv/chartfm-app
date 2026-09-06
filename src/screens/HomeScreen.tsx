@@ -203,14 +203,14 @@ function InicioTab() {
 
       {discovery && discovery.reviews.length > 0 && (
         <>
-          <SectionHeader title="Reviews em destaque" />
+          <SectionHeader title="Reviews em destaque" action="Ver todas" onAction={() => navigation.navigate("CriticsFM")} />
           <ReviewsRow reviews={discovery.reviews} />
         </>
       )}
 
       {discovery?.releases && discovery.releases.albums.length > 0 && (
         <>
-          <SectionHeader title="Lançamentos" />
+          <SectionHeader title="Lançamentos" action="Ver todos" onAction={() => navigation.navigate("CriticsFM")} />
           <ReleasesRow albums={discovery.releases.albums} />
         </>
       )}
