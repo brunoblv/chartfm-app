@@ -9,6 +9,7 @@ import { ScoreSquare } from "../components/ScoreSquare";
 import { resolveMediaUrl } from "../lib/api";
 import { useAlbumQuery, useAlbumReviewsQuery, useToggleReviewHelpfulMutation } from "../api/album";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { SaveLibraryButton } from "../components/SaveLibraryButton";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "AlbumDetail">;
@@ -92,6 +93,7 @@ export function AlbumDetailScreen() {
           {album.totalTracks} {album.totalTracks === 1 ? "faixa" : "faixas"}
           {album.label ? ` · ${album.label}` : ""}
         </Text>
+        <SaveLibraryButton itemType="album" itemId={album.albumId} source="album" />
         {album.genres.length > 0 && (
           <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 6, marginTop: 10 }}>
             {album.genres.map((g) => (

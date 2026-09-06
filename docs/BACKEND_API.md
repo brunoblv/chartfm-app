@@ -262,6 +262,14 @@ migração). Resumo do que está implementado:
   desatualizado silenciosamente.** Considerar expor os 4 limiares completos em
   `GET /api/profile/[handle]` (`progression.families[].thresholds`) numa fase futura para
   eliminar essa cópia.
+- **Biblioteca, estatísticas e tela de conquistas (2026-09-06)**:
+  - `GET /api/library` (`?tipo=` lista, `?itemType=&itemId=` se está salvo). POST/DELETE da
+    mesma rota passaram para `getApiUser`. Review da lista traz `albumId`.
+  - `GET /api/profile/[handle]/estatisticas` espelha `getProfileStats` (público, como o histórico).
+  - Telas: `LibraryScreen`, `StatsScreen`, `AchievementsScreen`. Salvar nas fichas de música,
+    álbum, artista, parada e avaliação.
+- **Minha Bolha (2026-09-06)**: `GET /api/bolha` (login, `getApiUser`). Snapshot semanal já
+  gravado pelo cron. Tela `BubbleScreen`, atalho na ProfileSheet.
 - Não usados: `GET /api/profile/[handle]/paradas|reviews`, `/api/user/chart-name|account|
   export-data`.
 

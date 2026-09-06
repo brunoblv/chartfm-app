@@ -10,6 +10,7 @@ import { resolveMediaUrl } from "../lib/api";
 import { useSongQuery } from "../api/song";
 import { useSongVideoClipsQuery } from "../api/videoClips";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { SaveLibraryButton } from "../components/SaveLibraryButton";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "MusicDetail">;
@@ -81,6 +82,7 @@ export function MusicDetailScreen() {
             <Text style={{ fontSize: 13, color: colors.accent, marginTop: 2 }}>{song.albumTitle}</Text>
           </Pressable>
         ) : null}
+        <SaveLibraryButton itemType="song" itemId={song.songId} source="song" />
         {song.globalStats.weeks > 0 ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 12 }}>
             <Text style={{ fontSize: 12.5, color: colors.textMuted }}>

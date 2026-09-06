@@ -8,6 +8,7 @@ import { BackHeader } from "../components/BackHeader";
 import { resolveMediaUrl } from "../lib/api";
 import { useArtistQuery } from "../api/artist";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { SaveLibraryButton } from "../components/SaveLibraryButton";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "ArtistDetail">;
@@ -68,6 +69,7 @@ export function ArtistDetailScreen() {
             {artist.monthlyListeners.toLocaleString("pt-BR")} ouvintes mensais
           </Text>
         ) : null}
+        <SaveLibraryButton itemType="artist" itemId={artist.artistId} source="artist" />
         {artist.genres.length > 0 ? (
           <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 6, marginTop: 12 }}>
             {artist.genres.map((g) => (

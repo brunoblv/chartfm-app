@@ -147,10 +147,10 @@ export function UserDetailScreen() {
             <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{profile.user.following}</Text>
             <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>seguindo</Text>
           </Pressable>
-          <View style={{ alignItems: "center" }}>
+          <Pressable onPress={() => navigation.navigate("Achievements", { handle })} style={{ alignItems: "center" }}>
             <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{profile.progression.unlocked}</Text>
             <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>conquistas</Text>
-          </View>
+          </Pressable>
           <View style={{ alignItems: "center" }}>
             <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{profile.user.streak}</Text>
             <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>sequência</Text>
@@ -192,7 +192,8 @@ export function UserDetailScreen() {
       </View>
 
       {profile.statsSummary && (
-        <View
+        <Pressable
+          onPress={() => navigation.navigate("Stats", { handle })}
           style={{
             marginHorizontal: 16,
             marginBottom: 20,
@@ -221,7 +222,7 @@ export function UserDetailScreen() {
               músicas em{"\n"}#1
             </Text>
           </View>
-        </View>
+        </Pressable>
       )}
 
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 16, marginBottom: 8 }}>
@@ -249,10 +250,13 @@ export function UserDetailScreen() {
         <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 20 }}>Sem parada publicada.</Text>
       )}
 
-      <View style={{ paddingHorizontal: 20, paddingTop: 26, paddingBottom: 12 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20, paddingTop: 26, paddingBottom: 12 }}>
         <Text style={{ fontSize: 19, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>
           Conquistas · Nível {profile.progression.level.level}
         </Text>
+        <Pressable onPress={() => navigation.navigate("Achievements", { handle })}>
+          <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Ver todas</Text>
+        </Pressable>
       </View>
       <View style={{ marginHorizontal: 16, flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
         {profile.progression.families.map((f) => (

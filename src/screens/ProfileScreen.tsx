@@ -136,12 +136,15 @@ export function ProfileScreen() {
                 </Text>
                 <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>seguindo</Text>
               </Pressable>
-              <View style={{ alignItems: "center" }}>
+              <Pressable
+                onPress={() => user && navigation.navigate("Achievements", { handle: user.handle })}
+                style={{ alignItems: "center" }}
+              >
                 <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
                   {profile?.progression.unlocked ?? 0}
                 </Text>
                 <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>conquistas</Text>
-              </View>
+              </Pressable>
               <View style={{ alignItems: "center" }}>
                 <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
                   {profile?.user.streak ?? 0}
@@ -182,7 +185,8 @@ export function ProfileScreen() {
           )}
 
           {profile?.statsSummary && (
-            <View
+            <Pressable
+              onPress={() => user && navigation.navigate("Stats", { handle: user.handle })}
               style={{
                 marginHorizontal: 16,
                 marginTop: 12,
@@ -211,15 +215,20 @@ export function ProfileScreen() {
                   músicas em{"\n"}#1
                 </Text>
               </View>
-            </View>
+            </Pressable>
           )}
 
           {showGamification && profile && (
             <>
-              <View style={{ paddingHorizontal: 20, paddingTop: 26, paddingBottom: 12 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20, paddingTop: 26, paddingBottom: 12 }}>
                 <Text style={{ fontSize: 19, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>
                   Conquistas · Nível {profile.progression.level.level}
                 </Text>
+                {user ? (
+                  <Pressable onPress={() => navigation.navigate("Achievements", { handle: user.handle })}>
+                    <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Ver todas</Text>
+                  </Pressable>
+                ) : null}
               </View>
               <View style={{ marginHorizontal: 16, flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
                 {profile.progression.families.map((f) => (

@@ -4,7 +4,7 @@ Levantado em 2026-09-05. Fonte do site: rotas user-facing em `C:\ChartFM\app` (s
 
 O núcleo do app existe: home logada, parada, perfil, catálogo, Global 100, DMs, criar e editar chart, Copa ao vivo, Clube. O que o site ganhou depois do layout (comunidades, editorial, jogos completos, progressão, institucionais) quase não chegou no app.
 
-A `ProfileSheet` já admite parte do buraco: Biblioteca, Estatísticas, Bolha, Comunidades e Loja ficaram de fora de propósito.
+A `ProfileSheet` ainda deixa de fora o que não tem tela nativa: Comunidades e Loja.
 
 ## Como ler
 
@@ -31,20 +31,20 @@ Não entram na conta:
 
 | Status | Quantidade |
 |---|---|
-| Pronto | 22 |
-| Parcial | 15 |
+| Pronto | 26 |
+| Parcial | 14 |
 | Abre no site | 4 |
-| Falta | 62 |
+| Falta | 59 |
 | **Total comparado** | **103** |
 
 | Grupo | Telas | Pronto | Parcial | Abre no site | Falta |
 |---|---|---|---|---|---|
 | Home e feed | 2 | 0 | 2 | 0 | 0 |
-| Descoberta | 12 | 0 | 3 | 1 | 8 |
+| Descoberta | 12 | 1 | 3 | 1 | 7 |
 | Charts oficiais | 7 | 1 | 2 | 0 | 4 |
 | Catálogo | 5 | 4 | 0 | 0 | 1 |
 | Paradas | 6 | 4 | 1 | 0 | 1 |
-| Perfil e progressão | 10 | 5 | 1 | 0 | 4 |
+| Perfil e progressão | 10 | 8 | 0 | 0 | 2 |
 | Comunidades | 9 | 0 | 0 | 0 | 9 |
 | Editorial e guias | 13 | 0 | 0 | 0 | 13 |
 | CriticsFM e Clube | 5 | 1 | 1 | 0 | 3 |
@@ -69,7 +69,7 @@ Não entram na conta:
 | Busca | `/search` | Search | `src/screens/SearchScreen.tsx` | Parcial | Só músicas, artistas e pessoas. Site tem álbum, review e comunidade. |
 | Descobertas | `/descobertas` | — | — | Falta | Login no site. Sugestões com motivo medido. |
 | Explorar paradas | `/explorar` | — | — | Falta | |
-| Minha Bolha | `/bolha` | — | — | Falta | Login no site. A ProfileSheet cita de propósito. |
+| Minha Bolha | `/bolha` | Bubble | `src/screens/BubbleScreen.tsx` | Pronto | Login. `GET /api/bolha`. Órbita, lista de matches e abas de músicas, álbuns e artistas. |
 | Playlists cooperativas | `/playlists` | — | — | Falta | |
 | Playlist da semana | `/playlists/[category]/[weekIndex]` | — | — | Falta | |
 | Lançamentos | `/lancamentos` | faixa na Home | `src/components/home/ReleasesRow.tsx` | Parcial | Sem hub com abas. |
@@ -119,12 +119,12 @@ Edição de catálogo (`/*/edit`) ficou de fora: só ADMIN/DEV no site, e o app 
 | Paradas do perfil | `/profile/[handle]/paradas` | ParadasList | `src/screens/ParadasListScreen.tsx` | Pronto | |
 | Detalhe de uma parada | `/profile/[handle]/paradas/[paradaId]` | ParadaDetail | `src/screens/ParadaDetailScreen.tsx` | Pronto | |
 | Seguidores | `/profile/[handle]/followers` | Followers | `src/screens/FollowersScreen.tsx` | Pronto | Seguidores e seguindo. |
-| Estatísticas | `/profile/[handle]/estatisticas` | — | — | Falta | Só dois números no perfil. A ProfileSheet cita de propósito. |
+| Estatísticas | `/profile/[handle]/estatisticas` | Stats | `src/screens/StatsScreen.tsx` | Pronto | `GET /api/profile/[handle]/estatisticas`. Atalho na ProfileSheet e no card de números do perfil. |
 | Histórico | `/profile/[handle]/historico` | History | `src/screens/HistoryScreen.tsx` | Pronto | |
-| Conquistas | `/profile/[handle]/conquistas` | cards + modal | `src/components/AchievementDetailModal.tsx` | Parcial | Cards no perfil. Sem página própria. |
+| Conquistas | `/profile/[handle]/conquistas` | Achievements | `src/screens/AchievementsScreen.tsx` | Pronto | Lista por categoria, reusa o modal. Atalho na ProfileSheet e no perfil. |
 | Comparador | `/profile/[handle]/comparar` | — | — | Falta | Login no site. |
 | Histórico na comunidade | `/profile/[handle]/comunidades/[slug]/historico` | — | — | Falta | |
-| Biblioteca | `/biblioteca` | — | — | Falta | Login no site. A ProfileSheet cita de propósito. |
+| Biblioteca | `/biblioteca` | Library | `src/screens/LibraryScreen.tsx` | Pronto | Login. `GET /api/library` com `getApiUser`. Salvar nas fichas de música, álbum, artista, parada e avaliação. |
 
 ## 7. Comunidades
 
@@ -242,11 +242,8 @@ Não são buraco no site. O site resolve no fluxo de outra página ou numa folha
 
 ## Próximas candidatas
 
-Sem ordem de prioridade. São os buracos que a ProfileSheet já nomeou, mais o que completa jogos e o que o site trata como produto:
+Sem ordem de prioridade. São os buracos que a ProfileSheet ainda nomeia, mais o que completa jogos e o que o site trata como produto:
 
-- Biblioteca
-- Estatísticas
-- Bolha
 - Comunidades (pelo menos índice e detalhe)
 - Loja
 - Copa completa (home, grupos, chaveamento, meu time)

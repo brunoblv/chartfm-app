@@ -9,6 +9,7 @@ import { ScoreSquare } from "../components/ScoreSquare";
 import { resolveMediaUrl } from "../lib/api";
 import { useToggleReviewHelpfulMutation } from "../api/album";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { SaveLibraryButton } from "../components/SaveLibraryButton";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "ReviewDetail">;
@@ -52,6 +53,9 @@ export function ReviewDetailScreen() {
         </View>
         <ScoreSquare score={r.rating} size={36} />
       </Pressable>
+      <View style={{ paddingHorizontal: 16, alignItems: "flex-start" }}>
+        <SaveLibraryButton itemType="review" itemId={r.id} source="review" />
+      </View>
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginHorizontal: 16, marginTop: 18 }}>
         {r.authorImage ? (

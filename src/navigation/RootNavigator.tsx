@@ -44,6 +44,10 @@ import { FollowersScreen } from "../screens/FollowersScreen";
 import { ConversasScreen } from "../screens/ConversasScreen";
 import { ConversationThreadScreen } from "../screens/ConversationThreadScreen";
 import { HistoryScreen } from "../screens/HistoryScreen";
+import { AchievementsScreen } from "../screens/AchievementsScreen";
+import { StatsScreen } from "../screens/StatsScreen";
+import { LibraryScreen } from "../screens/LibraryScreen";
+import { BubbleScreen } from "../screens/BubbleScreen";
 import { CreateGuidedScreen } from "../screens/CreateGuidedScreen";
 import { ChooseParadaSheet } from "../screens/ChooseParadaSheet";
 import { UserActionsSheet } from "../screens/UserActionsSheet";
@@ -92,6 +96,10 @@ export type RootStackParamList = {
   Conversas: undefined;
   ConversationThread: { conversationId: string; handle: string; name?: string };
   History: { handle: string };
+  Achievements: { handle: string };
+  Stats: { handle: string };
+  Library: undefined;
+  Bubble: undefined;
   UserActionsSheet: { userId: string; handle: string; initialMuted?: boolean };
   ReportSheet: { targetType: "user" | "post"; targetId: string; label?: string };
   BlockedUsers: undefined;
@@ -210,6 +218,10 @@ export function RootNavigator() {
         <Stack.Screen name="Conversas" component={ConversasScreen} />
         <Stack.Screen name="ConversationThread" component={ConversationThreadScreen} />
         <Stack.Screen name="History" component={HistoryScreen} />
+        <Stack.Screen name="Achievements" component={AchievementsScreen} />
+        <Stack.Screen name="Stats" component={StatsScreen} />
+        <Stack.Screen name="Library" component={LibraryScreen} />
+        <Stack.Screen name="Bubble" component={BubbleScreen} />
         <Stack.Screen name="BlockedUsers" component={BlockedUsersScreen} />
         <Stack.Screen name="CreateSheet" component={CreateSheetScreen} options={sheetScreenOptions} />
         <Stack.Screen name="ChooseParada" component={ChooseParadaSheet} options={sheetScreenOptions} />

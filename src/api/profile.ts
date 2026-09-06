@@ -26,8 +26,11 @@ export interface ProfileChart {
   entries: ProfileChartEntry[];
 }
 
+export type AchievementCategory = "charts" | "social" | "reviews" | "discover" | "games";
+
 export interface ProfileFamilyProgress {
   code: string;
+  category?: AchievementCategory;
   tier: "BRONZE" | "SILVER" | "GOLD" | "PLATINUM" | null;
   value: number;
   nextThreshold: number;

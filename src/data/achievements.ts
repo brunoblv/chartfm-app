@@ -1,5 +1,42 @@
 export type AchievementTierId = "bronze" | "silver" | "gold" | "platinum";
 
+export type AchievementFamilyCategory = "charts" | "social" | "reviews" | "discover" | "games";
+
+export const FAMILY_CATEGORY: Record<string, AchievementFamilyCategory> = {
+  HITMAKER: "charts",
+  UNSTOPPABLE: "charts",
+  DISCOVERER: "discover",
+  MUSIC_CRITIC: "reviews",
+  CONVERSATIONALIST: "social",
+  BELOVED: "social",
+  CONNECTED: "social",
+  INFLUENTIAL: "social",
+  SCOUT: "discover",
+  CUP_COMPETITOR: "games",
+  PUSHER: "games",
+  ALBUM_CLUB: "reviews",
+  COLLECTOR: "discover",
+};
+
+export const CATEGORY_FILTERS = ["todas", "charts", "social", "reviews", "discover", "games"] as const;
+export type CategoryFilter = (typeof CATEGORY_FILTERS)[number];
+
+export const CATEGORY_FILTER_LABELS: Record<CategoryFilter, string> = {
+  todas: "Todas",
+  charts: "Paradas",
+  social: "Social",
+  reviews: "Avaliações",
+  discover: "Descobertas",
+  games: "Jogos",
+};
+
+export function familyCategory(code: string, fromApi?: string): AchievementFamilyCategory {
+  if (fromApi === "charts" || fromApi === "social" || fromApi === "reviews" || fromApi === "discover" || fromApi === "games") {
+    return fromApi;
+  }
+  return FAMILY_CATEGORY[code] ?? "charts";
+}
+
 export const TIER_ORDER: AchievementTierId[] = ["bronze", "silver", "gold", "platinum"];
 
 export const TIER_LABEL: Record<AchievementTierId, string> = {

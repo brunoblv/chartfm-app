@@ -10,6 +10,7 @@ import { ChartSpotlightCard, SpotlightKind } from "../components/ChartSpotlightC
 import { resolveMediaUrl } from "../lib/api";
 import { useChartDetailQuery } from "../api/chartDetail";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { SaveLibraryButton } from "../components/SaveLibraryButton";
 
 type Route = RouteProp<RootStackParamList, "ChartDetail">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -46,6 +47,9 @@ export function ChartDetailScreen() {
             {data.chart.weekLabel} · {data.chart.entries.length}{" "}
             {data.chart.entries.length === 1 ? "música" : "músicas"}
           </Text>
+          <View style={{ paddingHorizontal: 16, alignItems: "flex-start" }}>
+            <SaveLibraryButton itemType="chart" itemId={data.chart.id} source="chart" />
+          </View>
 
           {spotlights.length > 0 ? (
             <>
