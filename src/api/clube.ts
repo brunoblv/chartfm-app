@@ -26,6 +26,12 @@ export interface ClubeWinner extends ClubeAlbumInfo {
   reviewCount: number;
 }
 
+/** Álbum escolhido pela moderação da semana, à parte da votação dos usuários. */
+export interface ClubeCuratorPick extends ClubeAlbumInfo {
+  score: number | null;
+  reviewCount: number;
+}
+
 export interface ClubeRound {
   id: string;
   number: number;
@@ -36,13 +42,14 @@ export interface ClubeRound {
   pollDeadline: string;
   nominations: ClubeNomination[];
   winners: ClubeWinner[];
+  curator: ClubeCuratorPick | null;
   participantCount: number;
   myNominations: ClubeNomination[] | null;
-  myVoteNominationIds: string[] | null;
+  /** IDs das indicações no ranking já salvo do usuário, do melhor para o pior. */
+  myRankingNominationIds: string[] | null;
   isLoggedIn: boolean;
   identitiesRevealed: boolean;
   roundComplete: boolean;
-  minPollVotes: number;
 }
 
 export const CLUBE_PHASE_LABELS: Record<ClubePhase, string> = {
@@ -64,16 +71,17 @@ export function useClubeQuery() {
 export function useClubeNominateMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (vars: { roundId: string; albumIds: [number, number] }) =>
+    mutationFn: (vars: { roundId: string; albumId: number }) =>
       apiRequest<{ ok: true }>("/api/clube/nominations", { method: "POST", body: vars }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clube", "active"] }),
   });
 }
 
-export function useClubeVoteMutation() {
+/** Ranking por posição (1 = melhor) das indicações elegíveis — mesma mecânica da Votação da Semana. */
+export function useClubeRankMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (vars: { roundId: string; nominationIds: string[] }) =>
+    mutationFn: (vars: { roundId: string; positions: { nominationId: string; position: number }[] }) =>
       apiRequest<{ ok: true }>("/api/clube/votes", { method: "POST", body: vars }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clube", "active"] }),
   });
