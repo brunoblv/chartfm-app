@@ -126,9 +126,19 @@ export interface PopularChart {
   topSongs: PopularChartSong[];
 }
 
+/** Espelha `ReleaseItem` (kind "clip") de c:\ChartFM\lib\releases-hub-data.ts. */
+export interface HomeClipRelease {
+  id: string;
+  title: string;
+  artist: string;
+  coverUrl: string | null;
+  href: string;
+}
+
 export interface HomeDiscoveryResponse {
   reviews: HomeReview[];
   releases: { id: string; weekLabel: string; albums: HomeReleaseAlbum[] } | null;
+  clipReleases: HomeClipRelease[];
   charts: PopularChart[];
 }
 

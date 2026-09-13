@@ -16,10 +16,6 @@ Toda vez que uma feature envolver cadastro de algo que tenha artista e música (
 
 Isso é relevante principalmente para o admin do site (fora do escopo deste app mobile), mas fica registrado aqui porque é uma regra de produto que vale para qualquer tela nova que envolva cadastro de artista/música.
 
-## Regra permanente: nunca expor caminho de rota nem coisa de dev/admin em elemento voltado para o usuário
-
-Vale para texto de tela, link, notificação, mensagem de erro, qualquer coisa que o usuário comum vê no app. Nada de citar rota técnica (`/lancamentos`, `/api/bolha`, nome de tela do RootNavigator) como se fosse instrução para a pessoa. Ou vira navegação de verdade (botão/link que leva para lá), ou vira linguagem comum ("na aba Lançamentos", "na sua Biblioteca"). O usuário não sabe o que é uma rota e não precisa saber disso. Vale nos dois repos, aqui e no site (`C:\ChartFM`).
-
 ## Nota: organização do admin (site)
 
 O admin do site (`C:\ChartFM`) deve seguir sempre um layout de sistema organizado (menus agrupados, tabelas em vez de listas soltas empilhadas, sem seções "soltas"). Isso é administrativo/puramente do site — não se aplica a telas do app mobile — mas fica registrado aqui pois é uma diretriz permanente de produto.

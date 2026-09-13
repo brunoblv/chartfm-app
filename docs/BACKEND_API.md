@@ -330,15 +330,25 @@ nova (todas em `getApiUser`, nenhuma existia antes desta fase):
   - `people`: `lib/home-hub-data.ts#getPeopleToMeet` — "Pessoas para conhecer". **Sem "X% de
     compatibilidade"** — só `commonGenres.length` (contagem de gêneros em comum); a doc de
     design menciona percentual, mas não está implementado em lugar nenhum do backend.
-- **`GET /api/home/discovery`** (público, sem `getApiUser`) — `reviews` e `releases`, via
-  `lib/public-home-data.ts#getPublicHomeData` (já cacheada 300s por semana+locale, igual à
-  web). Não é dado por usuário, por isso não exige auth.
+- **`GET /api/home/discovery`** (público, sem `getApiUser`) — `reviews`, `releases` e
+  `clipReleases`, via `lib/public-home-data.ts#getPublicHomeData` (já cacheada 300s por
+  semana+locale, igual à web). Não é dado por usuário, por isso não exige auth.
+  - `clipReleases` (**adicionado em 2026-09-13**): antes a home logada da web mostrava só 1
+    clipe (`WeeklyRelease.featuredClipYoutubeUrl`, escolhido manualmente no admin) e nem
+    aparecia na home autenticada de verdade — só na home pública deslogada. Isso ficava
+    desalinhado com a curadoria real de clipes da semana (`WeeklyClipRelease`/
+    `WeeklyClipReleaseItem`, gerenciada em `/admin/lancamentos`). A web foi corrigida para
+    renderizar a faixa `shared.clipReleases` (mesma usada na home pública) em vez do banner
+    único — `components/home/FeaturedClipBanner.tsx` e o campo `featuredClipYoutubeUrl` ficam
+    órfãos (não removidos do schema, só sem uso na home).
 - Mobile: `src/api/homeHub.ts` (`useHomeHubQuery`, `useHomeDiscoveryQuery`), componentes em
   `src/components/home/*` (`WeekStatusCard`, `WeeklyRecapCard`, `FriendChartsRow`,
-  `PeopleToMeetRow`, `ReviewsRow`, `ReleasesRow`), compostos em `HomeScreen.tsx` sob a aba
-  "Início". Textos de `recapItemLabel()` em `src/api/homeHub.ts` são cópia manual das chaves
-  i18n de `lib/i18n/messages/pages-pt-BR.ts` (`homeHub.recap*`) — **se o texto mudar na web,
-  não propaga sozinho pro mobile.**
+  `PeopleToMeetRow`, `ReviewsRow`, `ReleasesRow`, `ClipReleasesRow`), compostos em
+  `HomeScreen.tsx` sob a aba "Início" — `ClipReleasesRow` abre o clipe no YouTube via
+  `Linking.openURL` (não tem player embutido no app). Textos de `recapItemLabel()` em
+  `src/api/homeHub.ts` são cópia manual das chaves i18n de
+  `lib/i18n/messages/pages-pt-BR.ts` (`homeHub.recap*`) — **se o texto mudar na web, não
+  propaga sozinho pro mobile.**
 - `HomeScreen.tsx` também ganhou o `hasChart` derivado de `useProfileQuery` (antes vinha de um
   `AppState.hasChart` local que tinha sido removido, deixando a Home sempre presa na tela de
   onboarding) e um avatar/notificação real no header (badge do sino só aparece com notificação

@@ -29,6 +29,7 @@ import { FriendChartsRow } from "../components/home/FriendChartsRow";
 import { PeopleToMeetRow } from "../components/home/PeopleToMeetRow";
 import { ReviewsRow } from "../components/home/ReviewsRow";
 import { ReleasesRow } from "../components/home/ReleasesRow";
+import { ClipReleasesRow } from "../components/home/ClipReleasesRow";
 import { FeedList } from "../components/feed/FeedList";
 import { FeedTab as FeedTabType } from "../api/feed";
 
@@ -212,6 +213,13 @@ function InicioTab() {
         <>
           <SectionHeader title="Lançamentos" action="Ver todos" onAction={() => navigation.navigate("CriticsFM")} />
           <ReleasesRow albums={discovery.releases.albums} />
+        </>
+      )}
+
+      {discovery && discovery.clipReleases.length > 0 && (
+        <>
+          <SectionHeader title="Lançamentos de clipes" />
+          <ClipReleasesRow clips={discovery.clipReleases} />
         </>
       )}
 
