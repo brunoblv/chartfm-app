@@ -20,6 +20,12 @@ Isso é relevante principalmente para o admin do site (fora do escopo deste app 
 
 Vale para texto de tela, link, notificação, mensagem de erro, qualquer coisa que o usuário comum vê no app. Nada de citar rota técnica (`/lancamentos`, `/api/bolha`, nome de tela do RootNavigator) como se fosse instrução para a pessoa. Ou vira navegação de verdade (botão/link que leva para lá), ou vira linguagem comum ("na aba Lançamentos", "na sua Biblioteca"). O usuário não sabe o que é uma rota e não precisa saber disso. Vale nos dois repos, aqui e no site (`C:\ChartFM`).
 
+## Nota: Central de Mídias Sociais não tem espelho no app
+
+A Central de Mídias Sociais do site (`/admin/midias`, spec em `C:\ChartFM\docs\Central_de_Redes_Sociais_Specification.md`) é interna: o admin sobe um criativo, vincula a uma música, publica nas redes do ChartFM e acompanha as métricas. Não existe tela correspondente aqui, e não é esquecimento da regra de espelhamento: é funcionalidade administrativa, sem nada que o usuário do app veja ou use.
+
+Se um dia parte disso virar conteúdo público (por exemplo, um recorte dos números aparecer para a comunidade), aí sim vale trazer para o app.
+
 ## Nota: organização do admin (site)
 
 O admin do site (`C:\ChartFM`) deve seguir sempre um layout de sistema organizado (menus agrupados, tabelas em vez de listas soltas empilhadas, sem seções "soltas"). Isso é administrativo/puramente do site — não se aplica a telas do app mobile — mas fica registrado aqui pois é uma diretriz permanente de produto.
