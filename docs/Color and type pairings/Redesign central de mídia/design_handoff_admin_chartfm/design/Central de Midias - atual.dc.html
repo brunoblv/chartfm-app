@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.css">
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/styles.css">
+  <script src="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+  </style>
+</helmet>
+<div data-theme="light" style="background: var(--bg); color: var(--text); min-height: 100vh;">
+  <header style="position: sticky; top: 0; z-index: 50; background: var(--bg-topbar); backdrop-filter: blur(20px) saturate(160%); border-bottom: 1px solid var(--divider);">
+    <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 32px; padding: 14px 40px;">
+      <div style="display: flex; flex-shrink: 0;">
+        <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ 26 }}" hint-size="110px,26px"></x-import>
+      </div>
+      <nav style="display: flex; align-items: center; flex: 1; min-width: 0; gap: 24px; row-gap: 6px; flex-wrap: wrap;">
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Início</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Feed</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Descobrir</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Paradas</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Comunidades</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Editorial</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Jogos</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">CriticsFM</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Mais ⌄</span>
+        <span style="font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap;">Admin ⌄</span>
+      </nav>
+      <div style="width: 260px; flex: 0 1 260px; min-width: 0;">
+        <div style="height: 34px; border-radius: 999px; background: var(--fill-subtle); display: flex; align-items: center; padding: 0 14px; font-size: 13px; color: var(--text-muted);">Buscar</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+        <span style="font-size: 13px; color: var(--text-muted);">✉</span>
+        <span style="font-size: 13px; color: var(--text-muted);">🔔</span>
+        <div style="width: 34px; height: 34px; border-radius: 50%; background: #FA243C; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">B</div>
+      </div>
+    </div>
+  </header>
+
+  <main style="padding: 36px 0 40px 0;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
+      <header style="margin-bottom: 28px; display: flex; align-items: flex-end; gap: 24px;">
+        <div style="flex: 1;">
+          <h1 style="font-size: 44px; font-weight: 700; letter-spacing: -0.04em; margin: 0; line-height: 1.05;">Central de Mídias</h1>
+          <p style="font-size: 15px; color: var(--text-muted); letter-spacing: -0.01em; margin: 6px 0 0 0;">Publica um criativo nas redes do ChartFM, vinculado a uma música, e acompanha os números de cada post.</p>
+        </div>
+      </header>
+
+      <div style="max-width: 1100px; width: 100%;">
+        <div style="background: var(--surface); border-radius: 14px; border: 1px solid var(--divider); overflow: hidden; padding: 18px;">
+          <div style="display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap;">
+            <button type="button" style="padding: 8px 14px; border-radius: 999px; border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); font-weight: 600; font-size: 13px;">Novo post</button>
+            <button type="button" style="padding: 8px 14px; border-radius: 999px; border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); font-weight: 600; font-size: 13px;">Gerar vídeo</button>
+            <button type="button" style="padding: 8px 14px; border-radius: 999px; border: 1px solid var(--divider-strong); background: #FA243C; color: #fff; font-weight: 600; font-size: 13px;">Agenda</button>
+            <button type="button" style="padding: 8px 14px; border-radius: 999px; border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); font-weight: 600; font-size: 13px;">Insights</button>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--divider);">
+            <label style="display: grid; gap: 6px;">
+              <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">Baixar os criativos do dia</span>
+              <input type="date" value="2026-09-17" style="width: 180px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); font-size: 14px; font-family: inherit; box-sizing: border-box;">
+            </label>
+            <select style="width: 220px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); font-size: 14px; font-family: inherit; box-sizing: border-box;">
+              <option>Só o que é postado à mão</option>
+              <option>Todos os criativos do dia</option>
+            </select>
+            <a href="#" style="display: inline-block; padding: 10px 16px; border-radius: 10px; background: #FA243C; color: #fff; font-weight: 700; font-size: 13px; text-decoration: none;">Baixar o dia</a>
+            <span style="font-size: 12px; color: var(--text-muted);">O zip vem com as legendas num arquivo de texto, para copiar na hora de postar.</span>
+          </div>
+
+          <div style="border: 1px solid #C5291C; background: rgba(197,41,28,0.06); border-radius: 10px; padding: 12px; margin-bottom: 12px;">
+            <strong style="font-size: 13px;">2 publicação(ões) passaram do horário e não saíram. 1 falharam.</strong>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 10px;">Ficam aqui em cima porque some da grade quando a semana vira.</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <div style="border: 1px solid #C5291C; border-left: 3px solid #C5291C; border-radius: 8px; padding: 8px; margin-bottom: 8px; background: var(--bg); min-width: 150px;">
+                <div style="display: flex; gap: 8px;">
+                  <div style="width: 44px; height: 44px; border-radius: 6px; flex-shrink: 0; background: rgba(250,36,60,0.12); color: #FA243C; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center;">G</div>
+                  <div style="min-width: 0;">
+                    <div style="font-size: 12px; font-weight: 700;">16/09/2026, 13:00</div>
+                    <div style="font-size: 12px;">YouTube Shorts</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Global 100, ChartFM</div>
+                  </div>
+                </div>
+                <div style="font-size: 11px; color: #C5291C;">atrasado</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                  <button type="button" style="border: none; background: transparent; color: #FA243C; font-size: 11px; padding: 0; font-weight: 700;">publicar agora</button>
+                </div>
+              </div>
+              <div style="border: 1px solid var(--divider); border-left: 3px solid #FA243C; border-radius: 8px; padding: 8px; margin-bottom: 8px; background: var(--bg); min-width: 150px;">
+                <div style="display: flex; gap: 8px;">
+                  <div style="width: 44px; height: 44px; border-radius: 6px; flex-shrink: 0; background: rgba(250,36,60,0.12); color: #FA243C; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center;">T</div>
+                  <div style="min-width: 0;">
+                    <div style="font-size: 12px; font-weight: 700;">16/09/2026, 19:00</div>
+                    <div style="font-size: 12px;">Instagram Reels</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Twenty One Pilots</div>
+                  </div>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted);">Falhou</div>
+                <div style="font-size: 10px; color: #C5291C; margin-top: 2px;">Upload interrompido.</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                  <button type="button" style="border: none; background: transparent; color: #FA243C; font-size: 11px; padding: 0; font-weight: 700;">publicar agora</button>
+                  <button type="button" style="border: none; background: transparent; color: #FA243C; font-size: 11px; padding: 0; font-weight: 700;">reagendar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="border: 1px solid var(--divider); background: rgba(0,0,0,0.03); border-radius: 10px; padding: 12px; margin-bottom: 12px;">
+            <strong style="font-size: 13px;">Esperando você postar à mão (1)</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+              <div style="border: 1px solid var(--divider); border-left: 3px solid #FA243C; border-radius: 8px; padding: 8px; margin-bottom: 8px; background: var(--bg); min-width: 150px;">
+                <div style="display: flex; gap: 8px;">
+                  <div style="width: 44px; height: 44px; border-radius: 6px; flex-shrink: 0; background: rgba(250,36,60,0.12); color: #FA243C; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center;">D</div>
+                  <div style="min-width: 0;">
+                    <div style="font-size: 12px; font-weight: 700;">17/09/2026, 19:00</div>
+                    <div style="font-size: 12px;">TikTok (manual)</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Disk MTV</div>
+                  </div>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted);">Rascunho</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                  <a href="#" style="color: #FA243C; font-size: 11px; font-weight: 700; text-decoration: none;">baixar</a>
+                  <button type="button" style="border: none; background: transparent; color: #FA243C; font-size: 11px; padding: 0; font-weight: 700;">marcar como publicado</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 8px; margin: 16px 0;">
+            <button type="button" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); border-radius: 999px; padding: 6px 12px; font-size: 12px;">semana anterior</button>
+            <button type="button" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); border-radius: 999px; padding: 6px 12px; font-size: 12px;">esta semana</button>
+            <button type="button" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); border-radius: 999px; padding: 6px 12px; font-size: 12px;">próxima semana</button>
+            <span style="font-size: 12px; color: var(--text-muted);">13/09/2026 a 19/09/2026</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+            <div style="border: 1px solid var(--divider); border-radius: 10px; padding: 10px; min-height: 120px; background: var(--surface);">
+              <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">Domingo 13/09</div>
+              <div style="font-size: 11px; color: var(--text-muted);">nada</div>
+            </div>
+            <div style="border: 1px solid var(--divider); border-radius: 10px; padding: 10px; min-height: 120px; background: var(--surface);">
+              <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">Segunda 14/09</div>
+              <div style="border: 1px solid var(--divider); border-left: 3px solid #0F9D58; border-radius: 8px; padding: 8px; margin-bottom: 8px; background: var(--bg); min-width: 150px;">
+                <div style="display: flex; gap: 8px;">
+                  <div style="width: 44px; height: 44px; border-radius: 6px; flex-shrink: 0; background: rgba(250,36,60,0.12); color: #FA243C; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center;">G</div>
+                  <div style="min-width: 0;">
+                    <div style="font-size: 12px; font-weight: 700;">13:00</div>
+                    <div style="font-size: 12px;">Instagram Feed</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Global 100, ChartFM</div>
+                  </div>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted);">Publicado</div>
+              </div>
+            </div>
+            <div style="border: 1px solid var(--divider); border-radius: 10px; padding: 10px; min-height: 120px; background: var(--surface);">
+              <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">Terça 15/09</div>
+              <div style="font-size: 11px; color: var(--text-muted);">nada</div>
+            </div>
+            <div style="border: 1px solid var(--divider); border-radius: 10px; padding: 10px; min-height: 120px; background: var(--surface);">
+              <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">Quarta 16/09</div>
+              <div style="border: 1px solid #C5291C; border-left: 3px solid #C5291C; border-radius: 8px; padding: 8px; margin-bottom: 8px; background: var(--bg); min-width: 150px;">
+                <div style="display: flex; gap: 8px;">
+                  <div style="width: 44px; height: 44px; border-radius: 6px; flex-shrink: 0; background: rgba(250,36,60,0.12); color: #FA243C; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center;">G</div>
+                  <div style="min-width: 0;">
+                    <div style="font-size: 12px; font-weight: 700;">13:00</div>
+                    <div style="font-size: 12px;">YouTube Shorts</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Global 100, ChartFM</div>
+                  </div>
+                </div>
+                <div style="font-size: 11px; color: #C5291C;">atrasado</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                  <button type="button" style="border: none; background: transparent; color: #FA243C; font-size: 11px; padding: 0; font-weight: 700;">publicar agora</button>
+                </div>
+              </div>
+            </div>
+            <div style="border: 1px solid #FA243C; border-radius: 10px; padding: 10px; min-height: 120px; background: var(--surface);">
+              <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">Quinta 17/09</div>
+              <div style="border: 1px solid var(--divider); border-left: 3px solid #FA243C; border-radius: 8px; padding: 8px; margin-bottom: 8px; background: var(--bg); min-width: 150px;">
+                <div style="display: flex; gap: 8px;">
+                  <div style="width: 44px; height: 44px; border-radius: 6px; flex-shrink: 0; background: rgba(250,36,60,0.12); color: #FA243C; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center;">D</div>
+                  <div style="min-width: 0;">
+                    <div style="font-size: 12px; font-weight: 700;">19:00</div>
+                    <div style="font-size: 12px;">TikTok (manual)</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Disk MTV</div>
+                  </div>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted);">Rascunho</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                  <a href="#" style="color: #FA243C; font-size: 11px; font-weight: 700; text-decoration: none;">baixar</a>
+                  <button type="button" style="border: none; background: transparent; color: #FA243C; font-size: 11px; padding: 0; font-weight: 700;">marcar como publicado</button>
+                </div>
+              </div>
+            </div>
+            <div style="border: 1px solid var(--divider); border-radius: 10px; padding: 10px; min-height: 120px; background: var(--surface);">
+              <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">Sexta 18/09</div>
+              <div style="font-size: 11px; color: var(--text-muted);">nada</div>
+            </div>
+            <div style="border: 1px solid var(--divider); border-radius: 10px; padding: 10px; min-height: 120px; background: var(--surface);">
+              <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">Sábado 19/09</div>
+              <div style="font-size: 11px; color: var(--text-muted);">nada</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.css">
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/styles.css">
+  <script src="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+    .lc-row:hover { background: var(--fill-subtle); }
+    .lc-act { opacity: 0.45; }
+    .lc-row:hover .lc-act { opacity: 1; }
+  </style>
+</helmet>
+<div data-theme="{{ theme }}" style="background: var(--bg); color: var(--text); min-height: 100vh;">
+  <header style="position: sticky; top: 0; z-index: 50; background: var(--bg-topbar); backdrop-filter: blur(20px) saturate(160%); border-bottom: 1px solid var(--divider);">
+    <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 32px; padding: 14px 40px;">
+      <div style="display: flex; flex-shrink: 0;">
+        <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ 26 }}" hint-size="110px,26px"></x-import>
+      </div>
+      <nav style="display: flex; align-items: center; flex: 1; min-width: 0; gap: 24px; row-gap: 6px; flex-wrap: wrap;">
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Início</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Feed</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Paradas</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Editorial</span>
+        <span style="font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap;">Admin ⌄</span>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+        <button type="button" onClick="{{ toggleTheme }}" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text-subtle); border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 600; font-family: inherit;">{{ themeLabel }}</button>
+        <div style="width: 34px; height: 34px; border-radius: 50%; background: #FA243C; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">B</div>
+      </div>
+    </div>
+  </header>
+
+  <div style="max-width: 1240px; margin: 0 auto; padding: 32px 40px 80px;">
+    <div style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px;"><a href="Admin - Índice.dc.html" style="color: var(--text-muted);">Admin</a> · Conteúdo editorial</div>
+    <header style="display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+      <div style="flex: 1; min-width: 240px;">
+        <h1 style="font-size: 40px; font-weight: 700; letter-spacing: -0.04em; margin: 0; line-height: 1.05;">Lançamentos</h1>
+        <p style="font-size: 15px; color: var(--text-muted); letter-spacing: -0.01em; margin: 6px 0 0;">Curadoria da sexta. Aprove, recuse ou destaque sem sair da lista.</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 2px; border: 1px solid var(--divider-strong); border-radius: 100px; padding: 2px;">
+          <button type="button" onClick="{{ prevWeek }}" style="border: none; background: transparent; color: var(--text); width: 30px; height: 28px; border-radius: 100px; font-size: 14px; font-family: inherit;">‹</button>
+          <span style="padding: 0 12px; font-size: 12.5px; font-weight: 700; white-space: nowrap;">{{ weekLabel }}</span>
+          <button type="button" onClick="{{ nextWeek }}" style="border: none; background: transparent; color: var(--text); width: 30px; height: 28px; border-radius: 100px; font-size: 14px; font-family: inherit;">›</button>
+        </div>
+        <button type="button" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); border-radius: 100px; padding: 10px 16px; font-size: 13px; font-weight: 700; font-family: inherit;">Buscar lançamentos</button>
+        <button type="button" style="border: none; background: var(--accent); color: #fff; border-radius: 100px; padding: 11px 20px; font-size: 13.5px; font-weight: 700; box-shadow: 0 2px 8px rgba(250,36,60,0.25); font-family: inherit;">Publicar a semana</button>
+      </div>
+    </header>
+
+    <div style="display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--divider); border-radius: 14px; padding: 14px 18px; margin-bottom: 20px; flex-wrap: wrap;">
+      <sc-for list="{{ progress }}" as="p" hint-placeholder-count="4">
+        <div style="display: flex; align-items: baseline; gap: 7px;">
+          <span style="{{ p.valueStyle }}">{{ p.value }}</span>
+          <span style="font-size: 12.5px; color: var(--text-muted);">{{ p.label }}</span>
+        </div>
+      </sc-for>
+      <div style="flex: 1; min-width: 120px;"></div>
+      <div style="font-size: 12.5px; color: var(--text-muted);">{{ readyLine }}</div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;">
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
+          <button type="button" onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+        </sc-for>
+      </div>
+      <div style="flex: 1;"></div>
+      <div style="display: flex; gap: 2px; border: 1px solid var(--divider-strong); border-radius: 100px; padding: 2px;">
+        <sc-for list="{{ kinds }}" as="k" hint-placeholder-count="3">
+          <button type="button" onClick="{{ k.onClick }}" style="{{ k.style }}">{{ k.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="background: var(--surface); border: 1px solid var(--divider); border-radius: 16px; overflow: hidden;">
+      <sc-for list="{{ items }}" as="it" hint-placeholder-count="8">
+        <div class="lc-row" style="{{ it.style }}">
+          <div style="{{ it.coverStyle }}">{{ it.initial }}</div>
+          <div style="min-width: 0;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span style="font-size: 15px; font-weight: 650; letter-spacing: -0.01em;">{{ it.title }}</span>
+              <span style="{{ it.kindStyle }}">{{ it.kind }}</span>
+              <sc-if value="{{ it.highlighted }}" hint-placeholder-val="{{ false }}">
+                <span style="display: inline-flex; align-items: center; height: 19px; padding: 0 8px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 10.5px; font-weight: 700;">destaque</span>
+              </sc-if>
+            </div>
+            <div style="font-size: 13px; color: var(--text-subtle); margin-top: 2px;">{{ it.artist }}</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">{{ it.meta }}</div>
+          </div>
+          <div style="font-size: 12.5px; color: var(--text-subtle); font-variant-numeric: tabular-nums; white-space: nowrap;">{{ it.popularity }}</div>
+          <div style="display: flex; align-items: center; gap: 6px; justify-content: flex-end;">
+            <sc-if value="{{ it.pending }}" hint-placeholder-val="{{ true }}">
+              <div class="lc-act" style="display: flex; gap: 6px; transition: opacity 0.12s ease;">
+                <button type="button" onClick="{{ it.onApprove }}" style="border: none; background: var(--accent); color: #fff; border-radius: 100px; padding: 7px 15px; font-size: 12.5px; font-weight: 700; font-family: inherit;">Aprovar</button>
+                <button type="button" onClick="{{ it.onHighlight }}" style="border: 1px solid var(--divider-strong); background: transparent; color: var(--text); border-radius: 100px; padding: 7px 13px; font-size: 12.5px; font-weight: 700; font-family: inherit;">Destacar</button>
+                <button type="button" onClick="{{ it.onReject }}" style="border: none; background: transparent; color: var(--text-muted); border-radius: 100px; padding: 7px 10px; font-size: 12.5px; font-weight: 600; font-family: inherit;">Recusar</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ it.decided }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="{{ it.statusStyle }}">{{ it.statusLabel }}</span>
+                <button type="button" onClick="{{ it.onUndo }}" style="border: none; background: transparent; color: var(--text-muted); font-size: 12px; font-weight: 600; font-family: inherit; padding: 4px 6px;">desfazer</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 44px; text-align: center; color: var(--text-muted); font-size: 14px;">Nada nessa lista. A semana está limpa.</div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;\&quot;dark\&quot; | \&quot;light\&quot;&quot;}}">
+const ITEMS = [
+  { id: 1, title: "Short n' Sweet (Deluxe)", artist: "Sabrina Carpenter", kind: "Álbum", meta: "19 set · 17 faixas · Island", popularity: "94 pop.", status: "pending" },
+  { id: 2, title: "Breach", artist: "Twenty One Pilots", kind: "Álbum", meta: "19 set · 12 faixas · Fueled by Ramen", popularity: "88 pop.", status: "approved", highlight: true },
+  { id: 3, title: "The Emptiness Machine", artist: "Linkin Park", kind: "Clipe", meta: "18 set · 3m 12s · Warner", popularity: "91 pop.", status: "pending" },
+  { id: 4, title: "GNX (Live)", artist: "Kendrick Lamar", kind: "EP", meta: "19 set · 6 faixas · Interscope", popularity: "86 pop.", status: "pending" },
+  { id: 5, title: "At the Beach, In Every Life", artist: "Gigi Perez", kind: "Álbum", meta: "19 set · 11 faixas · Island", popularity: "71 pop.", status: "approved" },
+  { id: 6, title: "Sinners (visualizer)", artist: "Chappell Roan", kind: "Clipe", meta: "17 set · 2m 58s · Amusement", popularity: "79 pop.", status: "pending" },
+  { id: 7, title: "Remix Pack Vol. 3", artist: "Various Artists", kind: "Álbum", meta: "19 set · 24 faixas · indefinido", popularity: "12 pop.", status: "rejected" },
+  { id: 8, title: "Mayhem (Tour Edition)", artist: "Lady Gaga", kind: "Álbum", meta: "19 set · 18 faixas · Interscope", popularity: "89 pop.", status: "pending" },
+  { id: 9, title: "Manchild", artist: "Sabrina Carpenter", kind: "Clipe", meta: "16 set · 3m 40s · Island", popularity: "83 pop.", status: "pending" },
+];
+
+const STATUS = {
+  approved: { label: "Aprovado", fg: "var(--up-fg)", bg: "var(--up-bg)" },
+  rejected: { label: "Recusado", fg: "var(--text-muted)", bg: "var(--fill-inset)" },
+};
+
+class Component extends DCLogic {
+  state = { theme: null, items: ITEMS, filter: "Pendentes", kind: "Tudo", week: 0 };
+  get theme() { return this.state.theme ?? this.props.theme ?? "dark"; }
+
+  setStatus(id, status, highlight) {
+    this.setState((s) => ({ items: s.items.map((i) => (i.id === id ? { ...i, status, highlight: highlight ?? i.highlight } : i)) }));
+  }
+
+  renderVals() {
+    const st = this.state;
+    const counts = {
+      pending: st.items.filter((i) => i.status === "pending").length,
+      approved: st.items.filter((i) => i.status === "approved").length,
+      rejected: st.items.filter((i) => i.status === "rejected").length,
+      highlight: st.items.filter((i) => i.highlight).length,
+    };
+
+    const filters = ["Pendentes", "Aprovados", "Recusados", "Destaques", "Tudo"].map((label) => ({
+      label: label === "Pendentes" ? `Pendentes · ${counts.pending}` : label,
+      onClick: () => this.setState({ filter: label }),
+      style: `border:1px solid ${st.filter === label ? "transparent" : "var(--divider-strong)"};background:${st.filter === label ? "var(--accent)" : "var(--surface)"};color:${st.filter === label ? "#fff" : "var(--text-subtle)"};border-radius:999px;padding:8px 15px;font-size:12.5px;font-weight:700;font-family:inherit`,
+    }));
+
+    const kinds = ["Tudo", "Álbuns", "Clipes"].map((label) => ({
+      label,
+      onClick: () => this.setState({ kind: label }),
+      style: `border:none;background:${st.kind === label ? "var(--accent)" : "transparent"};color:${st.kind === label ? "#fff" : "var(--text-subtle)"};border-radius:100px;padding:6px 13px;font-size:12.5px;font-weight:700;font-family:inherit`,
+    }));
+
+    const items = st.items
+      .filter((i) => {
+        if (st.filter === "Pendentes") return i.status === "pending";
+        if (st.filter === "Aprovados") return i.status === "approved";
+        if (st.filter === "Recusados") return i.status === "rejected";
+        if (st.filter === "Destaques") return !!i.highlight;
+        return true;
+      })
+      .filter((i) => st.kind === "Tudo" || (st.kind === "Álbuns" ? i.kind !== "Clipe" : i.kind === "Clipe"))
+      .map((i) => {
+        const s = STATUS[i.status];
+        return {
+          title: i.title,
+          artist: i.artist,
+          meta: i.meta,
+          kind: i.kind,
+          popularity: i.popularity,
+          initial: i.artist.slice(0, 1).toUpperCase(),
+          highlighted: !!i.highlight,
+          pending: i.status === "pending",
+          decided: i.status !== "pending",
+          statusLabel: s ? s.label : "",
+          statusStyle: s ? `display:inline-flex;align-items:center;height:22px;padding:0 11px;border-radius:999px;background:${s.bg};color:${s.fg};font-size:11.5px;font-weight:700;white-space:nowrap` : "",
+          style: `display:grid;grid-template-columns:52px minmax(0,1fr) 78px 300px;gap:14px;align-items:center;padding:13px 18px;border-top:1px solid var(--divider-soft);${i.status === "rejected" ? "opacity:0.55;" : ""}`,
+          coverStyle: "width:52px;height:52px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--accent-tint);color:var(--accent);font-size:18px;font-weight:700",
+          kindStyle: `display:inline-flex;align-items:center;height:19px;padding:0 8px;border-radius:999px;background:var(--fill-inset);color:var(--text-muted);font-size:10.5px;font-weight:700`,
+          onApprove: () => this.setStatus(i.id, "approved"),
+          onReject: () => this.setStatus(i.id, "rejected"),
+          onHighlight: () => this.setStatus(i.id, "approved", true),
+          onUndo: () => this.setStatus(i.id, "pending"),
+        };
+      });
+
+    const progress = [
+      { value: String(counts.pending), label: "pendentes", tone: "accent" },
+      { value: String(counts.approved), label: "aprovados", tone: "up" },
+      { value: String(counts.highlight), label: "destaques", tone: "text" },
+      { value: String(counts.rejected), label: "recusados", tone: "muted" },
+    ].map((p) => ({
+      value: p.value,
+      label: p.label,
+      valueStyle: `font-size:22px;font-weight:700;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;color:${p.tone === "accent" ? "var(--accent)" : p.tone === "up" ? "var(--up-fg)" : p.tone === "muted" ? "var(--text-muted)" : "var(--text)"}`,
+    }));
+
+    return {
+      theme: this.theme,
+      themeLabel: this.theme === "dark" ? "Escuro" : "Claro",
+      toggleTheme: () => this.setState({ theme: this.theme === "dark" ? "light" : "dark" }),
+      items, filters, kinds, progress,
+      empty: items.length === 0,
+      weekLabel: st.week === 0 ? "Semana 38 · 19 set" : `Semana ${38 + st.week}`,
+      prevWeek: () => this.setState((s) => ({ week: s.week - 1 })),
+      nextWeek: () => this.setState((s) => ({ week: s.week + 1 })),
+      readyLine: counts.pending === 0 ? "Semana revisada. Pode publicar." : `Faltam ${counts.pending} decisões para fechar a semana.`,
+    };
+  }
+}
+</script>
+</body>
+</html>

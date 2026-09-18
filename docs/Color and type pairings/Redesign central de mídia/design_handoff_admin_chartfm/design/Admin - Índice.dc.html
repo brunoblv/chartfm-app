@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.css">
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/styles.css">
+  <script src="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+    .ix-card:hover { border-color: var(--accent); }
+  </style>
+</helmet>
+<div data-theme="{{ theme }}" style="background: var(--bg); color: var(--text); min-height: 100vh;">
+  <header style="position: sticky; top: 0; z-index: 50; background: var(--bg-topbar); backdrop-filter: blur(20px) saturate(160%); border-bottom: 1px solid var(--divider);">
+    <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 32px; padding: 14px 40px;">
+      <div style="display: flex; flex-shrink: 0;">
+        <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ 26 }}" hint-size="110px,26px"></x-import>
+      </div>
+      <nav style="display: flex; align-items: center; flex: 1; min-width: 0; gap: 24px; row-gap: 6px; flex-wrap: wrap;">
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Início</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Feed</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Descobrir</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Paradas</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Comunidades</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Editorial</span>
+        <span style="font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap;">Admin ⌄</span>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+        <button type="button" onClick="{{ toggleTheme }}" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text-subtle); border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 600; font-family: inherit;">{{ themeLabel }}</button>
+        <div style="width: 34px; height: 34px; border-radius: 50%; background: #FA243C; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">B</div>
+      </div>
+    </div>
+  </header>
+
+  <div style="max-width: 1200px; margin: 0 auto; padding: 36px 40px 80px;">
+    <header style="margin-bottom: 24px;">
+      <h1 style="font-size: 44px; font-weight: 700; letter-spacing: -0.04em; margin: 0; line-height: 1.05;">Admin</h1>
+      <p style="font-size: 15px; color: var(--text-muted); letter-spacing: -0.01em; margin: 6px 0 0;">Tudo que o ChartFM publica, corrige e mede.</p>
+    </header>
+
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 26px;">
+      <input value="{{ query }}" onChange="{{ onQuery }}" onInput="{{ onQuery }}" placeholder="Buscar tela do admin" style="flex: 1; min-width: 220px; max-width: 340px; padding: 11px 15px; border-radius: 100px; border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); font-size: 14px; font-family: inherit; box-sizing: border-box;">
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <sc-for list="{{ groupFilters }}" as="g" hint-placeholder-count="7">
+          <button type="button" onClick="{{ g.onClick }}" style="{{ g.style }}">{{ g.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-if value="{{ showAttention }}" hint-placeholder-val="{{ true }}">
+      <section style="margin-bottom: 34px;">
+        <h2 style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 12px;">Precisa de atenção</h2>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;">
+          <sc-for list="{{ attention }}" as="a" hint-placeholder-count="4">
+            <a href="{{ a.href }}" style="{{ a.style }}">
+              <span style="{{ a.valueStyle }}">{{ a.value }}</span>
+              <span style="display: block; font-size: 13.5px; font-weight: 600; margin-top: 2px; color: var(--text);">{{ a.label }}</span>
+              <span style="display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px;">{{ a.where }}</span>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-for list="{{ groups }}" as="group" hint-placeholder-count="6">
+      <section style="margin-bottom: 32px;">
+        <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;">
+          <h2 style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 0;">{{ group.label }}</h2>
+          <span style="font-size: 12px; color: var(--text-disabled);">{{ group.count }}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+          <sc-for list="{{ group.links }}" as="link" hint-placeholder-count="6">
+            <a class="ix-card" href="{{ link.href }}" style="display: flex; gap: 12px; background: var(--surface); border: 1px solid var(--divider); border-radius: 14px; padding: 15px 16px; text-decoration: none; color: var(--text); transition: border-color 0.12s ease;">
+              <span style="width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0; background: var(--accent-tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">{{ link.initial }}</span>
+              <span style="min-width: 0; flex: 1;">
+                <span style="display: flex; align-items: center; gap: 7px; flex-wrap: wrap;">
+                  <span style="font-size: 14px; font-weight: 650; letter-spacing: -0.01em; color: var(--text);">{{ link.label }}</span>
+                  <sc-if value="{{ link.badge }}" hint-placeholder-val="{{ false }}">
+                    <span style="{{ link.badgeStyle }}">{{ link.badge }}</span>
+                  </sc-if>
+                </span>
+                <span style="display: block; font-size: 12.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.4;">{{ link.hint }}</span>
+              </span>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+    </sc-for>
+
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding: 48px; text-align: center; color: var(--text-muted); font-size: 14px;">Nenhuma tela com esse nome.</div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;\&quot;dark\&quot; | \&quot;light\&quot;&quot;},&quot;mostrarAtencao&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const GROUPS = [
+  { key: "Editorial", label: "Conteúdo editorial", links: [
+    { label: "Lançamentos", href: "Admin - Lancamentos.dc.html", hint: "Curadoria de álbuns e clipes da semana", badge: "semana aberta", tone: "accent" },
+    { label: "Radar de Lançamentos", href: "#", hint: "O que está por sair dos artistas acompanhados" },
+    { label: "Editorial", href: "#", hint: "Artigos, tags e destaques da home" },
+    { label: "Nostalgia", href: "#", hint: "Retrospectivas por data e década" },
+    { label: "Postagens", href: "#", hint: "Posts do feed interno" },
+    { label: "Avisos", href: "#", hint: "Faixas e banners no topo do site" },
+  ] },
+  { key: "Vídeo", label: "Vídeo", links: [
+    { label: "Central de Mídias", href: "Central de Midias.dc.html", hint: "Agenda e publicação nas redes", badge: "1 falha", tone: "bad" },
+    { label: "Disk MTV", href: "#", hint: "Pedidos e bloco da semana" },
+    { label: "Videoparada", href: "#", hint: "Montagem do Top 10 em vídeo" },
+    { label: "Lower Thirds YouTube", href: "#", hint: "Legendas e créditos dos vídeos" },
+    { label: "Gerador de Imagens", href: "#", hint: "Cartelas de parada e review" },
+  ] },
+  { key: "Comunidade", label: "Comunidade e jogos", links: [
+    { label: "Clube", href: "#", hint: "Álbum da semana e discussões" },
+    { label: "Copa", href: "#", hint: "Chaves, rodadas e votação" },
+    { label: "Push", href: "#", hint: "Notificações para o app" },
+    { label: "Parada Global", href: "#", hint: "Votação aberta da parada da comunidade" },
+  ] },
+  { key: "Dados", label: "Dados e catálogo", links: [
+    { label: "Edição de Dados", href: "Admin - Edicao de Dados.dc.html", hint: "Corrigir músicas, artistas e álbuns em lote", badge: "312 pendências", tone: "accent" },
+    { label: "Duplicados", href: "#", hint: "Registros repetidos esperando decisão", badge: "48", tone: "warn" },
+    { label: "Merge Center", href: "#", hint: "Unificar artistas e álbuns" },
+    { label: "Álbuns", href: "#", hint: "Catálogo de álbuns e capas" },
+    { label: "Artistas", href: "#", hint: "Catálogo de artistas e vínculos" },
+    { label: "Músicas", href: "#", hint: "Catálogo de faixas e ISRCs" },
+    { label: "Gêneros", href: "#", hint: "Árvore de gêneros e sinônimos" },
+    { label: "Playlists Last.fm", href: "#", hint: "Importação e mapeamento" },
+    { label: "Crownnote Export", href: "#", hint: "Exportar dados para o Crownnote" },
+  ] },
+  { key: "Usuários", label: "Usuários e suporte", links: [
+    { label: "Usuários", href: "#", hint: "Contas, papéis e banimentos" },
+    { label: "Verificações pendentes", href: "#", hint: "Pedidos de selo de artista", badge: "7", tone: "warn" },
+    { label: "Suporte", href: "#", hint: "Tickets e denúncias", badge: "12 abertos", tone: "warn" },
+  ] },
+  { key: "Sistema", label: "Sistema", links: [
+    { label: "Analytics", href: "Admin - Analytics.dc.html", hint: "Audiência, retenção e páginas mais vistas" },
+    { label: "Logs de API", href: "#", hint: "Chamadas, erros e limites das integrações" },
+    { label: "Backups", href: "#", hint: "Rotinas e restaurações" },
+  ] },
+];
+
+const ATTENTION = [
+  { value: "312", label: "Pendências de dados", where: "Edição de Dados", href: "Admin - Edicao de Dados.dc.html", tone: "accent" },
+  { value: "48", label: "Duplicados", where: "Merge Center", href: "#", tone: "warn" },
+  { value: "12", label: "Tickets abertos", where: "Suporte", href: "#", tone: "warn" },
+  { value: "1", label: "Publicação com falha", where: "Central de Mídias", href: "Central de Midias.dc.html", tone: "bad" },
+];
+
+function tones(theme) {
+  const warn = theme === "dark"
+    ? { fg: "#F2BE6A", bg: "rgba(232,163,61,0.18)", border: "rgba(232,163,61,0.5)" }
+    : { fg: "#7A4D00", bg: "rgba(232,163,61,0.20)", border: "rgba(232,163,61,0.55)" };
+  return {
+    accent: { fg: "var(--accent)", bg: "var(--accent-tint)", border: "var(--accent)" },
+    warn,
+    bad: { fg: "var(--down-fg)", bg: "var(--down-bg)", border: "var(--down-fg)" },
+    none: { fg: "var(--text-muted)", bg: "var(--fill-inset)", border: "var(--divider)" },
+  };
+}
+
+class Component extends DCLogic {
+  state = { theme: null, query: "", group: "Tudo" };
+  get theme() { return this.state.theme ?? this.props.theme ?? "dark"; }
+  get TONES() { return tones(this.theme); }
+
+  renderVals() {
+    const st = this.state;
+    const q = st.query.trim().toLowerCase();
+
+    const groupFilters = ["Tudo", ...GROUPS.map((g) => g.key)].map((key) => ({
+      label: key,
+      onClick: () => this.setState({ group: key }),
+      style: `border:1px solid ${st.group === key ? "transparent" : "var(--divider-strong)"};background:${st.group === key ? "var(--accent)" : "var(--surface)"};color:${st.group === key ? "#fff" : "var(--text-subtle)"};border-radius:999px;padding:8px 14px;font-size:12.5px;font-weight:700;font-family:inherit`,
+    }));
+
+    const groups = GROUPS
+      .filter((g) => st.group === "Tudo" || st.group === g.key)
+      .map((g) => {
+        const links = g.links
+          .filter((l) => !q || l.label.toLowerCase().includes(q) || l.hint.toLowerCase().includes(q))
+          .map((l) => {
+            const t = this.TONES[l.tone || "none"];
+            return {
+              label: l.label,
+              hint: l.hint,
+              href: l.href,
+              initial: l.label.slice(0, 1).toUpperCase(),
+              badge: l.badge || false,
+              badgeStyle: `display:inline-flex;align-items:center;height:19px;padding:0 8px;border-radius:999px;background:${t.bg};color:${t.fg};font-size:10.5px;font-weight:700;white-space:nowrap`,
+            };
+          });
+        return { label: g.label, count: `${links.length}`, links };
+      })
+      .filter((g) => g.links.length > 0);
+
+    const attention = ATTENTION.map((a) => {
+      const t = this.TONES[a.tone];
+      return {
+        value: a.value,
+        label: a.label,
+        where: a.where,
+        href: a.href,
+        style: `display:block;background:var(--surface);border:1px solid ${t.border};border-radius:16px;padding:14px 16px;text-decoration:none`,
+        valueStyle: `display:block;font-size:30px;font-weight:700;letter-spacing:-0.04em;font-variant-numeric:tabular-nums;color:${t.fg}`,
+      };
+    });
+
+    return {
+      theme: this.theme,
+      themeLabel: this.theme === "dark" ? "Escuro" : "Claro",
+      toggleTheme: () => this.setState({ theme: this.theme === "dark" ? "light" : "dark" }),
+      query: st.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      groupFilters,
+      groups,
+      empty: groups.length === 0,
+      showAttention: !q && st.group === "Tudo" && (this.props.mostrarAtencao ?? true),
+      attention,
+    };
+  }
+}
+</script>
+</body>
+</html>

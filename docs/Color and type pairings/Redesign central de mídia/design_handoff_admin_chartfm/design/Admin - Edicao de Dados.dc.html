@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.css">
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/styles.css">
+  <script src="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+    .ed-row:hover { background: var(--fill-subtle); }
+    .ed-cell:hover { box-shadow: inset 0 0 0 1px var(--divider-strong); border-radius: 6px; }
+    .ed-fix { opacity: 0; }
+    .ed-row:hover .ed-fix { opacity: 1; }
+  </style>
+</helmet>
+<div data-theme="{{ theme }}" style="background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px;">
+  <header style="position: sticky; top: 0; z-index: 50; background: var(--bg-topbar); backdrop-filter: blur(20px) saturate(160%); border-bottom: 1px solid var(--divider);">
+    <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 32px; padding: 14px 40px;">
+      <div style="display: flex; flex-shrink: 0;">
+        <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ 26 }}" hint-size="110px,26px"></x-import>
+      </div>
+      <nav style="display: flex; align-items: center; flex: 1; min-width: 0; gap: 24px; row-gap: 6px; flex-wrap: wrap;">
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Início</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Feed</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Paradas</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Comunidades</span>
+        <span style="font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap;">Admin ⌄</span>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+        <button type="button" onClick="{{ toggleTheme }}" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text-subtle); border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 600; font-family: inherit;">{{ themeLabel }}</button>
+        <div style="width: 34px; height: 34px; border-radius: 50%; background: #FA243C; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">B</div>
+      </div>
+    </div>
+  </header>
+
+  <div style="max-width: 1360px; margin: 0 auto; padding: 32px 40px 0;">
+    <div style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px;"><a href="Admin - Índice.dc.html" style="color: var(--text-muted);">Admin</a> · Dados e catálogo</div>
+    <header style="display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+      <div style="flex: 1; min-width: 240px;">
+        <h1 style="font-size: 40px; font-weight: 700; letter-spacing: -0.04em; margin: 0; line-height: 1.05;">Edição de Dados</h1>
+        <p style="font-size: 15px; color: var(--text-muted); letter-spacing: -0.01em; margin: 6px 0 0;">Corrija direto na célula. Enter salva, Esc cancela, Tab vai para a próxima.</p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" onClick="{{ applyAllSuggestions }}" style="border: none; background: var(--accent); color: #fff; border-radius: 100px; padding: 11px 20px; font-size: 13.5px; font-weight: 700; box-shadow: 0 2px 8px rgba(250,36,60,0.25); font-family: inherit;">Aplicar {{ suggestionCount }} sugestões</button>
+        <button type="button" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); border-radius: 100px; padding: 11px 18px; font-size: 13.5px; font-weight: 700; font-family: inherit;">Importar CSV</button>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 20px;">
+      <sc-for list="{{ queues }}" as="q" hint-placeholder-count="5">
+        <button type="button" onClick="{{ q.onClick }}" style="{{ q.style }}">
+          <span style="{{ q.valueStyle }}">{{ q.value }}</span>
+          <span style="display: block; font-size: 12.5px; font-weight: 600; color: var(--text); margin-top: 2px;">{{ q.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;">
+      <input value="{{ query }}" onChange="{{ onQuery }}" onInput="{{ onQuery }}" placeholder="Buscar por título, artista, ISRC ou id" style="flex: 1; min-width: 220px; max-width: 320px; padding: 9px 14px; border-radius: 100px; border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); font-size: 13.5px; font-family: inherit; box-sizing: border-box;">
+      <div style="display: flex; gap: 2px; border: 1px solid var(--divider-strong); border-radius: 100px; padding: 2px;">
+        <sc-for list="{{ entities }}" as="e" hint-placeholder-count="3">
+          <button type="button" onClick="{{ e.onClick }}" style="{{ e.style }}">{{ e.label }}</button>
+        </sc-for>
+      </div>
+      <div style="flex: 1;"></div>
+      <span style="font-size: 12.5px; color: var(--text-muted);">{{ countLabel }}</span>
+      <button type="button" onClick="{{ toggleDensity }}" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text-subtle); border-radius: 100px; padding: 7px 13px; font-size: 12px; font-weight: 600; font-family: inherit;">{{ densityLabel }}</button>
+    </div>
+
+    <div style="background: var(--surface); border: 1px solid var(--divider); border-radius: 16px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: {{ gridCols }}; gap: 10px; align-items: center; padding: 9px 16px; border-bottom: 1px solid var(--divider); background: var(--surface-elevated); font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted);">
+        <button type="button" onClick="{{ toggleAll }}" style="{{ allBoxStyle }}">{{ allCheck }}</button>
+        <div>Título</div>
+        <div>Artista</div>
+        <div>Álbum</div>
+        <div style="text-align: right;">Ano</div>
+        <div>ISRC</div>
+        <div>Gênero</div>
+        <div>Problema</div>
+      </div>
+      <sc-for list="{{ rows }}" as="row" hint-placeholder-count="12">
+        <div class="ed-row" style="{{ row.style }}">
+          <button type="button" onClick="{{ row.onSelect }}" style="{{ row.boxStyle }}">{{ row.check }}</button>
+          <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="6">
+            <div class="ed-cell" onClick="{{ cell.onEdit }}" style="{{ cell.style }}">
+              <sc-if value="{{ cell.editing }}" hint-placeholder-val="{{ false }}">
+                <input value="{{ cell.value }}" onChange="{{ cell.onChange }}" onKeyDown="{{ cell.onKeyDown }}" onBlur="{{ cell.onCommit }}" autoFocus="{{ true }}" style="width: 100%; padding: 4px 7px; border-radius: 6px; border: 1px solid var(--accent); background: var(--bg); color: var(--text); font-size: 13px; font-family: inherit; box-sizing: border-box;">
+              </sc-if>
+              <sc-if value="{{ cell.display }}" hint-placeholder-val="{{ true }}">
+                <span style="{{ cell.textStyle }}">{{ cell.text }}</span>
+              </sc-if>
+            </div>
+          </sc-for>
+          <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+            <sc-if value="{{ row.issue }}" hint-placeholder-val="{{ true }}">
+              <span style="{{ row.issueStyle }}">{{ row.issueLabel }}</span>
+            </sc-if>
+            <sc-if value="{{ row.suggestion }}" hint-placeholder-val="{{ false }}">
+              <button type="button" class="ed-fix" onClick="{{ row.onApply }}" style="border: none; background: var(--accent-tint); color: var(--accent); border-radius: 100px; padding: 4px 10px; font-size: 11.5px; font-weight: 700; font-family: inherit; white-space: nowrap; transition: opacity 0.12s ease;">{{ row.suggestion }}</button>
+            </sc-if>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 14px; margin-top: 14px; font-size: 12.5px; color: var(--text-muted); flex-wrap: wrap;">
+      <span>Mostrando {{ shownCount }} de 312 pendências</span>
+      <button type="button" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); border-radius: 100px; padding: 7px 14px; font-size: 12.5px; font-weight: 700; font-family: inherit;">Carregar mais</button>
+    </div>
+  </div>
+
+  <sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; left: 50%; transform: translateX(-50%); bottom: 24px; z-index: 60; display: flex; align-items: center; gap: 10px; background: var(--surface-elevated); border: 1px solid var(--divider-strong); border-radius: 100px; padding: 10px 14px; box-shadow: 0 8px 28px rgba(0,0,0,0.28);">
+      <span style="font-size: 13px; font-weight: 700; padding: 0 6px;">{{ selectionLabel }}</span>
+      <span style="width: 1px; height: 22px; background: var(--divider);"></span>
+      <button type="button" onClick="{{ applySelected }}" style="border: none; background: var(--accent); color: #fff; border-radius: 100px; padding: 8px 15px; font-size: 12.5px; font-weight: 700; font-family: inherit;">Aplicar sugestões</button>
+      <button type="button" style="border: 1px solid var(--divider-strong); background: transparent; color: var(--text); border-radius: 100px; padding: 8px 14px; font-size: 12.5px; font-weight: 700; font-family: inherit;">Definir gênero</button>
+      <button type="button" style="border: 1px solid var(--divider-strong); background: transparent; color: var(--text); border-radius: 100px; padding: 8px 14px; font-size: 12.5px; font-weight: 700; font-family: inherit;">Unificar artista</button>
+      <button type="button" style="border: none; background: transparent; color: var(--down-fg); border-radius: 100px; padding: 8px 12px; font-size: 12.5px; font-weight: 700; font-family: inherit;">Marcar como ok</button>
+      <button type="button" onClick="{{ clearSelection }}" style="border: none; background: var(--fill-subtle); color: var(--text); width: 28px; height: 28px; border-radius: 50%; font-size: 14px; font-family: inherit;">×</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;\&quot;dark\&quot; | \&quot;light\&quot;&quot;},&quot;densidadeCompacta&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const FIELDS = ["titulo", "artista", "album", "ano", "isrc", "genero"];
+
+const DATA = [
+  { id: 1, titulo: "bohemian rhapsody", artista: "Queen", album: "A Night at the Opera", ano: "1975", isrc: "GBUM71029604", genero: "Rock", issue: "caixa", bad: ["titulo"], suggestion: "Bohemian Rhapsody", fix: { titulo: "Bohemian Rhapsody" } },
+  { id: 2, titulo: "Espresso", artista: "Sabrina Carpenter", album: "", ano: "2024", isrc: "USQX92403715", genero: "Pop", issue: "sem álbum", bad: ["album"], suggestion: "Short n' Sweet", fix: { album: "Short n' Sweet" } },
+  { id: 3, titulo: "Breach", artista: "Twenty One Pilots", album: "Breach", ano: "2025", isrc: "", genero: "Alternativo", issue: "sem ISRC", bad: ["isrc"], suggestion: null, fix: null },
+  { id: 4, titulo: "Not Like Us", artista: "kendrick lamar", album: "GNX", ano: "2024", isrc: "USUG12402881", genero: "Hip-Hop", issue: "caixa", bad: ["artista"], suggestion: "Kendrick Lamar", fix: { artista: "Kendrick Lamar" } },
+  { id: 5, titulo: "Birds of a Feather", artista: "Billie Eilish", album: "Hit Me Hard and Soft", ano: "2204", isrc: "USUM72404891", genero: "Pop", issue: "ano inválido", bad: ["ano"], suggestion: "2024", fix: { ano: "2024" } },
+  { id: 6, titulo: "Die With A Smile", artista: "Lady Gaga, Bruno Mars", album: "Mayhem", ano: "2024", isrc: "USUG12406552", genero: "", issue: "sem gênero", bad: ["genero"], suggestion: "Pop", fix: { genero: "Pop" } },
+  { id: 7, titulo: "APT.", artista: "ROSÉ, Bruno Mars", album: "rosie", ano: "2024", isrc: "USAT22404891", genero: "K-Pop", issue: "álbum em caixa baixa", bad: ["album"], suggestion: "Rosie", fix: { album: "Rosie" } },
+  { id: 8, titulo: "Good Luck, Babe!", artista: "Chappell Roan", album: "", ano: "2024", isrc: "USQX92402231", genero: "Pop", issue: "single sem álbum", bad: ["album"], suggestion: "marcar single", fix: { album: "— single —" } },
+  { id: 9, titulo: "Sailor Song", artista: "Gigi Perez", album: "At the Beach, In Every Life", ano: "2025", isrc: "USQ4A2510082", genero: "Indie", issue: null, bad: [], suggestion: null, fix: null },
+  { id: 10, titulo: "Taste", artista: "Sabrina Carpender", album: "Short n' Sweet", ano: "2024", isrc: "USQX92403716", genero: "Pop", issue: "artista duplicado", bad: ["artista"], suggestion: "Sabrina Carpenter", fix: { artista: "Sabrina Carpenter" } },
+  { id: 11, titulo: "Lose Control", artista: "Teddy Swims", album: "I've Tried Everything But Therapy", ano: "2023", isrc: "USWB12302041", genero: "Soul", issue: null, bad: [], suggestion: null, fix: null },
+  { id: 12, titulo: "we can't be friends", artista: "Ariana Grande", album: "eternal sunshine", ano: "2024", isrc: "USUM72401557", genero: "Pop", issue: "caixa do título", bad: ["titulo"], suggestion: "We Can't Be Friends", fix: { titulo: "We Can't Be Friends" } },
+];
+
+const QUEUES = [
+  { key: "todas", label: "Todas as pendências", value: "312", tone: "accent" },
+  { key: "caixa", label: "Caixa e acentuação", value: "104", tone: "none" },
+  { key: "faltando", label: "Campos em branco", value: "87", tone: "none" },
+  { key: "duplicado", label: "Artista duplicado", value: "48", tone: "warn" },
+  { key: "invalido", label: "Valores inválidos", value: "31", tone: "bad" },
+];
+
+function headTones(theme) {
+  return {
+    accent: { fg: "var(--accent)", border: "var(--accent)" },
+    warn: { fg: theme === "dark" ? "#F2BE6A" : "#7A4D00", border: "rgba(232,163,61,0.55)" },
+    bad: { fg: "var(--down-fg)", border: "var(--down-fg)" },
+    none: { fg: "var(--text)", border: "var(--divider)" },
+  };
+}
+
+class Component extends DCLogic {
+  state = { theme: null, data: DATA, selected: [], editing: null, draft: "", query: "", queue: "todas", entity: "Músicas", dense: true };
+  get theme() { return this.state.theme ?? this.props.theme ?? "dark"; }
+  get HEAD_TONES() { return headTones(this.theme); }
+
+  startEdit(id, field, value) { this.setState({ editing: `${id}:${field}`, draft: value }); }
+
+  commit() {
+    const { editing, draft } = this.state;
+    if (!editing) return;
+    const [idStr, field] = editing.split(":");
+    const id = Number(idStr);
+    this.setState((s) => ({
+      editing: null,
+      data: s.data.map((r) => (r.id === id ? { ...r, [field]: draft, bad: r.bad.filter((b) => b !== field), issue: r.bad.filter((b) => b !== field).length ? r.issue : null, suggestion: null } : r)),
+    }));
+  }
+
+  applyFix(id) {
+    this.setState((s) => ({
+      data: s.data.map((r) => (r.id === id && r.fix ? { ...r, ...r.fix, bad: [], issue: null, suggestion: null } : r)),
+    }));
+  }
+
+  renderVals() {
+    const st = this.state;
+    const q = st.query.trim().toLowerCase();
+
+    const visible = st.data.filter((r) => {
+      if (q && !`${r.titulo} ${r.artista} ${r.album} ${r.isrc} ${r.id}`.toLowerCase().includes(q)) return false;
+      if (st.queue === "caixa") return (r.issue || "").includes("caixa");
+      if (st.queue === "faltando") return (r.issue || "").includes("sem");
+      if (st.queue === "duplicado") return (r.issue || "").includes("duplicado");
+      if (st.queue === "invalido") return (r.issue || "").includes("inválido");
+      return true;
+    });
+
+    const pad = st.dense ? "7px 16px" : "13px 16px";
+
+    const rows = visible.map((r) => {
+      const sel = st.selected.includes(r.id);
+      return {
+        style: `display:grid;grid-template-columns:28px minmax(0,1.5fr) minmax(0,1.2fr) minmax(0,1.2fr) 58px 128px 96px minmax(0,1fr);gap:10px;align-items:center;padding:${pad};border-top:1px solid var(--divider-soft);background:${sel ? "var(--accent-tint)" : "transparent"}`,
+        check: sel ? "✓" : "",
+        boxStyle: `width:17px;height:17px;border-radius:5px;display:flex;align-items:center;justify-content:center;background:${sel ? "var(--accent)" : "transparent"};border:1px solid ${sel ? "var(--accent)" : "var(--divider-strong)"};color:#fff;font-size:10px;font-weight:700;font-family:inherit;cursor:pointer`,
+        onSelect: () => this.setState((s) => ({ selected: sel ? s.selected.filter((x) => x !== r.id) : [...s.selected, r.id] })),
+        issue: r.issue ? true : false,
+        issueLabel: r.issue || "",
+        issueStyle: `display:inline-flex;align-items:center;height:20px;padding:0 9px;border-radius:999px;background:${(r.issue || "").includes("inválido") || (r.issue || "").includes("duplicado") ? "var(--down-bg)" : "var(--fill-inset)"};color:${(r.issue || "").includes("inválido") || (r.issue || "").includes("duplicado") ? "var(--down-fg)" : "var(--text-muted)"};font-size:11px;font-weight:700;white-space:nowrap`,
+        suggestion: r.suggestion ? `→ ${r.suggestion}` : false,
+        onApply: () => this.applyFix(r.id),
+        cells: FIELDS.map((field) => {
+          const editing = st.editing === `${r.id}:${field}`;
+          const bad = r.bad.includes(field);
+          const empty = !r[field];
+          const mono = field === "isrc";
+          return {
+            editing,
+            display: !editing,
+            value: st.draft,
+            text: empty ? "vazio" : r[field],
+            onEdit: () => this.startEdit(r.id, field, r[field]),
+            onChange: (e) => this.setState({ draft: e.target.value }),
+            onCommit: () => this.commit(),
+            onKeyDown: (e) => {
+              if (e.key === "Enter") this.commit();
+              if (e.key === "Escape") this.setState({ editing: null });
+            },
+            style: `min-width:0;padding:3px 0;cursor:text;${field === "ano" ? "text-align:right;" : ""}`,
+            textStyle: `display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;${mono ? "font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;" : ""}${field === "ano" ? "font-variant-numeric:tabular-nums;" : ""}color:${empty ? "var(--text-disabled)" : bad ? "var(--down-fg)" : "var(--text)"};font-weight:${field === "titulo" ? 600 : 400};${bad ? "text-decoration:underline;text-decoration-style:wavy;text-decoration-color:var(--down-fg);text-underline-offset:3px;" : ""}`,
+          };
+        }),
+      };
+    });
+
+    const allOn = visible.length > 0 && visible.every((r) => st.selected.includes(r.id));
+
+    const queues = QUEUES.map((qq) => {
+      const t = this.HEAD_TONES[qq.tone];
+      const on = st.queue === qq.key;
+      return {
+        label: qq.label,
+        value: qq.value,
+        onClick: () => this.setState({ queue: qq.key }),
+        style: `text-align:left;background:var(--surface);border:1px solid ${on ? "var(--accent)" : t.border};border-radius:14px;padding:12px 14px;font-family:inherit;cursor:pointer`,
+        valueStyle: `display:block;font-size:24px;font-weight:700;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;color:${t.fg}`,
+      };
+    });
+
+    const entities = ["Músicas", "Artistas", "Álbuns"].map((label) => ({
+      label,
+      onClick: () => this.setState({ entity: label }),
+      style: `border:none;background:${st.entity === label ? "var(--accent)" : "transparent"};color:${st.entity === label ? "#fff" : "var(--text-subtle)"};border-radius:100px;padding:6px 13px;font-size:12.5px;font-weight:700;font-family:inherit`,
+    }));
+
+    return {
+      theme: this.theme,
+      themeLabel: this.theme === "dark" ? "Escuro" : "Claro",
+      toggleTheme: () => this.setState({ theme: this.theme === "dark" ? "light" : "dark" }),
+      gridCols: "28px minmax(0,1.5fr) minmax(0,1.2fr) minmax(0,1.2fr) 58px 128px 96px minmax(0,1fr)",
+      rows, queues, entities,
+      query: st.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      allCheck: allOn ? "✓" : "",
+      allBoxStyle: `width:17px;height:17px;border-radius:5px;display:flex;align-items:center;justify-content:center;background:${allOn ? "var(--accent)" : "transparent"};border:1px solid ${allOn ? "var(--accent)" : "var(--divider-strong)"};color:#fff;font-size:10px;font-weight:700;font-family:inherit;cursor:pointer`,
+      toggleAll: () => this.setState({ selected: allOn ? [] : visible.map((r) => r.id) }),
+      hasSelection: st.selected.length > 0,
+      selectionLabel: `${st.selected.length} selecionadas`,
+      clearSelection: () => this.setState({ selected: [] }),
+      applySelected: () => st.selected.forEach((id) => this.applyFix(id)),
+      applyAllSuggestions: () => visible.forEach((r) => this.applyFix(r.id)),
+      suggestionCount: String(st.data.filter((r) => r.suggestion).length),
+      countLabel: `${visible.length} linhas`,
+      shownCount: String(visible.length),
+      densityLabel: st.dense ? "Densidade: compacta" : "Densidade: confortável",
+      toggleDensity: () => this.setState((s) => ({ dense: !s.dense })),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.css">
+  <link rel="stylesheet" href="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/styles.css">
+  <script src="_ds/chartfm-f0588750-09ca-4e88-9539-34a7f9b36dba/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+    .an-row:hover { background: var(--fill-subtle); }
+  </style>
+</helmet>
+<div data-theme="{{ theme }}" style="background: var(--bg); color: var(--text); min-height: 100vh;">
+  <header style="position: sticky; top: 0; z-index: 50; background: var(--bg-topbar); backdrop-filter: blur(20px) saturate(160%); border-bottom: 1px solid var(--divider);">
+    <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 32px; padding: 14px 40px;">
+      <div style="display: flex; flex-shrink: 0;">
+        <x-import component-from-global-scope="ChartFM.ChartFMLogo" size="{{ 26 }}" hint-size="110px,26px"></x-import>
+      </div>
+      <nav style="display: flex; align-items: center; flex: 1; min-width: 0; gap: 24px; row-gap: 6px; flex-wrap: wrap;">
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Início</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Feed</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Descobrir</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Paradas</span>
+        <span style="font-size: 14px; font-weight: 500; color: var(--text-muted); white-space: nowrap;">Comunidades</span>
+        <span style="font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap;">Admin ⌄</span>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+        <button type="button" onClick="{{ toggleTheme }}" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text-subtle); border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 600; font-family: inherit;">{{ themeLabel }}</button>
+        <div style="width: 34px; height: 34px; border-radius: 50%; background: #FA243C; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">B</div>
+      </div>
+    </div>
+  </header>
+
+  <div style="max-width: 1200px; margin: 0 auto; padding: 36px 40px 80px;">
+    <div style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px;"><a href="Admin - Índice.dc.html" style="color: var(--text-muted);">Admin</a> · Sistema</div>
+    <header style="display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 22px;">
+      <div style="flex: 1; min-width: 240px;">
+        <h1 style="font-size: 44px; font-weight: 700; letter-spacing: -0.04em; margin: 0; line-height: 1.05;">Analytics</h1>
+        <p style="font-size: 15px; color: var(--text-muted); letter-spacing: -0.01em; margin: 6px 0 0;">Audiência do site, o que ela lê e por onde chega.</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="display: flex; gap: 2px; border: 1px solid var(--divider-strong); border-radius: 100px; padding: 2px;">
+          <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="4">
+            <button type="button" onClick="{{ r.onClick }}" style="{{ r.style }}">{{ r.label }}</button>
+          </sc-for>
+        </div>
+        <button type="button" style="border: 1px solid var(--divider-strong); background: var(--surface); color: var(--text); border-radius: 100px; padding: 9px 16px; font-size: 13px; font-weight: 700; font-family: inherit;">Exportar CSV</button>
+      </div>
+    </header>
+
+    <nav style="display: flex; border-bottom: 1px solid var(--divider); overflow-x: auto; overflow-y: hidden; margin-bottom: 26px;">
+      <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="5">
+        <button type="button" onClick="{{ tab.onClick }}" style="{{ tab.style }}">{{ tab.label }}</button>
+      </sc-for>
+    </nav>
+
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px;">
+      <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="5">
+        <button type="button" onClick="{{ k.onClick }}" style="{{ k.style }}">
+          <span style="display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted);">{{ k.label }}</span>
+          <span style="display: block; font-size: 28px; font-weight: 700; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; margin-top: 6px; color: var(--text);">{{ k.value }}</span>
+          <span style="{{ k.deltaStyle }}">{{ k.delta }}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <section style="background: var(--surface); border: 1px solid var(--divider); border-radius: 18px; padding: 20px; margin-bottom: 24px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 4px;">
+        <h2 style="font-size: 17px; font-weight: 700; letter-spacing: -0.01em; margin: 0;">{{ chartTitle }}</h2>
+        <span style="font-size: 12.5px; color: var(--text-muted);">{{ rangeLabel }} · comparado ao período anterior</span>
+      </div>
+      <div style="display: flex; align-items: flex-end; gap: 3px; height: 200px; margin-top: 18px;">
+        <sc-for list="{{ series }}" as="bar" hint-placeholder-count="30">
+          <div style="{{ bar.wrapStyle }}" title="{{ bar.title }}">
+            <div style="{{ bar.prevStyle }}"></div>
+            <div style="{{ bar.style }}"></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-muted); margin-top: 10px; font-variant-numeric: tabular-nums;">
+        <span>{{ axisStart }}</span>
+        <span>{{ axisMid }}</span>
+        <span>{{ axisEnd }}</span>
+      </div>
+    </section>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 20px; align-items: start;">
+      <section style="background: var(--surface); border: 1px solid var(--divider); border-radius: 18px; overflow: hidden;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 16px 20px 12px;">
+          <h2 style="font-size: 16px; font-weight: 700; letter-spacing: -0.01em; margin: 0;">Páginas mais vistas</h2>
+          <span style="font-size: 12px; color: var(--text-muted);">{{ rangeLabel }}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 90px 80px 80px; gap: 12px; padding: 8px 20px; border-top: 1px solid var(--divider); font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted);">
+          <div>Página</div>
+          <div style="text-align: right;">Views</div>
+          <div style="text-align: right;">Tempo</div>
+          <div style="text-align: right;">Saída</div>
+        </div>
+        <sc-for list="{{ pages }}" as="p" hint-placeholder-count="8">
+          <div class="an-row" style="display: grid; grid-template-columns: minmax(0, 1fr) 90px 80px 80px; gap: 12px; align-items: center; padding: 11px 20px; border-top: 1px solid var(--divider-soft);">
+            <div style="min-width: 0;">
+              <div style="font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ p.title }}</div>
+              <div style="font-size: 11.5px; color: var(--text-muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ p.path }}</div>
+            </div>
+            <div style="font-size: 13px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums;">{{ p.views }}</div>
+            <div style="font-size: 12.5px; color: var(--text-subtle); text-align: right; font-variant-numeric: tabular-nums;">{{ p.time }}</div>
+            <div style="{{ p.exitStyle }}">{{ p.exit }}</div>
+          </div>
+        </sc-for>
+      </section>
+
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <section style="background: var(--surface); border: 1px solid var(--divider); border-radius: 18px; padding: 20px;">
+          <h2 style="font-size: 16px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 14px;">Origem do tráfego</h2>
+          <div style="display: flex; flex-direction: column; gap: 11px;">
+            <sc-for list="{{ sources }}" as="s" hint-placeholder-count="6">
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px;">
+                  <span style="font-weight: 600;">{{ s.label }}</span>
+                  <span style="color: var(--text-muted); font-variant-numeric: tabular-nums;">{{ s.detail }}</span>
+                </div>
+                <div style="height: 7px; border-radius: 999px; background: var(--fill-inset); overflow: hidden;">
+                  <div style="{{ s.barStyle }}"></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+
+        <section style="background: var(--surface); border: 1px solid var(--divider); border-radius: 18px; padding: 20px;">
+          <h2 style="font-size: 16px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 4px;">Retenção por semana de entrada</h2>
+          <p style="font-size: 12.5px; color: var(--text-muted); margin: 0 0 14px;">Quantos voltam nas semanas seguintes.</p>
+          <div style="display: grid; grid-template-columns: 64px repeat(5, minmax(0, 1fr)); gap: 4px; align-items: center;">
+            <div></div>
+            <sc-for list="{{ cohortHead }}" as="h" hint-placeholder-count="5">
+              <div style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-align: center;">{{ h }}</div>
+            </sc-for>
+            <sc-for list="{{ cohorts }}" as="row" hint-placeholder-count="5">
+              <div style="font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums;">{{ row.label }}</div>
+              <sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="5">
+                <div style="{{ c.style }}" title="{{ c.title }}">{{ c.label }}</div>
+              </sc-for>
+            </sc-for>
+          </div>
+        </section>
+
+        <section style="background: var(--surface); border: 1px solid var(--divider); border-radius: 18px; padding: 20px;">
+          <h2 style="font-size: 16px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 14px;">Dispositivo</h2>
+          <div style="display: flex; height: 10px; border-radius: 999px; overflow: hidden; gap: 2px;">
+            <sc-for list="{{ devices }}" as="d" hint-placeholder-count="3">
+              <div style="{{ d.barStyle }}" title="{{ d.label }}"></div>
+            </sc-for>
+          </div>
+          <div style="display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap;">
+            <sc-for list="{{ devices }}" as="d" hint-placeholder-count="3">
+              <div style="display: flex; align-items: center; gap: 7px;">
+                <span style="{{ d.dotStyle }}"></span>
+                <span style="font-size: 13px; font-weight: 600;">{{ d.label }}</span>
+                <span style="font-size: 12.5px; color: var(--text-muted); font-variant-numeric: tabular-nums;">{{ d.value }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;\&quot;dark\&quot; | \&quot;light\&quot;&quot;}}">
+const METRICS = {
+  visitas: { label: "Visitas", value: "184,3K", delta: "+9,2%", up: true, chart: "Visitas por dia" },
+  usuarios: { label: "Usuários", value: "62,1K", delta: "+6,8%", up: true, chart: "Usuários por dia" },
+  sessao: { label: "Tempo médio", value: "4m 12s", delta: "+18s", up: true, chart: "Tempo médio por sessão" },
+  cadastros: { label: "Cadastros", value: "2.847", delta: "+14,1%", up: true, chart: "Cadastros por dia" },
+  rejeicao: { label: "Rejeição", value: "38,4%", delta: "+1,6%", up: false, chart: "Taxa de rejeição por dia" },
+};
+
+const PAGES = [
+  { title: "Parada Global 100", path: "/paradas/global-100", views: "41,8K", time: "5m 03s", exit: "22%" },
+  { title: "Início", path: "/", views: "33,2K", time: "2m 41s", exit: "31%" },
+  { title: "Review: Twenty One Pilots — Breach", path: "/editorial/review-breach", views: "18,4K", time: "6m 55s", exit: "18%" },
+  { title: "Disk MTV", path: "/disk-mtv", views: "14,1K", time: "7m 22s", exit: "16%" },
+  { title: "Lançamentos da semana", path: "/lancamentos", views: "12,6K", time: "3m 18s", exit: "27%" },
+  { title: "Artista: Sabrina Carpenter", path: "/artistas/sabrina-carpenter", views: "9,9K", time: "4m 06s", exit: "44%" },
+  { title: "Clube — álbum da semana", path: "/clube", views: "8,2K", time: "8m 40s", exit: "14%" },
+  { title: "Copa ChartFM", path: "/jogos/copa", views: "7,4K", time: "9m 11s", exit: "12%" },
+];
+
+const SOURCES = [
+  { label: "Busca orgânica", pct: 38, detail: "38% · 70,0K" },
+  { label: "Instagram", pct: 24, detail: "24% · 44,2K" },
+  { label: "Direto", pct: 16, detail: "16% · 29,5K" },
+  { label: "YouTube", pct: 11, detail: "11% · 20,3K" },
+  { label: "Threads", pct: 7, detail: "7% · 12,9K" },
+  { label: "Outros", pct: 4, detail: "4% · 7,4K" },
+];
+
+const COHORTS = [
+  { label: "18 ago", v: [100, 52, 38, 31, 27] },
+  { label: "25 ago", v: [100, 55, 41, 34, null] },
+  { label: "01 set", v: [100, 49, 36, null, null] },
+  { label: "08 set", v: [100, 58, null, null, null] },
+  { label: "15 set", v: [100, null, null, null, null] },
+];
+
+const DEVICES = [
+  { label: "Celular", pct: 71, value: "71%", color: "var(--accent)" },
+  { label: "Desktop", pct: 24, value: "24%", color: "var(--same-fg)" },
+  { label: "Tablet", pct: 5, value: "5%", color: "var(--text-muted)" },
+];
+
+const SERIES = [42, 48, 39, 51, 58, 71, 64, 47, 52, 49, 61, 68, 77, 72, 55, 58, 54, 63, 70, 81, 74, 60, 64, 59, 68, 75, 88, 83, 66, 71];
+
+class Component extends DCLogic {
+  state = { theme: null, tab: "visao", metric: "visitas", range: "30 dias" };
+  get theme() { return this.state.theme ?? this.props.theme ?? "dark"; }
+
+  renderVals() {
+    const st = this.state;
+    const m = METRICS[st.metric];
+
+    const tabs = [["visao", "Visão geral"], ["conteudo", "Conteúdo"], ["publico", "Público"], ["aquisicao", "Aquisição"], ["tecnico", "Técnico"]].map(([key, label]) => ({
+      label,
+      onClick: () => this.setState({ tab: key }),
+      style: `padding:10px 4px;margin-right:22px;border:none;background:none;font-family:inherit;font-size:14px;font-weight:${st.tab === key ? 700 : 500};color:${st.tab === key ? "var(--text)" : "var(--text-muted)"};border-bottom:2px solid ${st.tab === key ? "var(--accent)" : "transparent"};margin-bottom:-1px;white-space:nowrap;flex-shrink:0`,
+    }));
+
+    const ranges = ["7 dias", "30 dias", "90 dias", "12 meses"].map((label) => ({
+      label,
+      onClick: () => this.setState({ range: label }),
+      style: `border:none;background:${st.range === label ? "var(--accent)" : "transparent"};color:${st.range === label ? "#fff" : "var(--text-subtle)"};border-radius:100px;padding:7px 14px;font-size:12.5px;font-weight:700;font-family:inherit`,
+    }));
+
+    const kpis = Object.entries(METRICS).map(([key, k]) => ({
+      label: k.label,
+      value: k.value,
+      delta: k.delta,
+      onClick: () => this.setState({ metric: key }),
+      style: `text-align:left;background:var(--surface);border:1px solid ${st.metric === key ? "var(--accent)" : "var(--divider)"};border-radius:16px;padding:14px 16px;font-family:inherit;cursor:pointer`,
+      deltaStyle: `display:block;font-size:12px;font-weight:600;margin-top:4px;color:${k.up ? "var(--up-fg)" : "var(--down-fg)"}`,
+    }));
+
+    const max = Math.max(...SERIES);
+    const series = SERIES.map((v, i) => ({
+      title: `Dia ${i + 1}: ${(v * 214).toLocaleString("pt-BR")}`,
+      wrapStyle: "position:relative;flex:1;min-width:0;height:100%;display:flex;align-items:flex-end",
+      prevStyle: `position:absolute;left:0;right:0;bottom:0;height:${Math.round(((v * 0.88) / max) * 100)}%;background:var(--fill-inset);border-radius:3px 3px 0 0`,
+      style: `position:relative;width:100%;height:${Math.round((v / max) * 100)}%;background:var(--accent);opacity:${0.55 + (v / max) * 0.45};border-radius:3px 3px 0 0`,
+    }));
+
+    const pages = PAGES.map((p) => ({
+      ...p,
+      exitStyle: `font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:${parseInt(p.exit, 10) > 40 ? "var(--down-fg)" : "var(--text-subtle)"}`,
+    }));
+
+    const sources = SOURCES.map((s) => ({ label: s.label, detail: s.detail, barStyle: `height:100%;width:${s.pct}%;background:var(--accent);border-radius:999px` }));
+
+    const cohorts = COHORTS.map((r) => ({
+      label: r.label,
+      cells: r.v.map((v, i) => ({
+        title: v == null ? "—" : `Semana ${i}: ${v}%`,
+        label: v == null ? "" : `${v}%`,
+        style: v == null
+          ? "height:28px;border-radius:6px;background:var(--fill-inset);opacity:0.4"
+          : `height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:${v > 60 ? "#fff" : "var(--text)"};background:var(--accent);opacity:${0.14 + (v / 100) * 0.86}`,
+      })),
+    }));
+
+    const devices = DEVICES.map((d) => ({
+      label: d.label,
+      value: d.value,
+      barStyle: `width:${d.pct}%;background:${d.color}`,
+      dotStyle: `width:8px;height:8px;border-radius:50%;background:${d.color};flex-shrink:0`,
+    }));
+
+    return {
+      theme: this.theme,
+      themeLabel: this.theme === "dark" ? "Escuro" : "Claro",
+      toggleTheme: () => this.setState({ theme: this.theme === "dark" ? "light" : "dark" }),
+      tabs, ranges, kpis, series, pages, sources, cohorts, devices,
+      cohortHead: ["S0", "S1", "S2", "S3", "S4"],
+      chartTitle: m.chart,
+      rangeLabel: st.range,
+      axisStart: "19 ago",
+      axisMid: "03 set",
+      axisEnd: "17 set",
+    };
+  }
+}
+</script>
+</body>
+</html>
