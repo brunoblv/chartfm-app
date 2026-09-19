@@ -30,6 +30,14 @@ Se um dia parte disso virar conteúdo público (por exemplo, um recorte dos núm
 
 O Analytics do admin do site (abas Site e Redes sociais: métricas de tráfego, coleta de Instagram/Facebook/YouTube/Threads, insights, atribuição por UTM) é puramente administrativo, sem nada que o usuário do app veja ou use. Não é esquecimento da regra de espelhamento. A única parte que toca o app é a atribuição de cadastro: se o app passar a ter cadastro próprio, ele deve enviar a origem (UTM/campanha) ao site para não cair em "Não atribuído".
 
+## Nota: landing da playlist New & Hot não tem espelho no app
+
+A landing `/playlist/new-hot` do site (`C:\ChartFM`, `app/playlist/new-hot/page.tsx`) é uma página de captação de tráfego externo: quem chega por campanha ou busca segue a playlist no Spotify e só depois decide se quer criar conta. É deliberadamente standalone — sem Shell, sem gate de login — e visitante deslogado nunca é redirecionado para a home pública nem para `/landing`.
+
+Não existe tela correspondente aqui e não deve existir: quem já tem o app instalado vê esse conteúdo na aba de charts. Não é esquecimento da regra de espelhamento.
+
+Detalhe em aberto no site: ainda não há uma playlist "New & Hot" própria no Spotify do ChartFM — o CTA aponta para a playlist do Global 100 (`GlobalSnapshot.spotifyPlaylistId`) e, na falta dela, para o perfil do ChartFM.
+
 ## Nota: organização do admin (site)
 
 O admin do site (`C:\ChartFM`) deve seguir sempre um layout de sistema organizado (menus agrupados, tabelas em vez de listas soltas empilhadas, sem seções "soltas"). Isso é administrativo/puramente do site — não se aplica a telas do app mobile — mas fica registrado aqui pois é uma diretriz permanente de produto.
