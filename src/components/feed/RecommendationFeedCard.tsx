@@ -1,3 +1,4 @@
+import { UserAvatar, StaffBadge } from "../UserAvatar";
 import React from "react";
 import { View, Text, Pressable, Image, Alert } from "react-native";
 import Svg, { Path, Circle } from "react-native-svg";
@@ -58,18 +59,15 @@ export function RecommendationFeedCard({ item }: { item: FeedRecommendationItem 
   return (
     <View style={{ marginHorizontal: 16, marginBottom: 14, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 14 }}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-        {item.user.imageUrl ? (
-          <Image source={{ uri: resolveMediaUrl(item.user.imageUrl) }} style={{ width: 32, height: 32, borderRadius: 16 }} />
-        ) : (
-          <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: item.user.avatar, alignItems: "center", justifyContent: "center" }}>
-            <Text style={{ color: "#fff", fontWeight: "800", fontSize: 12 }}>{item.user.name.charAt(0).toUpperCase()}</Text>
-          </View>
-        )}
+        <UserAvatar name={item.user.name} color={item.user.avatar} imageUrl={item.user.imageUrl} staffImageUrl={item.user.staffImageUrl} size={32} />
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text numberOfLines={1} style={{ fontSize: 13, color: colors.text }}>
             <Text style={{ fontWeight: "700" }}>{item.user.name}</Text> {tr(TYPE_LABEL[item.type] ?? "recomendou")}
           </Text>
-          <Text style={{ fontSize: 11, color: colors.textMuted }}>{item.postedAgo}</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={{ fontSize: 11, color: colors.textMuted }}>{item.postedAgo}</Text>
+            {item.user.isStaff && <StaffBadge />}
+          </View>
         </View>
         {currentUser?.id !== item.user.id && (
           <Pressable

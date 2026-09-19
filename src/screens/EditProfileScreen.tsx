@@ -16,6 +16,7 @@ import {
   useDeleteAvatarMutation,
   accountErrorMessage,
   GENRE_OPTIONS,
+  type AvatarKind,
 } from "../api/account";
 import { resolveMediaUrl } from "../lib/api";
 import { useTr } from "../i18n/useTr";
@@ -44,9 +45,11 @@ export function EditProfileScreen() {
   };
 
   const isSaving = updateHandle.isPending || updateGenres.isPending;
+  const isStaff = user?.role === "ADMIN" || user?.role === "DEV";
+  const staffImageUrl = profileQuery.data?.staffImageUrl ?? null;
   const isAvatarBusy = uploadAvatar.isPending || deleteAvatar.isPending;
 
-  const handlePickAvatar = async () => {
+  const handlePickAvatar = async (kind: AvatarKind = "personal") => {
     if (isAvatarBusy) return;
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
@@ -66,7 +69,7 @@ export function EditProfileScreen() {
     const mimeByExt: Record<string, string> = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp" };
 
     uploadAvatar.mutate(
-      { uri: asset.uri, name: `avatar.${extension}`, type: mimeByExt[extension] ?? "image/jpeg" },
+      { kind, image: { uri: asset.uri, name: `avatar.${extension}`, type: mimeByExt[extension] ?? "image/jpeg" } },
       {
         onSuccess: () => refreshUser(),
         onError: (e) => Alert.alert(tr("Não foi possível enviar a foto"), accountErrorMessage(e)),
@@ -74,15 +77,15 @@ export function EditProfileScreen() {
     );
   };
 
-  const handleRemoveAvatar = () => {
+  const handleRemoveAvatar = (kind: AvatarKind = "personal") => {
     if (isAvatarBusy) return;
-    Alert.alert(tr("Remover foto"), tr("Deseja remover sua foto de perfil?"), [
+    Alert.alert(tr("Remover foto"), kind === "staff" ? tr("Deseja remover seu avatar de moderador?") : tr("Deseja remover sua foto de perfil?"), [
       { text: tr("Cancelar"), style: "cancel" },
       {
         text: tr("Remover"),
         style: "destructive",
         onPress: () =>
-          deleteAvatar.mutate(undefined, {
+          deleteAvatar.mutate(kind, {
             onSuccess: () => refreshUser(),
             onError: (e) => Alert.alert(tr("Não foi possível remover a foto"), accountErrorMessage(e)),
           }),
@@ -111,7 +114,7 @@ export function EditProfileScreen() {
       <BackHeader title={tr("Editar perfil")} />
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 100 }}>
         <View style={{ alignItems: "center", marginBottom: 26 }}>
-          <Pressable onPress={handlePickAvatar} disabled={isAvatarBusy} style={{ width: 88, height: 88 }}>
+          <Pressable onPress={() => handlePickAvatar()} disabled={isAvatarBusy} style={{ width: 88, height: 88 }}>
             {profileQuery.data?.imageUrl ? (
               <Image source={{ uri: resolveMediaUrl(profileQuery.data.imageUrl) }} style={{ width: 88, height: 88, borderRadius: 44 }} />
             ) : (
@@ -128,16 +131,44 @@ export function EditProfileScreen() {
             )}
           </Pressable>
           <View style={{ flexDirection: "row", gap: 16, marginTop: 12 }}>
-            <Pressable onPress={handlePickAvatar} disabled={isAvatarBusy}>
+            <Pressable onPress={() => handlePickAvatar()} disabled={isAvatarBusy}>
               <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 13 }}>{tr("Trocar foto")}</Text>
             </Pressable>
             {profileQuery.data?.imageUrl && (
-              <Pressable onPress={handleRemoveAvatar} disabled={isAvatarBusy}>
+              <Pressable onPress={() => handleRemoveAvatar()} disabled={isAvatarBusy}>
                 <Text style={{ color: colors.textMuted, fontWeight: "600", fontSize: 13 }}>{tr("Remover")}</Text>
               </Pressable>
             )}
           </View>
         </View>
+
+        {isStaff && (
+          <View style={{ alignItems: "center", marginBottom: 26 }}>
+            <Text style={{ fontSize: 13, fontWeight: "700", color: colors.text, marginBottom: 4 }}>{tr("Avatar de moderador")}</Text>
+            <Text style={{ fontSize: 12, color: colors.textMuted, textAlign: "center", marginBottom: 12 }}>
+              {tr("Alterna com a sua foto pessoal a cada segundo na Home.")}
+            </Text>
+            <Pressable onPress={() => handlePickAvatar("staff")} disabled={isAvatarBusy}>
+              {staffImageUrl ? (
+                <Image source={{ uri: resolveMediaUrl(staffImageUrl) }} style={{ width: 72, height: 72, borderRadius: 36 }} />
+              ) : (
+                <View style={{ width: 72, height: 72, borderRadius: 36, borderWidth: 1.5, borderStyle: "dashed", borderColor: colors.divider, alignItems: "center", justifyContent: "center" }}>
+                  <Text style={{ fontSize: 26, color: colors.textMuted }}>+</Text>
+                </View>
+              )}
+            </Pressable>
+            <View style={{ flexDirection: "row", gap: 16, marginTop: 12 }}>
+              <Pressable onPress={() => handlePickAvatar("staff")} disabled={isAvatarBusy}>
+                <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 13 }}>{staffImageUrl ? tr("Trocar foto") : tr("Adicionar foto")}</Text>
+              </Pressable>
+              {staffImageUrl && (
+                <Pressable onPress={() => handleRemoveAvatar("staff")} disabled={isAvatarBusy}>
+                  <Text style={{ color: colors.textMuted, fontWeight: "600", fontSize: 13 }}>{tr("Remover")}</Text>
+                </Pressable>
+              )}
+            </View>
+          </View>
+        )}
 
         <View style={{ gap: 12, marginBottom: 24 }}>
           <AuthField label={tr("Nome")} value={name} onChangeText={setName} />

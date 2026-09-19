@@ -1,3 +1,4 @@
+import { UserAvatar, StaffBadge } from "../UserAvatar";
 import React from "react";
 import { View, Text, Pressable, Image, Alert } from "react-native";
 import Svg, { Path, Circle } from "react-native-svg";
@@ -77,17 +78,14 @@ export function ChartFeedCard({ item }: { item: FeedChartItem }) {
           onPress={() => navigation.navigate("UserDetail", { handle: item.user.handle })}
           style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 10, padding: 14, paddingBottom: 10 }}
         >
-          {item.user.imageUrl ? (
-            <Image source={{ uri: resolveMediaUrl(item.user.imageUrl) }} style={{ width: 36, height: 36, borderRadius: 18 }} />
-          ) : (
-            <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: item.user.avatar, alignItems: "center", justifyContent: "center" }}>
-              <Text style={{ color: "#fff", fontWeight: "800", fontSize: 14 }}>{item.user.name.charAt(0).toUpperCase()}</Text>
-            </View>
-          )}
+          <UserAvatar name={item.user.name} color={item.user.avatar} imageUrl={item.user.imageUrl} staffImageUrl={item.user.staffImageUrl} size={36} />
           <View style={{ flex: 1, minWidth: 0 }}>
-            <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "700", color: colors.text }}>
-              {item.user.name}
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "700", color: colors.text, flexShrink: 1 }}>
+                {item.user.name}
+              </Text>
+              {item.user.isStaff && <StaffBadge />}
+            </View>
             <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
               {tr("publicou")} {item.chart.paradaNome} · {item.postedAgo}
             </Text>

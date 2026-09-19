@@ -26,6 +26,10 @@ A Central de Mídias Sociais do site (`/admin/midias`, spec em `C:\ChartFM\docs\
 
 Se um dia parte disso virar conteúdo público (por exemplo, um recorte dos números aparecer para a comunidade), aí sim vale trazer para o app.
 
+## Nota: Analytics (Site e Redes sociais) não tem espelho no app
+
+O Analytics do admin do site (abas Site e Redes sociais: métricas de tráfego, coleta de Instagram/Facebook/YouTube/Threads, insights, atribuição por UTM) é puramente administrativo, sem nada que o usuário do app veja ou use. Não é esquecimento da regra de espelhamento. A única parte que toca o app é a atribuição de cadastro: se o app passar a ter cadastro próprio, ele deve enviar a origem (UTM/campanha) ao site para não cair em "Não atribuído".
+
 ## Nota: organização do admin (site)
 
 O admin do site (`C:\ChartFM`) deve seguir sempre um layout de sistema organizado (menus agrupados, tabelas em vez de listas soltas empilhadas, sem seções "soltas"). Isso é administrativo/puramente do site — não se aplica a telas do app mobile — mas fica registrado aqui pois é uma diretriz permanente de produto.

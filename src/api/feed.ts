@@ -43,6 +43,8 @@ export interface FeedUser {
   following: number;
   streak: number;
   verified: boolean;
+  isStaff?: boolean;
+  staffImageUrl?: string | null;
   paradaNome: string | null;
   paradaLogo: string | null;
 }
@@ -80,7 +82,7 @@ export interface FeedRecommendationItem {
   postedAgo: string;
   createdAt: string;
   kind: "song" | "youtube";
-  user: { id: string; handle: string; name: string; avatar: string; imageUrl: string | null; verified: boolean };
+  user: { id: string; handle: string; name: string; avatar: string; imageUrl: string | null; verified: boolean; isStaff?: boolean; staffImageUrl?: string | null };
   song: {
     id: string;
     title: string;

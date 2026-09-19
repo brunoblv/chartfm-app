@@ -53,6 +53,7 @@ export interface ProfilePayload {
     charts: ProfileChart[];
   };
   imageUrl: string | null;
+  staffImageUrl?: string | null;
   isFollowing: boolean;
   totalCharts: number;
   genres: string[];

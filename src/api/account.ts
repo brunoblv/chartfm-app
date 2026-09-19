@@ -12,13 +12,17 @@ export interface AvatarPickedImage {
   type: string;
 }
 
-async function uploadAvatar(image: AvatarPickedImage): Promise<{ url: string }> {
+export type AvatarKind = "personal" | "staff";
+
+const avatarPath = (kind: AvatarKind) => (kind === "staff" ? "/api/user/avatar?kind=staff" : "/api/user/avatar");
+
+async function uploadAvatar({ image, kind }: { image: AvatarPickedImage; kind: AvatarKind }): Promise<{ url: string }> {
   const token = await tokenStorage.getItem(TOKEN_KEY);
   const form = new FormData();
   // RN's fetch reads { uri, name, type } off the object; not a real Blob/File.
   form.append("file", { uri: image.uri, name: image.name, type: image.type } as unknown as Blob);
 
-  const res = await fetch(`${API_BASE_URL}/api/user/avatar`, {
+  const res = await fetch(`${API_BASE_URL}${avatarPath(kind)}`, {
     method: "POST",
     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     body: form,
@@ -72,7 +76,7 @@ export function useUploadAvatarMutation() {
 export function useDeleteAvatarMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => apiRequest<{ ok: true }>("/api/user/avatar", { method: "DELETE" }),
+    mutationFn: (kind: AvatarKind = "personal") => apiRequest<{ ok: true }>(avatarPath(kind), { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       queryClient.invalidateQueries({ queryKey: ["auth", "me"] });

@@ -1,5 +1,11 @@
 /** Português → inglês. A chave é o texto exato usado na tela. */
 export const en: Record<string, string> = {
+  // Avatar de moderador
+  "Staff": "Staff",
+  "Avatar de moderador": "Moderator avatar",
+  "Alterna com a sua foto pessoal a cada segundo na Home.": "Alternates with your personal photo every second on Home.",
+  "Adicionar foto": "Add photo",
+  "Deseja remover seu avatar de moderador?": "Do you want to remove your moderator avatar?",
   // Tab bar
   "Eu": "Me",
   // Configurações
