@@ -48,7 +48,7 @@ export interface AlbumReview {
   body: string | null;
   helpful: number;
   createdAt: string;
-  user: { id: string; handle: string; name: string; avatarColor: string; image: string | null };
+  user: { id: string; handle: string; name: string; avatarColor: string; image: string | null; isStaff?: boolean; staffImageUrl?: string | null };
 }
 
 export function useAlbumReviewsQuery(albumId: number | undefined) {

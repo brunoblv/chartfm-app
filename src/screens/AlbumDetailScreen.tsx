@@ -1,3 +1,4 @@
+import { UserAvatar, StaffBadge } from "../components/UserAvatar";
 import React from "react";
 import { View, Text, ScrollView, Image, Pressable, ActivityIndicator, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -232,14 +233,11 @@ export function AlbumDetailScreen() {
                 onPress={() => navigation.navigate("UserDetail", { handle: r.user.handle })}
                 style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
               >
-                {r.user.image ? (
-                  <Image source={{ uri: resolveMediaUrl(r.user.image) }} style={{ width: 32, height: 32, borderRadius: 16 }} />
-                ) : (
-                  <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: r.user.avatarColor || colors.fillSubtle, alignItems: "center", justifyContent: "center" }}>
-                    <Text style={{ color: "#fff", fontWeight: "800", fontSize: 13 }}>{r.user.name.charAt(0).toUpperCase()}</Text>
-                  </View>
-                )}
-                <Text style={{ flex: 1, fontSize: 13.5, fontWeight: "700", color: colors.text }}>{r.user.name}</Text>
+                <UserAvatar name={r.user.name} color={r.user.avatarColor || colors.fillSubtle} imageUrl={r.user.image} staffImageUrl={r.user.staffImageUrl} size={32} />
+                <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+                  <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "700", color: colors.text, flexShrink: 1 }}>{r.user.name}</Text>
+                  {r.user.isStaff && <StaffBadge />}
+                </View>
                 <ScoreSquare score={r.rating} size={28} />
               </Pressable>
               {r.body ? (
