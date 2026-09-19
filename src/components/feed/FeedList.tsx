@@ -6,6 +6,7 @@ import { ChartFeedCard } from "./ChartFeedCard";
 import { RecommendationFeedCard } from "./RecommendationFeedCard";
 import { SystemFeedCard } from "./SystemFeedCard";
 import { EditorialFeedCard } from "./EditorialFeedCard";
+import { useTr } from "../../i18n/useTr";
 
 function FeedItemRow({ entry }: { entry: FeedItem }) {
   switch (entry.kind) {
@@ -23,6 +24,7 @@ function FeedItemRow({ entry }: { entry: FeedItem }) {
 }
 
 export function FeedList({ tab }: { tab: FeedTab }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const query = useFeedQuery(tab);
   const items = (query.data?.pages ?? []).flatMap((p) => p.items);
@@ -35,7 +37,7 @@ export function FeedList({ tab }: { tab: FeedTab }) {
     return (
       <View style={{ paddingVertical: 40, alignItems: "center", paddingHorizontal: 20 }}>
         <Text style={{ color: colors.textMuted, fontSize: 13.5, textAlign: "center" }}>
-          Não foi possível carregar o feed.
+          {tr("Não foi possível carregar o feed.")}
         </Text>
       </View>
     );
@@ -55,7 +57,7 @@ export function FeedList({ tab }: { tab: FeedTab }) {
       ListEmptyComponent={
         <View style={{ paddingVertical: 40, alignItems: "center", paddingHorizontal: 20 }}>
           <Text style={{ color: colors.textMuted, fontSize: 13.5, textAlign: "center" }}>
-            {tab === "following" ? "Siga outras pessoas para ver as paradas delas aqui." : "Nada por aqui ainda."}
+            {tab === "following" ? tr("Siga outras pessoas para ver as paradas delas aqui.") : tr("Nada por aqui ainda.")}
           </Text>
         </View>
       }

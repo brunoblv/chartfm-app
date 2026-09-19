@@ -6,10 +6,12 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { ChartFMLogo } from "../components/ChartFMLogo";
 import { PillButton } from "../components/PillButton";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Onboarding">;
 
 export function OnboardingScreen({ navigation }: Props) {
+  const tr = useTr();
   const { colors } = useAppTheme();
 
   return (
@@ -31,25 +33,24 @@ export function OnboardingScreen({ navigation }: Props) {
           <ChartFMLogo size={56} />
           <View>
             <Text style={{ fontSize: 15, fontWeight: "700", letterSpacing: 4, textTransform: "uppercase", color: colors.accent }}>
-              ChartFM
+              {tr("ChartFM")}
             </Text>
             <Text style={{ fontSize: 40, fontWeight: "800", letterSpacing: -1.6, lineHeight: 44, color: colors.text, marginTop: 14 }}>
               Sua música.{"\n"}Sua parada.{"\n"}Sua comunidade.
             </Text>
             <Text style={{ fontSize: 15, lineHeight: 23, color: colors.textMuted, marginTop: 16, maxWidth: 290 }}>
-              Monte sua parada pessoal toda semana, veja como suas escolhas se comparam com as de outros fãs e
-              acompanhe o Global 100.
+              {tr("Monte sua parada pessoal toda semana, veja como suas escolhas se comparam com as de outros fãs e acompanhe o Global 100.")}
             </Text>
           </View>
         </View>
-        <PillButton label="Começar" onPress={() => navigation.navigate("Cadastro")} />
+        <PillButton label={tr("Começar")} onPress={() => navigation.navigate("Cadastro")} />
         <Pressable
           onPress={() => navigation.navigate("Login")}
           hitSlop={12}
           style={{ marginTop: 20, paddingVertical: 6, alignItems: "center" }}
         >
           <Text style={{ fontSize: 14, color: colors.textMuted }}>
-            Já tem conta? <Text style={{ color: colors.accent, fontWeight: "600" }}>Entrar</Text>
+            Já tem conta? <Text style={{ color: colors.accent, fontWeight: "600" }}>{tr("Entrar")}</Text>
           </Text>
         </Pressable>
       </View>

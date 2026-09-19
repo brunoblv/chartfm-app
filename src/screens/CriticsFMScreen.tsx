@@ -32,6 +32,7 @@ import {
   useSpotifyAlbumSearch,
 } from "../api/criticsfm";
 import { useClubeQuery, CLUBE_PHASE_LABELS, type ClubePhase } from "../api/clube";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -150,6 +151,7 @@ function SpotifySearchPanel({
   onClose: () => void;
   onOpenAlbum: (albumId: number) => void;
 }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const insets = useSafeAreaInsets();
   const [q, setQ] = useState(initialQuery);
@@ -196,7 +198,7 @@ function SpotifySearchPanel({
                   d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"
                 />
               </Svg>
-              <Text style={{ flex: 1, fontSize: 15, fontWeight: "700", color: colors.text }}>Buscar no Spotify</Text>
+              <Text style={{ flex: 1, fontSize: 15, fontWeight: "700", color: colors.text }}>{tr("Buscar no Spotify")}</Text>
               <Pressable onPress={onClose} hitSlop={8}>
                 <Text style={{ fontSize: 22, color: colors.textMuted, lineHeight: 24 }}>×</Text>
               </Pressable>
@@ -206,7 +208,7 @@ function SpotifySearchPanel({
                 value={q}
                 onChangeText={setQ}
                 autoFocus
-                placeholder="Nome do álbum ou artista"
+                placeholder={tr("Nome do álbum ou artista")}
                 placeholderTextColor={colors.textMuted}
                 style={{
                   backgroundColor: colors.fillInset,
@@ -224,7 +226,7 @@ function SpotifySearchPanel({
               <ActivityIndicator color={colors.text} style={{ paddingVertical: 28 }} />
             ) : q.trim() && results.length === 0 ? (
               <Text style={{ textAlign: "center", paddingVertical: 28, color: colors.textMuted, fontSize: 13 }}>
-                Nenhum resultado encontrado.
+                {tr("Nenhum resultado encontrado.")}
               </Text>
             ) : (
               <FlatList
@@ -262,7 +264,7 @@ function SpotifySearchPanel({
                         }}
                       >
                         <Text style={{ fontSize: 12, fontWeight: "600", color: hit.inDb ? colors.text : colors.btnDarkFg }}>
-                          {adding ? "…" : hit.inDb ? "Ver" : "Adicionar"}
+                          {adding ? "…" : hit.inDb ? tr("Ver") : tr("Adicionar")}
                         </Text>
                       </Pressable>
                     </View>
@@ -411,7 +413,8 @@ function GridCard({ album, width, onPress }: { album: CriticsFMAlbum; width: num
 }
 
 export function CriticsFMScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const { width: screenW } = useWindowDimensions();
   const hubQuery = useCriticsFMQuery();
@@ -476,19 +479,19 @@ export function CriticsFMScreen() {
           paddingBottom: 22,
         }}
       >
-        Um espaço para avaliar álbuns, acompanhar lançamentos e participar do Clube do Álbum.
+        {tr("Um espaço para avaliar álbuns, acompanhar lançamentos e participar do Clube do Álbum.")}
       </Text>
 
       <View style={{ paddingHorizontal: 16, marginBottom: 8 }}>
         <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>
-          Lançamentos da semana
+          {tr("Lançamentos da semana")}
         </Text>
         <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 4 }}>
           {weeklyRelease
             ? weeklyRelease.albums.length === 1
-              ? `Semana de ${weeklyRelease.weekLabel} · 1 álbum em destaque`
-              : `Semana de ${weeklyRelease.weekLabel} · ${weeklyRelease.albums.length} álbuns em destaque`
-            : "Álbuns em destaque para ouvir esta semana"}
+              ? (lang === "en" ? `Week of ${weeklyRelease.weekLabel} · 1 featured album` : `Semana de ${weeklyRelease.weekLabel} · 1 álbum em destaque`)
+              : (lang === "en" ? `Week of ${weeklyRelease.weekLabel} · ${weeklyRelease.albums.length} featured albums` : `Semana de ${weeklyRelease.weekLabel} · ${weeklyRelease.albums.length} álbuns em destaque`)
+            : tr("Álbuns em destaque para ouvir esta semana")}
         </Text>
       </View>
       {!weeklyRelease || weeklyRelease.albums.length === 0 ? (
@@ -505,7 +508,7 @@ export function CriticsFMScreen() {
           }}
         >
           <Text style={{ textAlign: "center", color: colors.textMuted, fontSize: 14 }}>
-            Nenhum lançamento esta semana. Volte em breve.
+            {tr("Nenhum lançamento esta semana. Volte em breve.")}
           </Text>
         </View>
       ) : (
@@ -526,9 +529,9 @@ export function CriticsFMScreen() {
       )}
 
       <View style={{ paddingHorizontal: 16, marginBottom: 10 }}>
-        <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>Clube do Álbum</Text>
+        <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>{tr("Clube do Álbum")}</Text>
         <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 4 }}>
-          Curadoria coletiva semanal da comunidade.
+          {tr("Curadoria coletiva semanal da comunidade.")}
         </Text>
       </View>
       <Pressable
@@ -545,7 +548,7 @@ export function CriticsFMScreen() {
       >
         {!clubeRound ? (
           <Text style={{ textAlign: "center", color: colors.textMuted, fontSize: 14, paddingVertical: 8 }}>
-            Nenhuma rodada ativa no momento.
+            {tr("Nenhuma rodada ativa no momento.")}
           </Text>
         ) : (
           <View>
@@ -561,7 +564,7 @@ export function CriticsFMScreen() {
                     marginBottom: 6,
                   }}
                 >
-                  Rodada #{clubeRound.number}
+                  {tr("Rodada")} #{clubeRound.number}
                 </Text>
                 <Text numberOfLines={1} style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
                   {clubeRound.theme}
@@ -590,7 +593,7 @@ export function CriticsFMScreen() {
                     }}
                   />
                   <Text style={{ fontSize: 11, fontWeight: "600", color: colors.textSubtle }}>
-                    {CLUBE_PHASE_LABELS[clubeRound.phase]}
+                    {tr(CLUBE_PHASE_LABELS[clubeRound.phase])}
                   </Text>
                 </View>
               </View>
@@ -604,7 +607,7 @@ export function CriticsFMScreen() {
                 }}
               >
                 <Text style={{ fontSize: 12, fontWeight: "700", color: colors.btnDarkFg }}>
-                  {CLUBE_PHASE_CTA[clubeRound.phase]}
+                  {tr(CLUBE_PHASE_CTA[clubeRound.phase])}
                 </Text>
               </View>
             </View>
@@ -620,11 +623,11 @@ export function CriticsFMScreen() {
             >
               <View>
                 <Text style={{ fontSize: 20, fontWeight: "800", color: colors.text }}>{clubeRound.nominations.length}</Text>
-                <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 2 }}>indicações</Text>
+                <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 2 }}>{tr("indicações")}</Text>
               </View>
               <View>
                 <Text style={{ fontSize: 20, fontWeight: "800", color: colors.text }}>{clubeRound.participantCount}</Text>
-                <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 2 }}>membros</Text>
+                <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 2 }}>{tr("membros")}</Text>
               </View>
             </View>
           </View>
@@ -642,9 +645,9 @@ export function CriticsFMScreen() {
           padding: 18,
         }}
       >
-        <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>Escala de notas</Text>
+        <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>{tr("Escala de notas")}</Text>
         <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 4, marginBottom: 12 }}>
-          Como a nota média de cada álbum é lida no CriticsFM.
+          {tr("Como a nota média de cada álbum é lida no CriticsFM.")}
         </Text>
         {SCORE_BANDS.map((band) => (
           <View
@@ -662,7 +665,7 @@ export function CriticsFMScreen() {
             <Text style={{ width: 56, fontSize: 13, fontWeight: "800", color: colors.text }}>
               {band.min}–{band.max}
             </Text>
-            <Text style={{ flex: 1, fontSize: 13, fontWeight: "600", color: colors.text }}>{band.label}</Text>
+            <Text style={{ flex: 1, fontSize: 13, fontWeight: "600", color: colors.text }}>{tr(band.label)}</Text>
           </View>
         ))}
       </View>
@@ -680,7 +683,7 @@ export function CriticsFMScreen() {
               marginBottom: 12,
             }}
           >
-            Melhores avaliados
+            {tr("Melhores avaliados")}
           </Text>
           <ScrollView
             horizontal
@@ -699,7 +702,7 @@ export function CriticsFMScreen() {
           <TextInput
             value={search}
             onChangeText={setSearch}
-            placeholder="Buscar álbum ou artista"
+            placeholder={tr("Buscar álbum ou artista")}
             placeholderTextColor={colors.textMuted}
             style={{
               flex: 1,
@@ -732,7 +735,7 @@ export function CriticsFMScreen() {
                 d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"
               />
             </Svg>
-            <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>Adicionar</Text>
+            <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>{tr("Adicionar")}</Text>
           </Pressable>
         </View>
         <ScrollView
@@ -758,7 +761,7 @@ export function CriticsFMScreen() {
                   color: scoreFilter === f.id ? colors.btnDarkFg : colors.text,
                 }}
               >
-                {f.label}
+                {tr(f.label)}
               </Text>
             </Pressable>
           ))}
@@ -767,7 +770,7 @@ export function CriticsFMScreen() {
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 }}>
         <Text style={{ flex: 1, fontSize: 12, color: colors.textMuted }}>
-          {filtered.length === 1 ? "1 álbum" : `${filtered.length} álbuns`}
+          {filtered.length === 1 ? tr("1 álbum") : `${filtered.length} ${tr("álbuns")}`}
         </Text>
         <View style={{ flexDirection: "row", gap: 2, backgroundColor: colors.fillInset, borderRadius: 8, padding: 2 }}>
           {(["list", "grid"] as const).map((mode) => (
@@ -814,7 +817,7 @@ export function CriticsFMScreen() {
                   color: sortBy === s.id ? colors.text : colors.textMuted,
                 }}
               >
-                {s.label}
+                {tr(s.label)}
               </Text>
             </Pressable>
           ))}
@@ -826,7 +829,7 @@ export function CriticsFMScreen() {
   if (hubQuery.isLoading) {
     return (
       <Screen scroll={false}>
-        <BackHeader title="CriticsFM" />
+        <BackHeader title={tr("CriticsFM")} />
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       </Screen>
     );
@@ -835,9 +838,9 @@ export function CriticsFMScreen() {
   if (hubQuery.isError) {
     return (
       <Screen scroll={false}>
-        <BackHeader title="CriticsFM" />
+        <BackHeader title={tr("CriticsFM")} />
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
-          Não foi possível carregar o CriticsFM.
+          {tr("Não foi possível carregar o CriticsFM.")}
         </Text>
       </Screen>
     );
@@ -845,7 +848,7 @@ export function CriticsFMScreen() {
 
   return (
     <Screen scroll={false}>
-      <BackHeader title="CriticsFM" />
+      <BackHeader title={tr("CriticsFM")} />
       {spotifyQuery !== null ? (
         <SpotifySearchPanel
           initialQuery={spotifyQuery}
@@ -882,11 +885,11 @@ export function CriticsFMScreen() {
               <Circle cx={18} cy={16} r={2.5} />
               <Path d="M9 15V5l9-2v11" strokeLinecap="round" />
             </Svg>
-            <Text style={{ fontSize: 16, fontWeight: "600", color: colors.text, marginTop: 12 }}>Nenhum álbum encontrado</Text>
+            <Text style={{ fontSize: 16, fontWeight: "600", color: colors.text, marginTop: 12 }}>{tr("Nenhum álbum encontrado")}</Text>
             {search ? (
               <View style={{ alignItems: "center", marginTop: 12 }}>
                 <Text style={{ fontSize: 13, color: colors.textDisabled, marginBottom: 12 }}>
-                  Quer adicionar este álbum ao catálogo?
+                  {tr("Quer adicionar este álbum ao catálogo?")}
                 </Text>
                 <Pressable
                   onPress={() => setSpotifyQuery(search)}
@@ -900,7 +903,7 @@ export function CriticsFMScreen() {
                     borderRadius: 100,
                   }}
                 >
-                  <Text style={{ color: "#fff", fontSize: 13, fontWeight: "700" }}>Buscar no Spotify</Text>
+                  <Text style={{ color: "#fff", fontSize: 13, fontWeight: "700" }}>{tr("Buscar no Spotify")}</Text>
                 </Pressable>
               </View>
             ) : null}
@@ -922,7 +925,7 @@ export function CriticsFMScreen() {
               }}
             >
               <Text style={{ fontSize: 13, fontWeight: "600", color: colors.text }}>
-                Carregar mais ({Math.min(PAGE_SIZE, filtered.length - showCount)} de {filtered.length - showCount} restantes)
+                {lang === "en" ? `Load more (${Math.min(PAGE_SIZE, filtered.length - showCount)} of ${filtered.length - showCount} remaining)` : `Carregar mais (${Math.min(PAGE_SIZE, filtered.length - showCount)} de ${filtered.length - showCount} restantes)`}
               </Text>
             </Pressable>
           ) : null

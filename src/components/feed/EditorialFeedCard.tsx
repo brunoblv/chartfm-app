@@ -1,10 +1,12 @@
 import React from "react";
+import { useTr } from "../../i18n/useTr";
 import { View, Text, Image } from "react-native";
 import { useAppTheme } from "../../theme/ThemeProvider";
 import { FeedEditorialItem } from "../../api/feed";
 import { resolveMediaUrl } from "../../lib/api";
 
 export function EditorialFeedCard({ item }: { item: FeedEditorialItem }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   return (
     <View style={{ marginHorizontal: 16, marginBottom: 14, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
@@ -22,7 +24,7 @@ export function EditorialFeedCard({ item }: { item: FeedEditorialItem }) {
           {item.excerpt}
         </Text>
         <Text style={{ fontSize: 11, color: colors.textDisabled, marginTop: 8 }}>
-          {item.author} · {item.likes} curtidas · {item.comments} comentários
+          {item.author} · {item.likes} {tr("curtidas")} · {item.comments} {tr("comentários")}
         </Text>
       </View>
     </View>

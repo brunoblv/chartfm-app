@@ -6,6 +6,7 @@ import { useSearchQuery, SearchSong } from "../api/search";
 import { resolveMediaUrl } from "../lib/api";
 import { SpotlightSong } from "../state/AppState";
 import { SpotlightKind, SPOTLIGHT_KIND_LABEL, SPOTLIGHT_KIND_COLOR } from "./ChartSpotlightCard";
+import { useTr } from "../i18n/useTr";
 
 const KIND_HELPER: Record<SpotlightKind, string> = {
   flashback: "Uma música do passado para relembrar.",
@@ -34,6 +35,7 @@ export function SpotlightPickerRow({
   value: SpotlightSong | null | undefined;
   onChange: (song: SpotlightSong | null) => void;
 }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState("");
@@ -78,12 +80,12 @@ export function SpotlightPickerRow({
               value={query}
               onChangeText={setQuery}
               autoFocus
-              placeholder="buscar música ou artista"
+              placeholder={tr("buscar música ou artista")}
               placeholderTextColor={colors.textMuted}
               style={{ flex: 1, fontSize: 13.5, fontWeight: "600", color: colors.text, padding: 0 }}
             />
             <Pressable onPress={() => { setSearching(false); setQuery(""); }}>
-              <Text style={{ fontSize: 12, color: colors.textMuted, fontWeight: "600" }}>Cancelar</Text>
+              <Text style={{ fontSize: 12, color: colors.textMuted, fontWeight: "600" }}>{tr("Cancelar")}</Text>
             </Pressable>
           </View>
           {query.trim().length >= 2 ? (
@@ -117,7 +119,7 @@ export function SpotlightPickerRow({
                   </Pressable>
                 ))}
                 {results.length === 0 ? (
-                  <Text style={{ fontSize: 12, color: colors.textMuted, paddingVertical: 6 }}>Nenhuma música encontrada.</Text>
+                  <Text style={{ fontSize: 12, color: colors.textMuted, paddingVertical: 6 }}>{tr("Nenhuma música encontrada.")}</Text>
                 ) : null}
               </View>
             )
@@ -125,7 +127,7 @@ export function SpotlightPickerRow({
         </View>
       ) : (
         <Pressable onPress={() => setSearching(true)} style={{ marginTop: 10, alignSelf: "flex-start" }}>
-          <Text style={{ fontSize: 12.5, fontWeight: "700", color: colors.accent }}>+ Buscar música</Text>
+          <Text style={{ fontSize: 12.5, fontWeight: "700", color: colors.accent }}>{tr("+ Buscar música")}</Text>
         </Pressable>
       )}
     </View>

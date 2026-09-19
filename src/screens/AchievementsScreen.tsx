@@ -14,11 +14,13 @@ import {
   familyCategory,
 } from "../data/achievements";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Route = RouteProp<RootStackParamList, "Achievements">;
 
 export function AchievementsScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const route = useRoute<Route>();
   const handle = route.params?.handle;
   const profileQuery = useProfileQuery(handle);
@@ -35,8 +37,8 @@ export function AchievementsScreen() {
   if (!handle) {
     return (
       <Screen>
-        <BackHeader title="Conquistas" />
-        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>Perfil não encontrado.</Text>
+        <BackHeader title={tr("Conquistas")} />
+        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>{tr("Perfil não encontrado.")}</Text>
       </Screen>
     );
   }
@@ -48,28 +50,29 @@ export function AchievementsScreen() {
 
   return (
     <Screen scroll={false}>
-      <BackHeader title="Conquistas" />
+      <BackHeader title={tr("Conquistas")} />
 
       {profileQuery.isLoading ? (
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       ) : !profile ? (
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
-          Não foi possível carregar as conquistas.
+          {tr("Não foi possível carregar as conquistas.")}
         </Text>
       ) : (
         <>
           <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
             <Text style={{ fontSize: 13.5, lineHeight: 20, color: colors.textMuted }}>
-              A trajetória de {name} no ChartFM. Cada família tem quatro etapas, e o progresso vem do que já foi
-              publicado, avaliado e comentado.
+              {lang === "en"
+                ? `${name} journey on ChartFM. Each family has four stages, and progress comes from what has been published, rated and commented on.`
+                : `A trajetória de ${name} no ChartFM. Cada família tem quatro etapas, e o progresso vem do que já foi publicado, avaliado e comentado.`}
             </Text>
             {level ? (
               <Text style={{ fontSize: 13, color: colors.text, marginTop: 10, fontWeight: "700" }}>
-                Level {level.level} · {level.xp} XP
+                {tr("Nível")} {level.level} · {level.xp} XP
               </Text>
             ) : null}
             <Text style={{ fontSize: 12.5, color: colors.textMuted, marginTop: 4 }}>
-              {unlocked} de {total} conquistas desbloqueadas
+              {lang === "en" ? `${unlocked} of ${total} achievements unlocked` : `${unlocked} de ${total} conquistas desbloqueadas`}
             </Text>
           </View>
 
@@ -90,7 +93,7 @@ export function AchievementsScreen() {
                 }}
               >
                 <Text style={{ color: filter === f ? "#fff" : colors.text, fontWeight: "700", fontSize: 12.5 }}>
-                  {CATEGORY_FILTER_LABELS[f]}
+                  {tr(CATEGORY_FILTER_LABELS[f])}
                 </Text>
               </Pressable>
             ))}
@@ -98,7 +101,7 @@ export function AchievementsScreen() {
 
           {families.length === 0 ? (
             <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40, paddingHorizontal: 24 }}>
-              Nenhuma conquista saiu ainda nessa categoria.
+              {tr("Nenhuma conquista saiu ainda nessa categoria.")}
             </Text>
           ) : (
             <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: 10 }}>
@@ -137,7 +140,7 @@ export function AchievementsScreen() {
                         {meta?.title ?? f.code}
                       </Text>
                       <Text numberOfLines={1} style={{ fontSize: 12, color: colors.textMuted, marginTop: 2 }}>
-                        {f.isComplete ? "Família completa" : `${f.value} de ${f.nextThreshold}`}
+                        {f.isComplete ? tr("Família completa") : lang === "en" ? `${f.value} of ${f.nextThreshold}` : `${f.value} de ${f.nextThreshold}`}
                       </Text>
                     </View>
                   </Pressable>

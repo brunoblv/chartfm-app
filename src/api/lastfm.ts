@@ -1,3 +1,4 @@
+import { translateApiText } from "../i18n/apiErrors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as WebBrowser from "expo-web-browser";
 import { ApiError, apiRequest } from "../lib/apiClient";
@@ -75,6 +76,10 @@ export function useLastfmImportMutation() {
 }
 
 export function lastfmErrorMessage(error: unknown): string {
+  return translateApiText(lastfmErrorMessagePt(error));
+}
+
+function lastfmErrorMessagePt(error: unknown): string {
   if (error instanceof ApiError) {
     if (typeof error.body === "object" && error.body && "error" in error.body) {
       const msg = (error.body as { error?: string }).error;

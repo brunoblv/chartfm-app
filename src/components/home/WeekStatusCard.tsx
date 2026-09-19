@@ -1,4 +1,5 @@
 import React from "react";
+import { useTr } from "../../i18n/useTr";
 import { View, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Path } from "react-native-svg";
@@ -15,7 +16,8 @@ export function WeekStatusCard({
   onPublish: () => void;
   onViewChart: () => void;
 }) {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const published = Boolean(status.thisWeekChartId);
 
   return (
@@ -34,12 +36,12 @@ export function WeekStatusCard({
             {status.paradaNome ?? "Minha parada"}
           </Text>
           <Text style={{ fontSize: 19, fontWeight: "700", letterSpacing: -0.5, color: "#fff", marginTop: 3 }}>
-            {published ? "Parada publicada!" : "Hora de atualizar"}
+            {published ? tr("Parada publicada!") : tr("Hora de atualizar")}
           </Text>
           <Text style={{ fontSize: 12.5, color: "#fff", opacity: 0.88, marginTop: 4 }}>
             {published
-              ? `sequência de ${status.streak}`
-              : `faltam ${status.daysLeft} dia${status.daysLeft === 1 ? "" : "s"} · sequência de ${status.streak}`}
+              ? (lang === "en" ? `${status.streak}-week streak` : `sequência de ${status.streak}`)
+              : (lang === "en" ? `${status.daysLeft} day${status.daysLeft === 1 ? "" : "s"} left · ${status.streak}-week streak` : `faltam ${status.daysLeft} dia${status.daysLeft === 1 ? "" : "s"} · sequência de ${status.streak}`)}
           </Text>
         </View>
       </LinearGradient>

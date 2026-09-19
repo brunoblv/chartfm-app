@@ -1,3 +1,4 @@
+import { translateApiText } from "../i18n/apiErrors";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiError, apiRequest } from "../lib/apiClient";
 import { API_BASE_URL } from "../lib/api";
@@ -80,6 +81,10 @@ export function useDeleteAvatarMutation() {
 }
 
 export function accountErrorMessage(error: unknown): string {
+  return translateApiText(accountErrorMessagePt(error));
+}
+
+function accountErrorMessagePt(error: unknown): string {
   if (error instanceof ApiError) {
     if (typeof error.body === "object" && error.body && "error" in error.body) {
       const msg = (error.body as { error?: string }).error;

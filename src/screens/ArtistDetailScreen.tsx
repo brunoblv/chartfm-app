@@ -9,11 +9,13 @@ import { resolveMediaUrl } from "../lib/api";
 import { useArtistQuery } from "../api/artist";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { SaveLibraryButton } from "../components/SaveLibraryButton";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "ArtistDetail">;
 
 export function ArtistDetailScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
@@ -25,7 +27,7 @@ export function ArtistDetailScreen() {
     return (
       <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
-        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>Artista não encontrado.</Text>
+        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>{tr("Artista não encontrado.")}</Text>
       </SafeAreaView>
     );
   }
@@ -44,7 +46,7 @@ export function ArtistDetailScreen() {
       <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
-          Não foi possível carregar esse artista.
+          {tr("Não foi possível carregar esse artista.")}
         </Text>
       </SafeAreaView>
     );
@@ -92,7 +94,7 @@ export function ArtistDetailScreen() {
       {(artist.totalPoints > 0 || artist.number1s > 0 || artist.listenersCount > 0) && (
         <View style={{ marginBottom: 26 }}>
           <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.4, textTransform: "uppercase", color: colors.textMuted, paddingHorizontal: 20, paddingBottom: 8 }}>
-            No Global 100
+            {tr("No Global 100")}
           </Text>
           <View
             style={{
@@ -107,17 +109,17 @@ export function ArtistDetailScreen() {
           >
             <View style={{ flex: 1, alignItems: "center" }}>
               <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.totalPoints}</Text>
-              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>pontos totais</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>{tr("pontos totais")}</Text>
             </View>
             <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
             <View style={{ flex: 1, alignItems: "center" }}>
               <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.listenersCount}</Text>
-              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>ouvintes únicos</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>{tr("ouvintes únicos")}</Text>
             </View>
             <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
             <View style={{ flex: 1, alignItems: "center" }}>
               <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.number1s}</Text>
-              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>músicas em #1</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>{tr("músicas em #1")}</Text>
             </View>
           </View>
         </View>
@@ -126,7 +128,7 @@ export function ArtistDetailScreen() {
       {artist.myStats && (
         <View style={{ marginBottom: 26 }}>
           <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.4, textTransform: "uppercase", color: colors.textMuted, paddingHorizontal: 20, paddingBottom: 8 }}>
-            Na sua parada
+            {tr("Na sua parada")}
           </Text>
           <View
             style={{
@@ -141,17 +143,17 @@ export function ArtistDetailScreen() {
           >
             <View style={{ flex: 1, alignItems: "center" }}>
               <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.myStats.appearances}</Text>
-              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>aparições</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>{tr("aparições")}</Text>
             </View>
             <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
             <View style={{ flex: 1, alignItems: "center" }}>
               <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.myStats.totalPoints}</Text>
-              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>seus pontos</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>{tr("seus pontos")}</Text>
             </View>
             <View style={{ width: 1, backgroundColor: colors.dividerSoft }} />
             <View style={{ flex: 1, alignItems: "center" }}>
               <Text style={{ fontSize: 18, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{artist.myStats.number1s}</Text>
-              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>seus #1</Text>
+              <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 2 }}>{tr("seus #1")}</Text>
             </View>
           </View>
         </View>
@@ -160,7 +162,7 @@ export function ArtistDetailScreen() {
       {artist.bigFans.length > 0 && (
         <View style={{ marginBottom: 26 }}>
           <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, paddingHorizontal: 20, paddingBottom: 12 }}>
-            Maiores fãs
+            {tr("Maiores fãs")}
           </Text>
           <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
             {artist.bigFans.map((f, i) => (
@@ -193,7 +195,7 @@ export function ArtistDetailScreen() {
       {artist.topSongs.length > 0 ? (
         <>
           <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, paddingHorizontal: 20, paddingBottom: 12 }}>
-            Faixas no Global 100
+            {tr("Faixas no Global 100")}
           </Text>
           <View style={{ marginHorizontal: 16, marginBottom: 26, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
             {artist.topSongs.map((s, i) => (
@@ -219,7 +221,7 @@ export function ArtistDetailScreen() {
                   {s.title}
                 </Text>
                 <Text style={{ fontSize: 11, color: colors.textMuted }}>
-                  {s.weeks} sem · pico #{s.peak}
+                  {s.weeks} {tr("sem")} · {tr("pico")} #{s.peak}
                 </Text>
               </Pressable>
             ))}
@@ -230,7 +232,7 @@ export function ArtistDetailScreen() {
       {artist.albums.length > 0 ? (
         <>
           <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, paddingHorizontal: 20, paddingBottom: 12 }}>
-            Discografia
+            {tr("Discografia")}
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
             {artist.albums.map((a) => (

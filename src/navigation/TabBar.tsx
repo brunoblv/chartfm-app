@@ -1,3 +1,4 @@
+import { useTr } from "../i18n/useTr";
 import React from "react";
 import { View, Pressable, Text } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
@@ -41,6 +42,7 @@ const labels: Record<string, string> = {
 
 export function TabBar({ state, navigation }: BottomTabBarProps) {
   const { colors } = useAppTheme();
+  const tr = useTr();
   const insets = useSafeAreaInsets();
 
   return (
@@ -108,7 +110,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
             style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 3, paddingVertical: 10, minHeight: 56 }}
           >
             {icons[route.name]?.(color)}
-            <Text style={{ fontSize: 10, fontWeight: "600", color }}>{labels[route.name] ?? route.name}</Text>
+            <Text style={{ fontSize: 10, fontWeight: "600", color }}>{tr(labels[route.name] ?? route.name)}</Text>
           </Pressable>
         );
       })}

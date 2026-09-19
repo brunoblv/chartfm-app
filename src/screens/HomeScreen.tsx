@@ -5,6 +5,7 @@ import Svg, { Path } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
+import { useTr } from "../i18n/useTr";
 import { useAppState } from "../state/AppState";
 import { Screen } from "../components/Screen";
 import { OfflineBanner } from "../components/OfflineBanner";
@@ -56,11 +57,12 @@ function HomeHeader({
   onBell: () => void;
 }) {
   const { colors } = useAppTheme();
+  const tr = useTr();
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 20, paddingVertical: 10 }}>
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 23, fontWeight: "800", letterSpacing: -0.6, color: colors.text }}>
-          Olá{firstName ? `, ${firstName}` : ""}
+          {tr("Olá")}{firstName ? `, ${firstName}` : ""}
         </Text>
       </View>
       <Pressable hitSlop={8} style={{ position: "relative" }} onPress={onBell}>
@@ -84,7 +86,8 @@ function HomeHeader({
 }
 
 function InicioTab() {
-  const { colors } = useAppTheme();
+  const { colors, lang } = useAppTheme();
+  const tr = useTr();
   const { isOffline } = useAppState();
   const navigation = useNavigation<Nav>();
   const songsQuery = useGlobalSongsQuery("weekly");
@@ -121,14 +124,14 @@ function InicioTab() {
 
       {hub && hub.friendCharts.length > 0 && (
         <>
-          <SectionHeader title="Charts de quem você segue" />
+          <SectionHeader title={tr("Charts de quem você segue")} />
           <FriendChartsRow charts={hub.friendCharts} onPress={(handle) => navigation.navigate("UserDetail", { handle })} />
         </>
       )}
 
       {recommendationsQuery.cards.length > 0 && (
         <>
-          <SectionHeader title="Em alta para você" />
+          <SectionHeader title={tr("Em alta para você")} />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
             {recommendationsQuery.cards.map((c) => (
               <Pressable key={c.key} onPress={() => navigation.navigate("MusicDetail", { songId: c.songId })} style={{ width: 132 }}>
@@ -146,7 +149,7 @@ function InicioTab() {
         </>
       )}
 
-      <SectionHeader title="Global 100" action="Ver os 100" onAction={() => navigation.navigate("Global100")} />
+      <SectionHeader title="Global 100" action={tr("Ver os 100")} onAction={() => navigation.navigate("Global100")} />
       <Card>
         {globalTop3.map((s, i) => (
           <SongRow
@@ -161,7 +164,7 @@ function InicioTab() {
 
       {copa ? (
         <>
-          <SectionHeader title="Eventos" />
+          <SectionHeader title={tr("Eventos")} />
           <View
             style={{
               marginHorizontal: 16,
@@ -182,14 +185,14 @@ function InicioTab() {
             <View style={{ flex: 1, minWidth: 0 }}>
               <Text style={{ fontSize: 15, fontWeight: "700", color: "#fff" }}>{copa.name}</Text>
               <Text style={{ fontSize: 12.5, color: "rgba(255,255,255,0.72)", marginTop: 2 }}>
-                {copaLiveCount > 0 ? `${copaLiveCount} confronto(s) esperando seu voto` : "Nenhum confronto pendente"}
+                {copaLiveCount > 0 ? (lang === "en" ? `${copaLiveCount} match(es) waiting for your vote` : `${copaLiveCount} confronto(s) esperando seu voto`) : tr("Nenhum confronto pendente")}
               </Text>
             </View>
             <Pressable
               onPress={() => navigation.navigate("Copa")}
               style={{ backgroundColor: colors.accent, borderRadius: 100, paddingHorizontal: 14, paddingVertical: 9 }}
             >
-              <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>VOTAR</Text>
+              <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>{tr("VOTAR")}</Text>
             </Pressable>
           </View>
         </>
@@ -197,28 +200,28 @@ function InicioTab() {
 
       {hub && hub.people.length > 0 && (
         <>
-          <SectionHeader title="Pessoas para conhecer" />
+          <SectionHeader title={tr("Pessoas para conhecer")} />
           <PeopleToMeetRow people={hub.people} onPress={(handle) => navigation.navigate("UserDetail", { handle })} />
         </>
       )}
 
       {discovery && discovery.reviews.length > 0 && (
         <>
-          <SectionHeader title="Reviews em destaque" action="Ver todas" onAction={() => navigation.navigate("CriticsFM")} />
+          <SectionHeader title={tr("Reviews em destaque")} action={tr("Ver todas")} onAction={() => navigation.navigate("CriticsFM")} />
           <ReviewsRow reviews={discovery.reviews} />
         </>
       )}
 
       {discovery?.releases && discovery.releases.albums.length > 0 && (
         <>
-          <SectionHeader title="Lançamentos" action="Ver todos" onAction={() => navigation.navigate("CriticsFM")} />
+          <SectionHeader title={tr("Lançamentos")} action={tr("Ver todos")} onAction={() => navigation.navigate("CriticsFM")} />
           <ReleasesRow albums={discovery.releases.albums} />
         </>
       )}
 
       {discovery && discovery.clipReleases.length > 0 && (
         <>
-          <SectionHeader title="Lançamentos de clipes" />
+          <SectionHeader title={tr("Lançamentos de clipes")} />
           <ClipReleasesRow clips={discovery.clipReleases} />
         </>
       )}
@@ -230,14 +233,15 @@ function InicioTab() {
 
 function FeedTab() {
   const { colors } = useAppTheme();
+  const tr = useTr();
   const [feedTab, setFeedTab] = useState<FeedTabType>("for-you");
 
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flexDirection: "row", gap: 8, paddingHorizontal: 16, marginBottom: 10 }}>
         {([
-          { id: "for-you" as const, label: "Para você" },
-          { id: "following" as const, label: "Seguindo" },
+          { id: "for-you" as const, label: tr("Para você") },
+          { id: "following" as const, label: tr("Seguindo") },
         ]).map((t) => (
           <Pressable
             key={t.id}
@@ -264,6 +268,7 @@ function FeedTab() {
 
 export function HomeScreen() {
   const { colors } = useAppTheme();
+  const tr = useTr();
   const { isOffline } = useAppState();
   const { user } = useAuth();
   const navigation = useNavigation<Nav>();
@@ -302,15 +307,15 @@ export function HomeScreen() {
           style={{ marginHorizontal: 16, borderRadius: 20, padding: 22 }}
         >
           <Text style={{ fontSize: 11, fontWeight: "700", letterSpacing: 1, textTransform: "uppercase", color: "#fff", opacity: 0.85 }}>
-            Bem-vindo
+            {tr("Bem-vindo")}
           </Text>
           <Text style={{ fontSize: 25, fontWeight: "800", letterSpacing: -0.6, color: "#fff", marginTop: 8, lineHeight: 29 }}>
-            Crie sua própria parada musical
+            {tr("Crie sua própria parada musical")}
           </Text>
           <Text style={{ fontSize: 14, lineHeight: 21, color: "#fff", opacity: 0.9, marginTop: 10, marginBottom: 20, maxWidth: 270 }}>
-            Escolha suas favoritas, monte sua parada pessoal e descubra como você se compara com outros fãs.
+            {tr("Escolha suas favoritas, monte sua parada pessoal e descubra como você se compara com outros fãs.")}
           </Text>
-          <PillButton label="Criar meu primeiro Chart" variant="white" onPress={() => navigation.navigate("ChooseParada", { next: "Editor" })} />
+          <PillButton label={tr("Criar meu primeiro Chart")} variant="white" onPress={() => navigation.navigate("ChooseParada", { next: "Editor" })} />
           <Pressable
             onPress={() => navigation.navigate("ChooseParada", { next: "Lastfm" })}
             style={{
@@ -323,18 +328,18 @@ export function HomeScreen() {
               alignItems: "center",
             }}
           >
-            <Text style={{ color: "#fff", fontWeight: "600", fontSize: 15 }}>Importar do Last.fm</Text>
+            <Text style={{ color: "#fff", fontWeight: "600", fontSize: 15 }}>{tr("Importar do Last.fm")}</Text>
           </Pressable>
         </LinearGradient>
 
-        <SectionHeader title="Enquanto isso, no Global 100" />
+        <SectionHeader title={tr("Enquanto isso, no Global 100")} />
         <Card>
           {onboardingGlobalTop3.map((s, i) => (
             <SongRow key={s.t} song={s} position={s.p} last={i === onboardingGlobalTop3.length - 1} />
           ))}
         </Card>
         <Pressable onPress={() => navigation.navigate("Global100")} style={{ paddingVertical: 14, alignItems: "center" }}>
-          <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 14 }}>Ver o Global 100</Text>
+          <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 14 }}>{tr("Ver o Global 100")}</Text>
         </Pressable>
       </Screen>
     );
@@ -364,7 +369,7 @@ export function HomeScreen() {
             }}
           >
             <Text style={{ fontSize: 13.5, fontWeight: "700", color: tab === t ? colors.text : colors.textMuted }}>
-              {t === "inicio" ? "Início" : "Feed"}
+              {t === "inicio" ? tr("Início") : "Feed"}
             </Text>
           </Pressable>
         ))}

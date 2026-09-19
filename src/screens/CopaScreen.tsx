@@ -7,6 +7,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { PillButton } from "../components/PillButton";
 import { resolveMediaUrl } from "../lib/api";
 import { useCopaQuery, useCopaFixturesQuery, useCopaVoteMutation, copaErrorMessage, CopaArtistInfo, CopaFixture } from "../api/copa";
+import { useTr } from "../i18n/useTr";
 
 const PHASE_LABELS: Record<string, string> = {
   GROUP: "Fase de grupos",
@@ -44,7 +45,8 @@ function ArtistArt({ artist, size }: { artist: CopaArtistInfo; size: number }) {
 }
 
 export function CopaScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation();
   const copaQuery = useCopaQuery();
   const copa = copaQuery.data?.copa;
@@ -66,7 +68,7 @@ export function CopaScreen() {
     if (!fixture || fixture.myVote || voteMutation.isPending) return;
     voteMutation.mutate(
       { fixtureId: fixture.id, side },
-      { onError: (error) => Alert.alert("Não foi possível votar", copaErrorMessage(error)) }
+      { onError: (error) => Alert.alert(tr("Não foi possível votar"), copaErrorMessage(error)) }
     );
   };
 
@@ -135,8 +137,8 @@ export function CopaScreen() {
           <Text style={{ fontSize: 16, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>{copa?.name ?? "Copa"}</Text>
           {fixture ? (
             <Text style={{ fontSize: 11.5, color: colors.textMuted }}>
-              {PHASE_LABELS[fixture.phase] ?? fixture.phase}
-              {fixture.groupLetter ? ` · Grupo ${fixture.groupLetter}` : ""}
+              {tr(PHASE_LABELS[fixture.phase] ?? fixture.phase)}
+              {fixture.groupLetter ? ` · ${tr("Grupo")} ${fixture.groupLetter}` : ""}
             </Text>
           ) : null}
         </View>
@@ -146,17 +148,17 @@ export function CopaScreen() {
         <ActivityIndicator color={colors.text} style={{ marginTop: 60 }} />
       ) : !copa ? (
         <Text style={{ paddingTop: 60, paddingHorizontal: 20, textAlign: "center", color: colors.textMuted }}>
-          Nenhuma Copa ativa no momento.
+          {tr("Nenhuma Copa ativa no momento.")}
         </Text>
       ) : !fixture ? (
         <Text style={{ paddingTop: 60, paddingHorizontal: 20, textAlign: "center", color: colors.textMuted }}>
-          Nenhum confronto disponível para votação agora.
+          {tr("Nenhum confronto disponível para votação agora.")}
         </Text>
       ) : (
         <>
           <View style={{ paddingHorizontal: 20, paddingBottom: 18 }}>
             <Text style={{ fontSize: 22, fontWeight: "800", letterSpacing: -0.6, lineHeight: 28, color: colors.text }}>
-              Qual artista avança?
+              {tr("Qual artista avança?")}
             </Text>
           </View>
 
@@ -190,13 +192,13 @@ export function CopaScreen() {
                   <Path d="M20 6 9 17l-5-5" />
                 </Svg>
                 <Text style={{ color: colors.upFg, fontSize: 13.5, fontWeight: "600", flex: 1 }}>
-                  Voto registrado. {totalVotes} pessoas já votaram.
+                  {lang === "en" ? `Vote recorded. ${totalVotes} people have voted.` : `Voto registrado. ${totalVotes} pessoas já votaram.`}
                 </Text>
               </View>
               {liveFixtures.length > 1 && (
                 <View style={{ padding: 16 }}>
                   <PillButton
-                    label="Próximo confronto"
+                    label={tr("Próximo confronto")}
                     onPress={() => {
                       const next = liveFixtures.find((f) => f.id !== fixture.id && !f.myVote);
                       setSelectedFixtureId(next?.id ?? null);
@@ -207,7 +209,7 @@ export function CopaScreen() {
             </>
           ) : (
             <Text style={{ paddingTop: 20, paddingHorizontal: 16, fontSize: 12.5, color: colors.textMuted, textAlign: "center" }}>
-              {voteMutation.isPending ? "Registrando voto…" : "Toque em um artista para votar. Um voto por confronto."}
+              {voteMutation.isPending ? tr("Registrando voto…") : tr("Toque em um artista para votar. Um voto por confronto.")}
             </Text>
           )}
         </>

@@ -21,6 +21,7 @@ import {
 } from "../api/charts";
 import { useProfileQuery, ProfileChartEntry } from "../api/profile";
 import { useParadasQuery } from "../api/paradas";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -35,7 +36,8 @@ function entryToChartSong(e: ProfileChartEntry, seed: number): ChartSong {
 }
 
 export function EditorScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const insets = useSafeAreaInsets();
   const { chart, setChart, removeSong, moveSong, paradaId, weekDate, spotlights, resetDraft } = useAppState();
   const { user } = useAuth();
@@ -103,12 +105,12 @@ export function EditorScreen() {
                 prefilledRef.current = false;
                 navigation.navigate("Main");
               },
-              onError: (updateError) => Alert.alert("Não foi possível publicar", publishErrorMessage(updateError)),
+              onError: (updateError) => Alert.alert(tr("Não foi possível publicar"), publishErrorMessage(updateError)),
             }
           );
           return;
         }
-        Alert.alert("Não foi possível publicar", publishErrorMessage(error));
+        Alert.alert(tr("Não foi possível publicar"), publishErrorMessage(error));
       },
     });
   };
@@ -135,7 +137,7 @@ export function EditorScreen() {
             }}
           >
             <Text style={{ fontSize: 11, fontWeight: "700", color: colors.accent }}>
-              Corte da parada · posição {chartSize}
+              {tr("Corte da parada · posição")} {chartSize}
             </Text>
           </View>
         ) : null}
@@ -241,8 +243,8 @@ export function EditorScreen() {
             {selectedParada?.name ?? "Minha parada"}
           </Text>
           <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 1 }}>
-            {periodLabel ?? latestChart?.weekLabel ?? "Carregando…"} · {chart.length} {chart.length === 1 ? "música" : "músicas"}
-            {chartSize ? ` · ${chartSize} posições` : ""}
+            {periodLabel ?? latestChart?.weekLabel ?? tr("Carregando…")} · {chart.length} {chart.length === 1 ? tr("música") : tr("músicas")}
+            {chartSize ? ` · ${chartSize} ${tr("posições")}` : ""}
           </Text>
         </View>
         <Pressable
@@ -281,7 +283,7 @@ export function EditorScreen() {
           <Path d="M20 20l-3.5-3.5" />
         </Svg>
         <Text style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.textMuted }}>
-          Buscar no catálogo ou no Spotify
+          {tr("Buscar no catálogo ou no Spotify")}
         </Text>
       </Pressable>
 
@@ -311,12 +313,14 @@ export function EditorScreen() {
       {chartSize !== null && chart.length > chartSize ? (
         <Text style={{ marginHorizontal: 16, marginBottom: 8, fontSize: 12, color: colors.textMuted, lineHeight: 17 }}>
           {chart.length - chartSize === 1
-            ? "1 música além do tamanho da parada será descartada ao publicar."
-            : `${chart.length - chartSize} músicas além do tamanho da parada serão descartadas ao publicar.`}
+            ? tr("1 música além do tamanho da parada será descartada ao publicar.")
+            : lang === "en"
+              ? `${chart.length - chartSize} songs beyond the chart size will be dropped when you publish.`
+              : `${chart.length - chartSize} músicas além do tamanho da parada serão descartadas ao publicar.`}
         </Text>
       ) : (
         <Text style={{ marginHorizontal: 16, marginBottom: 8, fontSize: 12, color: colors.textMuted, lineHeight: 17 }}>
-          Use as setas ou arraste o punho para reordenar. O Last.fm só carrega a lista.
+          {tr("Use as setas ou arraste o punho para reordenar. O Last.fm só carrega a lista.")}
         </Text>
       )}
 
@@ -342,7 +346,7 @@ export function EditorScreen() {
           }}
           ListEmptyComponent={
             <Text style={{ padding: 20, fontSize: 13, color: colors.textMuted, textAlign: "center" }}>
-              Busque uma música ou importe do Last.fm para começar.
+              {tr("Busque uma música ou importe do Last.fm para começar.")}
             </Text>
           }
           ListFooterComponent={
@@ -356,7 +360,7 @@ export function EditorScreen() {
                 borderStyle: "dashed",
               }}
             >
-              <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 14 }}>+ Adicionar música</Text>
+              <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 14 }}>{tr("+ Adicionar música")}</Text>
             </Pressable>
           }
         />
@@ -371,7 +375,7 @@ export function EditorScreen() {
           borderTopColor: colors.divider,
         }}
       >
-        <PillButton label="Publicar parada" onPress={handlePublish} loading={isSaving} />
+        <PillButton label={tr("Publicar parada")} onPress={handlePublish} loading={isSaving} />
       </View>
     </SafeAreaView>
   );

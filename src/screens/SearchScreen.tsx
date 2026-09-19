@@ -7,6 +7,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useSearchQuery } from "../api/search";
 import { resolveMediaUrl } from "../lib/api";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -22,7 +23,8 @@ function Avatar({ uri, label, color }: { uri: string | null; label: string; colo
 }
 
 export function SearchScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState<(typeof TABS)[number]>("Músicas");
@@ -52,7 +54,7 @@ export function SearchScreen() {
             onChangeText={setQuery}
             autoFocus
             style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text, padding: 0 }}
-            placeholder="músicas, artistas, pessoas"
+            placeholder={tr("músicas, artistas, pessoas")}
             placeholderTextColor={colors.textMuted}
           />
         </View>
@@ -66,9 +68,9 @@ export function SearchScreen() {
               <Path d="M20 20l-3.5-3.5" />
             </Svg>
           </View>
-          <Text style={{ fontSize: 17, fontWeight: "700", letterSpacing: -0.3, color: colors.text }}>Buscar no ChartFM</Text>
+          <Text style={{ fontSize: 17, fontWeight: "700", letterSpacing: -0.3, color: colors.text }}>{tr("Buscar no ChartFM")}</Text>
           <Text style={{ fontSize: 13.5, color: colors.textMuted, lineHeight: 19, marginTop: 8, textAlign: "center", maxWidth: 250 }}>
-            Digite pelo menos 2 letras para procurar músicas, artistas ou pessoas.
+            {tr("Digite pelo menos 2 letras para procurar músicas, artistas ou pessoas.")}
           </Text>
         </View>
       ) : isLoading ? (
@@ -77,9 +79,9 @@ export function SearchScreen() {
         </View>
       ) : total === 0 ? (
         <View style={{ flex: 1, alignItems: "center", paddingTop: 80, paddingHorizontal: 40 }}>
-          <Text style={{ fontSize: 17, fontWeight: "700", letterSpacing: -0.3, color: colors.text }}>Nada encontrado</Text>
+          <Text style={{ fontSize: 17, fontWeight: "700", letterSpacing: -0.3, color: colors.text }}>{tr("Nada encontrado")}</Text>
           <Text style={{ fontSize: 13.5, color: colors.textMuted, lineHeight: 19, marginTop: 8, textAlign: "center", maxWidth: 250 }}>
-            Não achamos nada para "{query}". Tente outro termo.
+            {lang === "en" ? `We found nothing for "${query}". Try another term.` : `Não achamos nada para "${query}". Tente outro termo.`}
           </Text>
         </View>
       ) : (
@@ -91,7 +93,7 @@ export function SearchScreen() {
                 onPress={() => setTab(t)}
                 style={{ backgroundColor: t === tab ? colors.btnDarkBg : colors.fillSubtle, borderRadius: 100, paddingVertical: 9, paddingHorizontal: 14, marginRight: 8 }}
               >
-                <Text style={{ color: t === tab ? colors.btnDarkFg : colors.textSubtle, fontWeight: "700", fontSize: 13 }}>{t}</Text>
+                <Text style={{ color: t === tab ? colors.btnDarkFg : colors.textSubtle, fontWeight: "700", fontSize: 13 }}>{tr(t)}</Text>
               </Pressable>
             ))}
           </ScrollView>
@@ -111,7 +113,7 @@ export function SearchScreen() {
                 </Pressable>
               ))}
               {(data?.artists.length ?? 0) === 0 && (
-                <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>Nenhum artista encontrado.</Text>
+                <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>{tr("Nenhum artista encontrado.")}</Text>
               )}
             </View>
           ) : tab === "Pessoas" ? (
@@ -130,7 +132,7 @@ export function SearchScreen() {
                 </Pressable>
               ))}
               {(data?.users.length ?? 0) === 0 && (
-                <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>Ninguém encontrado.</Text>
+                <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>{tr("Ninguém encontrado.")}</Text>
               )}
             </View>
           ) : (
@@ -160,7 +162,7 @@ export function SearchScreen() {
                 </Pressable>
               ))}
               {(data?.songs.length ?? 0) === 0 && (
-                <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>Nenhuma música encontrada.</Text>
+                <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>{tr("Nenhuma música encontrada.")}</Text>
               )}
             </View>
           )}

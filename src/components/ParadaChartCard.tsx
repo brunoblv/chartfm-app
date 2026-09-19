@@ -4,6 +4,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { MovementBadge, MovementStatus } from "./MovementBadge";
 import { ProfileChart } from "../api/profile";
 import { resolveMediaUrl } from "../lib/api";
+import { useTr } from "../i18n/useTr";
 
 export function ParadaChartCard({
   chart,
@@ -20,6 +21,7 @@ export function ParadaChartCard({
   onPressArtist?: (artistId: number) => void;
   limit?: number;
 }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const entries = chart.entries.slice(0, limit);
 
@@ -31,7 +33,7 @@ export function ParadaChartCard({
         </Text>
         {onEditPress && (
           <Pressable onPress={onEditPress}>
-            <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Editar</Text>
+            <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>{tr("Editar")}</Text>
           </Pressable>
         )}
       </View>

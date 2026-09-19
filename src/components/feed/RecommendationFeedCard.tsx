@@ -9,6 +9,7 @@ import { FeedRecommendationItem, useLikeRecommendationMutation, feedErrorMessage
 import { resolveMediaUrl } from "../../lib/api";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { useAuth } from "../../state/AuthContext";
+import { useTr } from "../../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -30,6 +31,7 @@ const TYPE_LABEL: Record<string, string> = {
 };
 
 export function RecommendationFeedCard({ item }: { item: FeedRecommendationItem }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const { user: currentUser } = useAuth();
@@ -45,7 +47,7 @@ export function RecommendationFeedCard({ item }: { item: FeedRecommendationItem 
       onError: (e) => {
         setLiked(item.liked);
         setLikes(item.likes);
-        Alert.alert("Não foi possível curtir", feedErrorMessage(e));
+        Alert.alert(tr("Não foi possível curtir"), tr(feedErrorMessage(e)));
       },
     });
   };
@@ -65,7 +67,7 @@ export function RecommendationFeedCard({ item }: { item: FeedRecommendationItem 
         )}
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text numberOfLines={1} style={{ fontSize: 13, color: colors.text }}>
-            <Text style={{ fontWeight: "700" }}>{item.user.name}</Text> {TYPE_LABEL[item.type] ?? "recomendou"}
+            <Text style={{ fontWeight: "700" }}>{item.user.name}</Text> {tr(TYPE_LABEL[item.type] ?? "recomendou")}
           </Text>
           <Text style={{ fontSize: 11, color: colors.textMuted }}>{item.postedAgo}</Text>
         </View>

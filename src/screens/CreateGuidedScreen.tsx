@@ -8,6 +8,7 @@ import { useAppState } from "../state/AppState";
 import { useParadasQuery } from "../api/paradas";
 import { BackHeader } from "../components/BackHeader";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -58,7 +59,8 @@ function OptionCard({
  * um toque, sem etapa extra, igual ao botão do site.
  */
 export function CreateGuidedScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const { paradaId } = useAppState();
   const paradasQuery = useParadasQuery();
@@ -69,7 +71,7 @@ export function CreateGuidedScreen() {
       <BackHeader title={selected?.name ?? "Nova parada"} />
       <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
         <Text style={{ fontSize: 14, color: colors.textMuted, lineHeight: 20 }}>
-          Como você quer montar {selected ? selected.name : "sua parada"} essa semana?
+          {lang === "en" ? `How do you want to build ${selected ? selected.name : "your chart"} this week?` : `Como você quer montar ${selected ? selected.name : "sua parada"} essa semana?`}
         </Text>
       </View>
       <View style={{ paddingHorizontal: 16, gap: 12 }}>
@@ -80,8 +82,8 @@ export function CreateGuidedScreen() {
               <Path d="M21 21l-4.35-4.35" />
             </Svg>
           }
-          title="Buscar e montar do zero"
-          description="Procure as músicas uma a uma, reordene e escolha os destaques da semana."
+          title={tr("Buscar e montar do zero")}
+          description={tr("Procure as músicas uma a uma, reordene e escolha os destaques da semana.")}
           onPress={() => navigation.navigate("Editor")}
         />
         <OptionCard
@@ -90,8 +92,8 @@ export function CreateGuidedScreen() {
               <Path d="M12 3v12M12 15l-4-4M12 15l4-4M4 19h16" />
             </Svg>
           }
-          title="Importar do Last.fm"
-          description="Conecte sua conta e montamos a parada com o que você mais ouviu."
+          title={tr("Importar do Last.fm")}
+          description={tr("Conecte sua conta e montamos a parada com o que você mais ouviu.")}
           onPress={() => navigation.navigate("Lastfm")}
         />
       </View>

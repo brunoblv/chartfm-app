@@ -1,3 +1,4 @@
+import { translateApiText } from "../i18n/apiErrors";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiError, apiRequest } from "../lib/apiClient";
 import type { ChartSong } from "../data/mock";
@@ -102,6 +103,10 @@ export function existingChartIdFromConflict(error: unknown): string | null {
 }
 
 export function publishErrorMessage(error: unknown): string {
+  return translateApiText(publishErrorMessagePt(error));
+}
+
+function publishErrorMessagePt(error: unknown): string {
   if (error instanceof ApiError) {
     if (typeof error.body === "object" && error.body && "error" in error.body) {
       const msg = (error.body as { error?: string }).error;

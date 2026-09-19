@@ -15,10 +15,12 @@ import { resolveMediaUrl } from "../lib/api";
 import { AchievementDetailModal } from "../components/AchievementDetailModal";
 import { ParadaChartCard } from "../components/ParadaChartCard";
 import { SocialIcon } from "../components/SocialIcon";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export function ProfileScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const { showGamification } = useAppState();
   const { user } = useAuth();
@@ -125,7 +127,7 @@ export function ProfileScreen() {
                 <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
                   {profile?.user.followers ?? 0}
                 </Text>
-                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>seguidores</Text>
+                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>{tr("seguidores")}</Text>
               </Pressable>
               <Pressable
                 onPress={() => user && navigation.navigate("Followers", { handle: user.handle, type: "following" })}
@@ -134,7 +136,7 @@ export function ProfileScreen() {
                 <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
                   {profile?.user.following ?? 0}
                 </Text>
-                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>seguindo</Text>
+                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>{tr("seguindo")}</Text>
               </Pressable>
               <Pressable
                 onPress={() => user && navigation.navigate("Achievements", { handle: user.handle })}
@@ -143,13 +145,13 @@ export function ProfileScreen() {
                 <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
                   {profile?.progression.unlocked ?? 0}
                 </Text>
-                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>conquistas</Text>
+                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>{tr("conquistas")}</Text>
               </Pressable>
               <View style={{ alignItems: "center" }}>
                 <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
                   {profile?.user.streak ?? 0}
                 </Text>
-                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>sequência</Text>
+                <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 1 }}>{tr("sequência")}</Text>
               </View>
             </View>
           </View>
@@ -165,7 +167,7 @@ export function ProfileScreen() {
                 </Pressable>
               )}
               <Pressable onPress={() => user && navigation.navigate("History", { handle: user.handle })}>
-                <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Histórico</Text>
+                <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>{tr("Histórico")}</Text>
               </Pressable>
             </View>
           </View>
@@ -180,7 +182,7 @@ export function ProfileScreen() {
             />
           ) : (
             <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 20, alignItems: "center" }}>
-              <Text style={{ color: colors.textMuted, fontSize: 13.5 }}>Você ainda não publicou uma parada.</Text>
+              <Text style={{ color: colors.textMuted, fontSize: 13.5 }}>{tr("Você ainda não publicou uma parada.")}</Text>
             </View>
           )}
 
@@ -222,11 +224,11 @@ export function ProfileScreen() {
             <>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20, paddingTop: 26, paddingBottom: 12 }}>
                 <Text style={{ fontSize: 19, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>
-                  Conquistas · Nível {profile.progression.level.level}
+                  {tr("Conquistas")} · {tr("Nível")} {profile.progression.level.level}
                 </Text>
                 {user ? (
                   <Pressable onPress={() => navigation.navigate("Achievements", { handle: user.handle })}>
-                    <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Ver todas</Text>
+                    <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>{tr("Ver todas")}</Text>
                   </Pressable>
                 ) : null}
               </View>

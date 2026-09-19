@@ -11,12 +11,14 @@ import { useSongQuery } from "../api/song";
 import { useSongVideoClipsQuery } from "../api/videoClips";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { SaveLibraryButton } from "../components/SaveLibraryButton";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "MusicDetail">;
 
 export function MusicDetailScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const songId = route.params?.songId;
@@ -29,7 +31,7 @@ export function MusicDetailScreen() {
     return (
       <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
-        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>Música não encontrada.</Text>
+        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>{tr("Música não encontrada.")}</Text>
       </SafeAreaView>
     );
   }
@@ -48,7 +50,7 @@ export function MusicDetailScreen() {
       <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
-          Não foi possível carregar essa música.
+          {tr("Não foi possível carregar essa música.")}
         </Text>
       </SafeAreaView>
     );
@@ -86,7 +88,7 @@ export function MusicDetailScreen() {
         {song.globalStats.weeks > 0 ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 12 }}>
             <Text style={{ fontSize: 12.5, color: colors.textMuted }}>
-              {song.globalStats.weeks} {song.globalStats.weeks === 1 ? "semana" : "semanas"} no Global 100 · pico #{song.globalStats.peak}
+              {song.globalStats.weeks} {song.globalStats.weeks === 1 ? tr("semana") : tr("semanas")} {tr("no Global 100")} · {tr("pico")} #{song.globalStats.peak}
               {song.globalStats.numberOnes > 0 ? ` · ${song.globalStats.numberOnes}x #1` : ""}
             </Text>
           </View>
@@ -97,8 +99,9 @@ export function MusicDetailScreen() {
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginHorizontal: 16, marginTop: 26, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 16 }}>
           <ScoreSquare score={song.albumScore.score} size={40} />
           <Text style={{ flex: 1, fontSize: 13, color: colors.textSubtle }}>
-            Nota do álbum na crítica, com base em {song.albumScore.reviewCount}{" "}
-            {song.albumScore.reviewCount === 1 ? "review" : "reviews"}.
+            {lang === "en"
+              ? `Critics album score, based on ${song.albumScore.reviewCount} ${song.albumScore.reviewCount === 1 ? "review" : "reviews"}.`
+              : `Nota do álbum na crítica, com base em ${song.albumScore.reviewCount} ${song.albumScore.reviewCount === 1 ? "review" : "reviews"}.`}
           </Text>
         </View>
       ) : null}
@@ -106,7 +109,7 @@ export function MusicDetailScreen() {
       {song.editorialNote ? (
         <View style={{ marginHorizontal: 16, marginTop: 26 }}>
           <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, marginBottom: 10 }}>
-            Contexto
+            {tr("Contexto")}
           </Text>
           <Text style={{ fontSize: 14, lineHeight: 21, color: colors.textSubtle }}>{song.editorialNote}</Text>
         </View>
@@ -125,14 +128,14 @@ export function MusicDetailScreen() {
       {clips.length > 0 && (
         <View style={{ marginTop: 26 }}>
           <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, marginHorizontal: 16, marginBottom: 12 }}>
-            Clipes
+            {tr("Clipes")}
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
             {clips.map((c) => (
               <View key={c.id} style={{ width: 150 }}>
                 <Image source={{ uri: resolveMediaUrl(c.imageUrl) }} style={{ width: 150, height: 84, borderRadius: 10, backgroundColor: colors.fillSubtle }} />
                 <Text numberOfLines={1} style={{ fontSize: 11, color: colors.textMuted, marginTop: 5 }}>
-                  {c.votes} {c.votes === 1 ? "voto" : "votos"} · @{c.uploaderHandle}
+                  {c.votes} {c.votes === 1 ? tr("voto") : tr("votos")} · @{c.uploaderHandle}
                 </Text>
               </View>
             ))}
@@ -143,7 +146,7 @@ export function MusicDetailScreen() {
       {song.topUsers.length > 0 && (
         <View style={{ marginTop: 26 }}>
           <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, marginHorizontal: 16, marginBottom: 12 }}>
-            Maiores fãs
+            {tr("Maiores fãs")}
           </Text>
           <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
             {song.topUsers.map((f, i) => (

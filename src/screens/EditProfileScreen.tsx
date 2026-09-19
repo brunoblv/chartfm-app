@@ -18,8 +18,10 @@ import {
   GENRE_OPTIONS,
 } from "../api/account";
 import { resolveMediaUrl } from "../lib/api";
+import { useTr } from "../i18n/useTr";
 
 export function EditProfileScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation();
   const { user, refreshUser } = useAuth();
@@ -48,7 +50,7 @@ export function EditProfileScreen() {
     if (isAvatarBusy) return;
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert("Permissão necessária", "Autorize o acesso às fotos para trocar seu avatar.");
+      Alert.alert(tr("Permissão necessária"), tr("Autorize o acesso às fotos para trocar seu avatar."));
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -67,22 +69,22 @@ export function EditProfileScreen() {
       { uri: asset.uri, name: `avatar.${extension}`, type: mimeByExt[extension] ?? "image/jpeg" },
       {
         onSuccess: () => refreshUser(),
-        onError: (e) => Alert.alert("Não foi possível enviar a foto", accountErrorMessage(e)),
+        onError: (e) => Alert.alert(tr("Não foi possível enviar a foto"), accountErrorMessage(e)),
       }
     );
   };
 
   const handleRemoveAvatar = () => {
     if (isAvatarBusy) return;
-    Alert.alert("Remover foto", "Deseja remover sua foto de perfil?", [
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert(tr("Remover foto"), tr("Deseja remover sua foto de perfil?"), [
+      { text: tr("Cancelar"), style: "cancel" },
       {
-        text: "Remover",
+        text: tr("Remover"),
         style: "destructive",
         onPress: () =>
           deleteAvatar.mutate(undefined, {
             onSuccess: () => refreshUser(),
-            onError: (e) => Alert.alert("Não foi possível remover a foto", accountErrorMessage(e)),
+            onError: (e) => Alert.alert(tr("Não foi possível remover a foto"), accountErrorMessage(e)),
           }),
       },
     ]);
@@ -96,17 +98,17 @@ export function EditProfileScreen() {
       }
       await updateGenres.mutateAsync(genres);
       await refreshUser();
-      Alert.alert("Perfil atualizado", "Suas informações foram salvas.", [
+      Alert.alert(tr("Perfil atualizado"), tr("Suas informações foram salvas."), [
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
     } catch (e) {
-      Alert.alert("Não foi possível salvar", accountErrorMessage(e));
+      Alert.alert(tr("Não foi possível salvar"), accountErrorMessage(e));
     }
   };
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      <BackHeader title="Editar perfil" />
+      <BackHeader title={tr("Editar perfil")} />
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 100 }}>
         <View style={{ alignItems: "center", marginBottom: 26 }}>
           <Pressable onPress={handlePickAvatar} disabled={isAvatarBusy} style={{ width: 88, height: 88 }}>
@@ -127,22 +129,22 @@ export function EditProfileScreen() {
           </Pressable>
           <View style={{ flexDirection: "row", gap: 16, marginTop: 12 }}>
             <Pressable onPress={handlePickAvatar} disabled={isAvatarBusy}>
-              <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 13 }}>Trocar foto</Text>
+              <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 13 }}>{tr("Trocar foto")}</Text>
             </Pressable>
             {profileQuery.data?.imageUrl && (
               <Pressable onPress={handleRemoveAvatar} disabled={isAvatarBusy}>
-                <Text style={{ color: colors.textMuted, fontWeight: "600", fontSize: 13 }}>Remover</Text>
+                <Text style={{ color: colors.textMuted, fontWeight: "600", fontSize: 13 }}>{tr("Remover")}</Text>
               </Pressable>
             )}
           </View>
         </View>
 
         <View style={{ gap: 12, marginBottom: 24 }}>
-          <AuthField label="Nome" value={name} onChangeText={setName} />
-          <AuthField label="@handle" value={handle} onChangeText={(v) => setHandle(v.toLowerCase().replace(/[^a-z0-9_]/g, ""))} />
+          <AuthField label={tr("Nome")} value={name} onChangeText={setName} />
+          <AuthField label={tr("@handle")} value={handle} onChangeText={(v) => setHandle(v.toLowerCase().replace(/[^a-z0-9_]/g, ""))} />
         </View>
 
-        <Text style={{ fontSize: 15, fontWeight: "700", color: colors.text, marginBottom: 10 }}>Gêneros favoritos</Text>
+        <Text style={{ fontSize: 15, fontWeight: "700", color: colors.text, marginBottom: 10 }}>{tr("Gêneros favoritos")}</Text>
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
           {GENRE_OPTIONS.map((g) => {
             const active = genres.includes(g);
@@ -163,7 +165,7 @@ export function EditProfileScreen() {
           })}
         </View>
 
-        <PillButton label="Salvar" onPress={handleSave} loading={isSaving} />
+        <PillButton label={tr("Salvar")} onPress={handleSave} loading={isSaving} />
       </ScrollView>
     </View>
   );

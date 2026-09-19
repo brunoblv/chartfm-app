@@ -6,17 +6,19 @@ import { BackHeader } from "../components/BackHeader";
 import { SpotlightPickerRow } from "../components/SpotlightPickerRow";
 import { SpotlightKind } from "../components/ChartSpotlightCard";
 import { useAppState, SpotlightCategory } from "../state/AppState";
+import { useTr } from "../i18n/useTr";
 
 const ORDER: SpotlightKind[] = ["flashback", "destaque", "nacional", "push", "radar"];
 
 export function SpotlightsScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation();
   const { spotlights, setSpotlight } = useAppState();
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      <BackHeader title="Destaques" />
+      <BackHeader title={tr("Destaques")} />
       <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 4 }}>
         {ORDER.map((kind) => (
           <SpotlightPickerRow

@@ -17,6 +17,7 @@ import {
 } from "../api/clube";
 import { useSearchQuery, SearchAlbum } from "../api/search";
 import { resolveMediaUrl } from "../lib/api";
+import { useTr } from "../i18n/useTr";
 
 function AlbumCover({ url, size = 44 }: { url: string | null; size?: number }) {
   const { colors } = useAppTheme();
@@ -88,6 +89,7 @@ function RankingRow({
 }
 
 function ResultRow({ album, isCurator }: { album: ClubeWinner | ClubeCuratorPick; isCurator?: boolean }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const votes = "votes" in album ? album.votes : null;
   return (
@@ -97,8 +99,8 @@ function ResultRow({ album, isCurator }: { album: ClubeWinner | ClubeCuratorPick
         <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: "600", color: colors.text }}>{album.title}</Text>
         <Text numberOfLines={1} style={{ fontSize: 12, color: colors.textMuted }}>
           {album.artist}
-          {votes !== null && ` · ${votes} votos`}
-          {isCurator && " · Escolha da moderação"}
+          {votes !== null && ` · ${votes} ${tr("votos")}`}
+          {isCurator && ` · ${tr("Escolha da moderação")}`}
         </Text>
       </View>
       {album.score != null && <Text style={{ fontSize: 13, fontWeight: "800", color: colors.accent }}>{album.score}</Text>}
@@ -107,6 +109,7 @@ function ResultRow({ album, isCurator }: { album: ClubeWinner | ClubeCuratorPick
 }
 
 function AlbumPicker({ onPick }: { onPick: (album: SearchAlbum) => void }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const [query, setQuery] = useState("");
   const { data, isLoading } = useSearchQuery(query);
@@ -122,7 +125,7 @@ function AlbumPicker({ onPick }: { onPick: (album: SearchAlbum) => void }) {
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder="buscar álbum"
+          placeholder={tr("buscar álbum")}
           placeholderTextColor={colors.textMuted}
           style={{ flex: 1, fontSize: 14, fontWeight: "600", color: colors.text, padding: 0 }}
         />
@@ -142,6 +145,7 @@ function AlbumPicker({ onPick }: { onPick: (album: SearchAlbum) => void }) {
 }
 
 export function ClubeScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation();
   const clubeQuery = useClubeQuery();
@@ -174,7 +178,7 @@ export function ClubeScreen() {
     if (!round || !pick) return;
     nominateMutation.mutate(
       { roundId: round.id, albumId: pick.id },
-      { onError: (e) => Alert.alert("Não foi possível indicar", clubeErrorMessage(e)) }
+      { onError: (e) => Alert.alert(tr("Não foi possível indicar"), clubeErrorMessage(e)) }
     );
   };
 
@@ -200,24 +204,24 @@ export function ClubeScreen() {
     const positions = ranking.map((a, i) => ({ nominationId: a.id, position: i + 1 }));
     rankMutation.mutate(
       { roundId: round.id, positions },
-      { onError: (e) => Alert.alert("Não foi possível salvar o ranking", clubeErrorMessage(e)) }
+      { onError: (e) => Alert.alert(tr("Não foi possível salvar o ranking"), clubeErrorMessage(e)) }
     );
   };
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      <BackHeader title="Clube do Álbum" />
+      <BackHeader title={tr("Clube do Álbum")} />
 
       {clubeQuery.isLoading ? (
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       ) : !round ? (
-        <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40 }}>Nenhuma rodada ativa.</Text>
+        <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40 }}>{tr("Nenhuma rodada ativa.")}</Text>
       ) : (
         <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
           <View style={{ paddingHorizontal: 20, paddingBottom: 12 }}>
             <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>{round.theme}</Text>
             <Text style={{ fontSize: 12.5, color: colors.textMuted, marginTop: 4 }}>
-              Rodada {round.number} · {CLUBE_PHASE_LABELS[round.phase]} · {round.participantCount} participante(s)
+              {tr("Rodada")} {round.number} · {tr(CLUBE_PHASE_LABELS[round.phase])} · {round.participantCount} {tr("participante(s)")}
             </Text>
           </View>
 
@@ -226,14 +230,14 @@ export function ClubeScreen() {
               {round.myNominations && round.myNominations.length === 1 ? (
                 <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
                   <Text style={{ padding: 14, paddingBottom: 6, fontSize: 11, fontWeight: "700", letterSpacing: 1, textTransform: "uppercase", color: colors.textMuted }}>
-                    Sua indicação
+                    {tr("Sua indicação")}
                   </Text>
                   <NominationRow album={round.myNominations[0]} />
                 </View>
               ) : (
                 <>
                   <Text style={{ fontSize: 13.5, color: colors.textMuted, marginBottom: 14 }}>
-                    Escolha um álbum, qualquer álbum, para indicar nesta rodada.
+                    {tr("Escolha um álbum, qualquer álbum, para indicar nesta rodada.")}
                   </Text>
                   <View style={{ marginBottom: 14 }}>
                     {pick ? (
@@ -258,12 +262,12 @@ export function ClubeScreen() {
                         onPress={() => setPicking(true)}
                         style={{ borderWidth: 1, borderColor: colors.dividerStrong, borderStyle: "dashed", borderRadius: 12, padding: 14, alignItems: "center" }}
                       >
-                        <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 13.5 }}>Escolher álbum</Text>
+                        <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 13.5 }}>{tr("Escolher álbum")}</Text>
                       </Pressable>
                     )}
                   </View>
                   <PillButton
-                    label="Enviar indicação"
+                    label={tr("Enviar indicação")}
                     onPress={handleNominate}
                     disabled={!pick}
                     loading={nominateMutation.isPending}
@@ -276,11 +280,11 @@ export function ClubeScreen() {
           {round.phase === "2" && (
             <View style={{ paddingHorizontal: 20 }}>
               <Text style={{ fontSize: 13.5, color: colors.textMuted, marginBottom: 10 }}>
-                Ordene os álbuns indicados do melhor para o pior.
+                {tr("Ordene os álbuns indicados do melhor para o pior.")}
               </Text>
               {toRank.length === 0 ? (
                 <Text style={{ fontSize: 13, color: colors.textMuted, marginBottom: 16 }}>
-                  Só há a sua própria indicação nesta rodada — nada para ranquear.
+                  {tr("Só há a sua própria indicação nesta rodada — nada para ranquear.")}
                 </Text>
               ) : (
                 <>
@@ -297,7 +301,7 @@ export function ClubeScreen() {
                       />
                     ))}
                   </View>
-                  <PillButton label="Salvar ranking" onPress={handleSubmitRanking} loading={rankMutation.isPending} />
+                  <PillButton label={tr("Salvar ranking")} onPress={handleSubmitRanking} loading={rankMutation.isPending} />
                 </>
               )}
             </View>
@@ -305,7 +309,7 @@ export function ClubeScreen() {
 
           {(round.phase === "3" || round.phase === "4" || round.roundComplete) && (
             <View style={{ paddingHorizontal: 20 }}>
-              <Text style={{ fontSize: 15, fontWeight: "700", color: colors.text, marginBottom: 10 }}>Álbuns da semana</Text>
+              <Text style={{ fontSize: 15, fontWeight: "700", color: colors.text, marginBottom: 10 }}>{tr("Álbuns da semana")}</Text>
               <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
                 {round.winners.map((w) => (
                   <ResultRow key={w.nominationId} album={w} />
@@ -317,7 +321,7 @@ export function ClubeScreen() {
 
           {round.phase === "0" && (
             <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 20 }}>
-              Inscrições abrem em breve.
+              {tr("Inscrições abrem em breve.")}
             </Text>
           )}
         </ScrollView>

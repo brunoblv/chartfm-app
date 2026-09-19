@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "./api";
+import { translateApiText } from "../i18n/apiErrors";
 import { tokenStorage } from "./tokenStorage";
 
 const TOKEN_KEY = "chartfm_mobile_token";
@@ -56,7 +57,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     if (res.status === 401 && auth) {
       unauthorizedHandler?.();
     }
-    throw new ApiError(res.status, message, parsed);
+    throw new ApiError(res.status, translateApiText(message), parsed);
   }
 
   return parsed as T;

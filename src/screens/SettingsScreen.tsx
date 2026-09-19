@@ -13,6 +13,7 @@ import { BackHeader } from "../components/BackHeader";
 import { Toggle } from "../components/Toggle";
 import { SocialIcon } from "../components/SocialIcon";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 import { API_BASE_URL } from "../lib/api";
 
 const NOTIF_ROWS: { category: NotifPrefCategory | null; label: string; note: string }[] = [
@@ -70,6 +71,7 @@ function SectionLabel({ children }: { children: string }) {
 
 export function SettingsScreen() {
   const { colors, preference, setPreference, lang, setLang } = useAppTheme();
+  const tr = useTr();
   const { isPublicProfile, setIsPublicProfile, isOffline } = useAppState();
   const { user, signOut } = useAuth();
   const navigation = useNavigation<Nav>();
@@ -86,7 +88,7 @@ export function SettingsScreen() {
 
   return (
     <Screen>
-      <BackHeader title="Configurações" />
+      <BackHeader title={tr("Configurações")} />
 
       <View style={{ marginHorizontal: 16, marginBottom: 20, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 16, flexDirection: "row", alignItems: "center", gap: 14 }}>
         <LinearGradient colors={[colors.gradientHero[0], colors.gradientHero[1]]} style={{ width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" }}>
@@ -97,26 +99,26 @@ export function SettingsScreen() {
           <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 1 }}>{user?.email ?? ""}</Text>
         </View>
         <Pressable onPress={() => navigation.navigate("EditProfile")}>
-          <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Editar</Text>
+          <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>{tr("Editar")}</Text>
         </Pressable>
       </View>
 
-      <SectionLabel>Aparência</SectionLabel>
+      <SectionLabel>{tr("Aparência")}</SectionLabel>
       <View style={{ marginHorizontal: 16, marginBottom: 20, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
         <View style={{ padding: 14 }}>
-          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Tema</Text>
+          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>{tr("Tema")}</Text>
           <SegmentedControl<ThemePreference>
             value={preference}
             onChange={setPreference}
             options={[
-              { id: "system", label: "Sistema" },
-              { id: "light", label: "Claro" },
-              { id: "dark", label: "Escuro" },
+              { id: "system", label: tr("Sistema") },
+              { id: "light", label: tr("Claro") },
+              { id: "dark", label: tr("Escuro") },
             ]}
           />
         </View>
         <View style={{ borderTopWidth: 1, borderTopColor: colors.dividerSoft, padding: 14 }}>
-          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Idioma</Text>
+          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>{tr("Idioma")}</Text>
           <SegmentedControl
             value={lang}
             onChange={setLang}
@@ -128,7 +130,7 @@ export function SettingsScreen() {
         </View>
       </View>
 
-      <SectionLabel>Notificações</SectionLabel>
+      <SectionLabel>{tr("Notificações")}</SectionLabel>
       <View style={{ marginHorizontal: 16, marginBottom: 20, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
         {NOTIF_ROWS.map((row, i) => {
           const enabled = row.category ? notifPrefsQuery.data?.prefs[row.category] ?? true : false;
@@ -146,8 +148,8 @@ export function SettingsScreen() {
               }}
             >
               <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>{row.label}</Text>
-                <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 2 }}>{row.note}</Text>
+                <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>{tr(row.label)}</Text>
+                <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 2 }}>{tr(row.note)}</Text>
               </View>
               <Toggle
                 on={row.category ? enabled : false}
@@ -162,7 +164,7 @@ export function SettingsScreen() {
         })}
       </View>
 
-      <SectionLabel>Contas conectadas</SectionLabel>
+      <SectionLabel>{tr("Contas conectadas")}</SectionLabel>
       <View style={{ marginHorizontal: 16, marginBottom: 20, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}>
           <View style={{ width: 38, height: 38, borderRadius: 11, backgroundColor: colors.fillSubtle, alignItems: "center", justifyContent: "center" }}>
@@ -175,7 +177,7 @@ export function SettingsScreen() {
             </Text>
           </View>
           {lastfmStatus.data?.connected && (
-            <Text style={{ fontSize: 12.5, color: colors.textMuted, fontWeight: "600" }}>Desconectar</Text>
+            <Text style={{ fontSize: 12.5, color: colors.textMuted, fontWeight: "600" }}>{tr("Desconectar")}</Text>
           )}
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 14 }}>
@@ -184,18 +186,18 @@ export function SettingsScreen() {
           </View>
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Spotify</Text>
-            <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 2 }}>Não conectado</Text>
+            <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 2 }}>{tr("Não conectado")}</Text>
           </View>
-          <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Conectar</Text>
+          <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>{tr("Conectar")}</Text>
         </View>
       </View>
 
-      <SectionLabel>Privacidade</SectionLabel>
+      <SectionLabel>{tr("Privacidade")}</SectionLabel>
       <View style={{ marginHorizontal: 16, marginBottom: 20, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}>
           <View style={{ flex: 1, minWidth: 0 }}>
-            <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Perfil público</Text>
-            <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 2 }}>Qualquer pessoa vê suas paradas</Text>
+            <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>{tr("Perfil público")}</Text>
+            <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 2 }}>{tr("Qualquer pessoa vê suas paradas")}</Text>
           </View>
           <Toggle on={isPublicProfile} onToggle={() => setIsPublicProfile(!isPublicProfile)} />
         </View>
@@ -203,10 +205,10 @@ export function SettingsScreen() {
           onPress={() => navigation.navigate("BlockedUsers")}
           style={{ flexDirection: "row", alignItems: "center", padding: 14, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}
         >
-          <Text style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text }}>Contas bloqueadas</Text>
+          <Text style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text }}>{tr("Contas bloqueadas")}</Text>
         </Pressable>
         <View style={{ flexDirection: "row", alignItems: "center", padding: 14 }}>
-          <Text style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text }}>Baixar meus dados</Text>
+          <Text style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text }}>{tr("Baixar meus dados")}</Text>
         </View>
       </View>
 
@@ -218,28 +220,28 @@ export function SettingsScreen() {
           onPress={() => Linking.openURL(`${API_BASE_URL}/terms-of-use`)}
           style={{ padding: 14, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}
         >
-          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Termos de uso</Text>
+          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>{tr("Termos de uso")}</Text>
         </Pressable>
         <Pressable
           onPress={() => Linking.openURL(`${API_BASE_URL}/privacy-policy`)}
           style={{ padding: 14, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}
         >
-          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Política de privacidade</Text>
+          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>{tr("Política de privacidade")}</Text>
         </Pressable>
         <Pressable
           onPress={() => Linking.openURL(`${API_BASE_URL}/child-safety-standards`)}
           style={{ padding: 14, borderBottomWidth: 1, borderBottomColor: colors.dividerSoft }}
         >
-          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>Padrões de segurança infantil</Text>
+          <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>{tr("Padrões de segurança infantil")}</Text>
         </Pressable>
         <Pressable onPress={handleSignOut}>
-          <Text style={{ padding: 14, fontSize: 14.5, fontWeight: "600", color: colors.accent }}>Sair da conta</Text>
+          <Text style={{ padding: 14, fontSize: 14.5, fontWeight: "600", color: colors.accent }}>{tr("Sair da conta")}</Text>
         </Pressable>
       </View>
 
       {isOffline && (
         <View style={{ marginHorizontal: 16, marginBottom: 20, backgroundColor: colors.fillSubtle, borderRadius: 14, padding: 14 }}>
-          <Text style={{ fontSize: 12.5, color: colors.textSubtle }}>Sem conexão com a internet no momento.</Text>
+          <Text style={{ fontSize: 12.5, color: colors.textSubtle }}>{tr("Sem conexão com a internet no momento.")}</Text>
         </View>
       )}
 

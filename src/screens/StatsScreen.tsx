@@ -7,6 +7,7 @@ import { BackHeader } from "../components/BackHeader";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { useProfileStatsQuery, ProfileStatsData, weekNumberFromIndex } from "../api/stats";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Route = RouteProp<RootStackParamList, "Stats">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -55,12 +56,13 @@ function Section({ title, description, children }: { title: string; description:
 }
 
 function StatsBody({ stats, navigation }: { stats: ProfileStatsData; navigation: Nav }) {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const tiles = [
-    { value: stats.distinctSongs, label: "músicas diferentes" },
-    { value: stats.distinctArtists, label: "artistas diferentes" },
-    { value: stats.publishedCharts, label: "paradas publicadas" },
-    { value: stats.totalSlots, label: "posições publicadas" },
+    { value: stats.distinctSongs, label: tr("músicas diferentes") },
+    { value: stats.distinctArtists, label: tr("artistas diferentes") },
+    { value: stats.publishedCharts, label: tr("paradas publicadas") },
+    { value: stats.totalSlots, label: tr("posições publicadas") },
   ];
 
   return (
@@ -89,8 +91,8 @@ function StatsBody({ stats, navigation }: { stats: ProfileStatsData; navigation:
 
       {stats.topArtists.length > 0 && (
         <Section
-          title="Artistas mais presentes"
-          description="Quantas posições cada artista já ocupou, somando todas as paradas publicadas. A barra compara com o primeiro da lista."
+          title={tr("Artistas mais presentes")}
+          description={tr("Quantas posições cada artista já ocupou, somando todas as paradas publicadas. A barra compara com o primeiro da lista.")}
         >
           {stats.topArtists.map((artist, i) => {
             const artistId = artistIdFromHref(artist.href);
@@ -116,8 +118,8 @@ function StatsBody({ stats, navigation }: { stats: ProfileStatsData; navigation:
 
       {stats.genres.length > 0 && (
         <Section
-          title="Gêneros"
-          description={`Entram ${formatCount(stats.songsWithGenre)} das ${formatCount(stats.distinctSongs)} músicas, que são as que têm alguma tag de gênero. Uma música com mais de uma tag conta em cada uma.`}
+          title={tr("Gêneros")}
+          description={lang === "en" ? `${formatCount(stats.songsWithGenre)} of ${formatCount(stats.distinctSongs)} songs are included: the ones with a genre tag. A song with more than one tag counts in each.` : `Entram ${formatCount(stats.songsWithGenre)} das ${formatCount(stats.distinctSongs)} músicas, que são as que têm alguma tag de gênero. Uma música com mais de uma tag conta em cada uma.`}
         >
           {stats.genres.map((genre, i) => (
             <View key={genre.key} style={{ marginBottom: i === stats.genres.length - 1 ? 0 : 13 }}>
@@ -134,23 +136,24 @@ function StatsBody({ stats, navigation }: { stats: ProfileStatsData; navigation:
       )}
 
       {stats.diversity != null && stats.topArtistShare != null && (
-        <Section title="Concentração" description="O quanto as paradas se espalham entre artistas diferentes, em vez de repetir os mesmos.">
+        <Section title={tr("Concentração")} description={tr("O quanto as paradas se espalham entre artistas diferentes, em vez de repetir os mesmos.")}>
           <View style={{ flexDirection: "row", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
             <Text style={{ fontSize: 40, fontWeight: "800", letterSpacing: -1, color: colors.text }}>{stats.diversity}</Text>
-            <Text style={{ fontSize: 13, color: colors.textMuted }}>de 100</Text>
+            <Text style={{ fontSize: 13, color: colors.textMuted }}>{tr("de 100")}</Text>
           </View>
           <Bar pct={stats.diversity} color={colors.accent} />
           <Text style={{ fontSize: 12.5, lineHeight: 19, color: colors.textMuted, marginTop: 12 }}>
-            Os cinco artistas mais presentes ocupam {stats.topArtistShare}% das {formatCount(stats.totalSlots)} posições já
-            publicadas. O número acima é o que sobra para todo o resto.
+            {lang === "en"
+              ? `The five most present artists take up ${stats.topArtistShare}% of the ${formatCount(stats.totalSlots)} spots published so far. The number above is what is left for everything else.`
+              : `Os cinco artistas mais presentes ocupam ${stats.topArtistShare}% das ${formatCount(stats.totalSlots)} posições já publicadas. O número acima é o que sobra para todo o resto.`}
           </Text>
         </Section>
       )}
 
       {stats.decades.length > 0 && (
         <Section
-          title="De que época são as músicas"
-          description={`Por década de lançamento. Entram ${formatCount(stats.songsWithDate)} das ${formatCount(stats.distinctSongs)} músicas, que são as que têm data de lançamento cadastrada.`}
+          title={tr("De que época são as músicas")}
+          description={lang === "en" ? `By release decade. ${formatCount(stats.songsWithDate)} of ${formatCount(stats.distinctSongs)} songs are included: the ones with a release date on file.` : `Por década de lançamento. Entram ${formatCount(stats.songsWithDate)} das ${formatCount(stats.distinctSongs)} músicas, que são as que têm data de lançamento cadastrada.`}
         >
           <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 8, height: 140 }}>
             {stats.decades.map((decade) => (
@@ -176,14 +179,14 @@ function StatsBody({ stats, navigation }: { stats: ProfileStatsData; navigation:
 
       {stats.timeline.length > 0 && (
         <Section
-          title="Atividade por semana"
-          description={`Quantas posições foram publicadas em cada uma das últimas ${stats.timeline.length} semanas. Só paradas semanais entram.`}
+          title={tr("Atividade por semana")}
+          description={lang === "en" ? `How many spots were published in each of the last ${stats.timeline.length} weeks. Only weekly charts count.` : `Quantas posições foram publicadas em cada uma das últimas ${stats.timeline.length} semanas. Só paradas semanais entram.`}
         >
           <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 2, height: 90 }}>
             {stats.timeline.map((week) => (
               <View
                 key={week.weekIndex}
-                accessibilityLabel={`Semana ${weekNumberFromIndex(week.weekIndex)}: ${week.entries} posições`}
+                accessibilityLabel={`${tr("Semana")} ${weekNumberFromIndex(week.weekIndex)}: ${week.entries} ${tr("posições")}`}
                 style={{
                   flex: 1,
                   height: `${Math.max(week.pct, 4)}%`,
@@ -203,7 +206,8 @@ function StatsBody({ stats, navigation }: { stats: ProfileStatsData; navigation:
 }
 
 export function StatsScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const handle = route.params?.handle;
@@ -213,31 +217,31 @@ export function StatsScreen() {
   if (!handle) {
     return (
       <Screen>
-        <BackHeader title="Estatísticas" />
-        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>Perfil não encontrado.</Text>
+        <BackHeader title={tr("Estatísticas")} />
+        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>{tr("Perfil não encontrado.")}</Text>
       </Screen>
     );
   }
 
   return (
     <Screen>
-      <BackHeader title="Estatísticas" />
+      <BackHeader title={tr("Estatísticas")} />
       {query.isLoading ? (
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       ) : !data ? (
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
-          Não foi possível carregar as estatísticas.
+          {tr("Não foi possível carregar as estatísticas.")}
         </Text>
       ) : data.stats.publishedCharts === 0 ? (
         <Text style={{ fontSize: 15, lineHeight: 22, color: colors.textMuted, marginHorizontal: 20, marginTop: 12 }}>
-          Esse perfil ainda não publicou nenhuma parada, então não há o que contar aqui. Os números aparecem depois da
-          primeira publicação.
+          {tr("Esse perfil ainda não publicou nenhuma parada, então não há o que contar aqui. Os números aparecem depois da primeira publicação.")}
         </Text>
       ) : (
         <>
           <Text style={{ fontSize: 13.5, lineHeight: 20, color: colors.textMuted, marginHorizontal: 16, marginBottom: 8 }}>
-            O que as paradas publicadas por {data.name} mostram: quem mais aparece, de que gêneros e de que época são as
-            músicas, e como foi a atividade das últimas semanas.
+            {lang === "en"
+              ? `What the charts published by ${data.name} show: who shows up the most, which genres and eras the songs are from, and how active they have been in recent weeks.`
+              : `O que as paradas publicadas por ${data.name} mostram: quem mais aparece, de que gêneros e de que época são as músicas, e como foi a atividade das últimas semanas.`}
           </Text>
           <StatsBody stats={data.stats} navigation={navigation} />
         </>

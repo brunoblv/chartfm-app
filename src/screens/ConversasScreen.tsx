@@ -9,6 +9,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { useConversationsQuery, DmPreview } from "../api/conversas";
 import { resolveMediaUrl } from "../lib/api";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -46,18 +47,19 @@ function Row({ conversation, navigation }: { conversation: DmPreview; navigation
 }
 
 export function ConversasScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const query = useConversationsQuery();
 
   return (
     <Screen scroll={false}>
-      <BackHeader title="Mensagens" />
+      <BackHeader title={tr("Mensagens")} />
       {query.isLoading ? (
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       ) : (query.data?.conversations.length ?? 0) === 0 ? (
         <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40, paddingHorizontal: 30 }}>
-          Nenhuma conversa ainda. Envie uma mensagem a partir do perfil de alguém.
+          {tr("Nenhuma conversa ainda. Envie uma mensagem a partir do perfil de alguém.")}
         </Text>
       ) : (
         <FlatList

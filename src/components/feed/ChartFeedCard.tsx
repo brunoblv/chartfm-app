@@ -9,6 +9,7 @@ import { RootStackParamList } from "../../navigation/RootNavigator";
 import { FeedChartItem, useLikeChartMutation, useRepostChartMutation, feedErrorMessage } from "../../api/feed";
 import { resolveMediaUrl } from "../../lib/api";
 import { useAuth } from "../../state/AuthContext";
+import { useTr } from "../../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -40,6 +41,7 @@ function CommentIcon({ color }: { color: string }) {
 }
 
 export function ChartFeedCard({ item }: { item: FeedChartItem }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const { user: currentUser } = useAuth();
@@ -56,7 +58,7 @@ export function ChartFeedCard({ item }: { item: FeedChartItem }) {
       onError: (e) => {
         setOptimisticLiked(item.isLiked);
         setOptimisticLikes(item.chart.likes);
-        Alert.alert("Não foi possível curtir", feedErrorMessage(e));
+        Alert.alert(tr("Não foi possível curtir"), tr(feedErrorMessage(e)));
       },
     });
   };
@@ -64,7 +66,7 @@ export function ChartFeedCard({ item }: { item: FeedChartItem }) {
   const handleRepost = () => {
     if (repostMutation.isPending) return;
     repostMutation.mutate(item.chart.id, {
-      onError: (e) => Alert.alert("Não foi possível repostar", feedErrorMessage(e)),
+      onError: (e) => Alert.alert(tr("Não foi possível repostar"), tr(feedErrorMessage(e))),
     });
   };
 
@@ -87,7 +89,7 @@ export function ChartFeedCard({ item }: { item: FeedChartItem }) {
               {item.user.name}
             </Text>
             <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textMuted }}>
-              publicou {item.chart.paradaNome} · {item.postedAgo}
+              {tr("publicou")} {item.chart.paradaNome} · {item.postedAgo}
             </Text>
           </View>
         </Pressable>
@@ -123,7 +125,7 @@ export function ChartFeedCard({ item }: { item: FeedChartItem }) {
         ))}
         {item.chart.entries.length > 5 && (
           <Text style={{ fontSize: 11.5, color: colors.accent, fontWeight: "600", marginTop: 4 }}>
-            + {item.chart.entries.length - 5} músicas
+            + {item.chart.entries.length - 5} {tr("músicas")}
           </Text>
         )}
       </View>

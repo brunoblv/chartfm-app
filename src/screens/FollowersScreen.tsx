@@ -9,11 +9,13 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { useProfileFollowersQuery, useFollowMutation, ProfileFollowUser } from "../api/profile";
 import { resolveMediaUrl } from "../lib/api";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Route = RouteProp<RootStackParamList, "Followers">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 function Row({ user, navigation }: { user: ProfileFollowUser; navigation: Nav }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const followMutation = useFollowMutation();
   const [following, setFollowing] = useState(user.isFollowing);
@@ -45,7 +47,7 @@ function Row({ user, navigation }: { user: ProfileFollowUser; navigation: Nav })
           followMutation.mutate(user.id, {
             onError: () => {
               setFollowing((f) => !f);
-              Alert.alert("Não foi possível seguir", "Tente novamente.");
+              Alert.alert(tr("Não foi possível seguir"), tr("Tente novamente."));
             },
           });
         }}
@@ -65,6 +67,7 @@ function Row({ user, navigation }: { user: ProfileFollowUser; navigation: Nav })
 }
 
 export function FollowersScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
@@ -74,7 +77,7 @@ export function FollowersScreen() {
 
   return (
     <Screen scroll={false}>
-      <BackHeader title="Seguidores" />
+      <BackHeader title={tr("Seguidores")} />
       <View style={{ flexDirection: "row", paddingHorizontal: 16, gap: 8, marginBottom: 8 }}>
         {(["followers", "following"] as const).map((t) => (
           <Pressable
@@ -98,7 +101,7 @@ export function FollowersScreen() {
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       ) : (query.data?.users.length ?? 0) === 0 ? (
         <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40 }}>
-          {tab === "followers" ? "Ninguém segue esse perfil ainda." : "Não está seguindo ninguém ainda."}
+          {tab === "followers" ? tr("Ninguém segue esse perfil ainda.") : tr("Não está seguindo ninguém ainda.")}
         </Text>
       ) : (
         <FlatList

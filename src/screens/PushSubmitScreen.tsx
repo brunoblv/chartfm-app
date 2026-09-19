@@ -7,9 +7,11 @@ import { BackHeader } from "../components/BackHeader";
 import { useSearchQuery } from "../api/search";
 import { usePushRoundQuery, usePushSubmitMutation, pushErrorMessage, pushPhaseLabel } from "../api/push";
 import { resolveMediaUrl } from "../lib/api";
+import { useTr } from "../i18n/useTr";
 
 export function PushSubmitScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation();
   const roundQuery = usePushRoundQuery();
   const round = roundQuery.data?.round;
@@ -22,30 +24,30 @@ export function PushSubmitScreen() {
     if (submitMutation.isPending) return;
     submitMutation.mutate(spotifyId, {
       onSuccess: () => {
-        Alert.alert("Indicação enviada", "Sua música foi enviada para esta rodada do Push.", [
+        Alert.alert(tr("Indicação enviada"), tr("Sua música foi enviada para esta rodada do Push."), [
           { text: "OK", onPress: () => navigation.goBack() },
         ]);
       },
-      onError: (error) => Alert.alert("Não foi possível enviar", pushErrorMessage(error)),
+      onError: (error) => Alert.alert(tr("Não foi possível enviar"), pushErrorMessage(error)),
     });
   };
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      <BackHeader title="Indicar música — Push" />
+      <BackHeader title={tr("Indicar música — Push")} />
 
       {roundQuery.isLoading ? (
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       ) : !round ? (
-        <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40 }}>Nenhuma rodada ativa.</Text>
+        <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40 }}>{tr("Nenhuma rodada ativa.")}</Text>
       ) : round.phase !== "SUBMISSION" ? (
         <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40, paddingHorizontal: 30 }}>
-          {round.title} está em "{pushPhaseLabel(round.phase)}" — indicações só são aceitas no período de inscrição.
+          {lang === "en" ? `${round.title} is in "${tr(pushPhaseLabel(round.phase))}" — submissions are only accepted during the submission period.` : `${round.title} está em "${pushPhaseLabel(round.phase)}" — indicações só são aceitas no período de inscrição.`}
         </Text>
       ) : (
         <>
           <Text style={{ paddingHorizontal: 20, fontSize: 13, color: colors.textMuted, marginBottom: 10 }}>
-            {round.title} · lançada nos últimos 12 meses
+            {round.title} · {tr("lançada nos últimos 12 meses")}
           </Text>
           <View style={{ marginHorizontal: 20, flexDirection: "row", alignItems: "center", gap: 9, backgroundColor: colors.fillSubtle, borderRadius: 12, padding: 13, marginBottom: 12 }}>
             <Svg width={17} height={17} viewBox="0 0 24 24" fill="none" stroke={colors.text} strokeWidth={2} strokeLinecap="round">
@@ -56,7 +58,7 @@ export function PushSubmitScreen() {
               value={query}
               onChangeText={setQuery}
               autoFocus
-              placeholder="buscar música ou artista"
+              placeholder={tr("buscar música ou artista")}
               placeholderTextColor={colors.textMuted}
               style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text, padding: 0 }}
             />
@@ -85,7 +87,7 @@ export function PushSubmitScreen() {
                   </Pressable>
                 ))}
                 {query.trim().length >= 2 && results.length === 0 && (
-                  <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>Nenhuma música encontrada.</Text>
+                  <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>{tr("Nenhuma música encontrada.")}</Text>
                 )}
               </View>
             )}

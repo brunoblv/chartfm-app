@@ -8,11 +8,13 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { useProfileQuery } from "../api/profile";
 import { ParadaChartCard } from "../components/ParadaChartCard";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Route = RouteProp<RootStackParamList, "ParadaDetail">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export function ParadaDetailScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
@@ -34,7 +36,7 @@ export function ParadaDetailScreen() {
         />
       ) : (
         <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40 }}>
-          Essa parada ainda não tem nenhuma semana publicada.
+          {tr("Essa parada ainda não tem nenhuma semana publicada.")}
         </Text>
       )}
     </Screen>

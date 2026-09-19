@@ -2,11 +2,13 @@ import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { useAppTheme } from "../../theme/ThemeProvider";
 import { WeeklyRecap, recapItemLabel } from "../../api/homeHub";
+import { useTr } from "../../i18n/useTr";
 
 const MAX_ITEMS = 5;
 
 export function WeeklyRecapCard({ recap, onSeeHistory }: { recap: WeeklyRecap; onSeeHistory?: () => void }) {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const items = recap.items.slice(0, MAX_ITEMS);
   const { level } = recap;
 
@@ -23,21 +25,21 @@ export function WeeklyRecapCard({ recap, onSeeHistory }: { recap: WeeklyRecap; o
     >
       <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 10 }}>
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={{ fontSize: 15.5, fontWeight: "800", color: colors.text }}>Sua semana no ChartFM</Text>
+          <Text style={{ fontSize: 15.5, fontWeight: "800", color: colors.text }}>{tr("Sua semana no ChartFM")}</Text>
           <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 2 }}>
-            O que aconteceu por causa da sua participação
+            {tr("O que aconteceu por causa da sua participação")}
           </Text>
         </View>
         {onSeeHistory && (
           <Pressable onPress={onSeeHistory}>
-            <Text style={{ fontSize: 12, fontWeight: "700", color: colors.accent }}>Ver histórico →</Text>
+            <Text style={{ fontSize: 12, fontWeight: "700", color: colors.accent }}>{tr("Ver histórico →")}</Text>
           </Pressable>
         )}
       </View>
 
       {items.length === 0 ? (
         <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 14, lineHeight: 19 }}>
-          Nada aconteceu ainda nesta semana. Publique sua parada, escreva uma review ou entre numa rodada do Push.
+          {tr("Nada aconteceu ainda nesta semana. Publique sua parada, escreva uma review ou entre numa rodada do Push.")}
         </Text>
       ) : (
         <View style={{ marginTop: 14, gap: 9 }}>
@@ -61,7 +63,7 @@ export function WeeklyRecapCard({ recap, onSeeHistory }: { recap: WeeklyRecap; o
           <View style={{ width: `${level.percent}%`, height: "100%", backgroundColor: colors.accent }} />
         </View>
         <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 6 }}>
-          {level.isMaxLevel ? "Level máximo" : `faltam ${level.xpToNextLevel} XP para o Level ${level.level + 1}`}
+          {level.isMaxLevel ? tr("Level máximo") : lang === "en" ? `${level.xpToNextLevel} XP to Level ${level.level + 1}` : `faltam ${level.xpToNextLevel} XP para o Level ${level.level + 1}`}
         </Text>
       </View>
     </View>

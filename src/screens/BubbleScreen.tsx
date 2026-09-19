@@ -19,6 +19,7 @@ import {
   useBubbleQuery,
 } from "../api/bubble";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -145,7 +146,8 @@ function Orbit({
 }
 
 function MatchDetail({ match, navigation }: { match: BubbleMatch; navigation: Nav }) {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   return (
     <View
       style={{
@@ -171,16 +173,17 @@ function MatchDetail({ match, navigation }: { match: BubbleMatch; navigation: Na
         </View>
       </Pressable>
       <Text style={{ fontSize: 12.5, color: colors.textMuted, lineHeight: 18 }}>
-        Artistas: {match.artistScore}% · Músicas: {match.trackScore}% · Álbuns: {match.albumScore}%
+        {tr("Artistas")}: {match.artistScore}% · {tr("Músicas")}: {match.trackScore}% · {tr("Álbuns")}: {match.albumScore}%
       </Text>
       <Text style={{ fontSize: 12.5, color: colors.textMuted, marginTop: 4, lineHeight: 18 }}>
-        {match.sharedArtists} artistas em comum · {match.sharedTracks} músicas em comum · {match.sharedAlbums} álbuns em
-        comum
+        {lang === "en"
+          ? `${match.sharedArtists} artists in common · ${match.sharedTracks} songs in common · ${match.sharedAlbums} albums in common`
+          : `${match.sharedArtists} artistas em comum · ${match.sharedTracks} músicas em comum · ${match.sharedAlbums} álbuns em comum`}
       </Text>
       {match.reasons.length > 0 ? (
         <View style={{ marginTop: 12 }}>
           <Text style={{ fontSize: 13, fontWeight: "700", color: colors.text, marginBottom: 6 }}>
-            Por que vocês estão na mesma bolha
+            {tr("Por que vocês estão na mesma bolha")}
           </Text>
           {match.reasons.map((reason, i) => (
             <Text key={i} style={{ fontSize: 13, color: colors.textSubtle, lineHeight: 19, marginBottom: 2 }}>
@@ -214,6 +217,7 @@ function RecommendationList({
   items: BubbleRecommendation[];
   navigation: Nav;
 }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   return (
     <View style={{ marginBottom: 24, paddingHorizontal: 16 }}>
@@ -243,8 +247,8 @@ function RecommendationList({
                 </Text>
               ) : null}
               <Text style={{ fontSize: 12.5, color: colors.textMuted, marginTop: 3 }}>
-                {rec.usersCount} {rec.usersCount === 1 ? "pessoa da sua bolha" : "pessoas da sua bolha"}
-                {rec.avgPosition != null ? ` · posição média #${rec.avgPosition}` : ""}
+                {rec.usersCount} {rec.usersCount === 1 ? tr("pessoa da sua bolha") : tr("pessoas da sua bolha")}
+                {rec.avgPosition != null ? ` · ${tr("posição média")} #${rec.avgPosition}` : ""}
               </Text>
             </Pressable>
           );
@@ -255,7 +259,8 @@ function RecommendationList({
 }
 
 export function BubbleScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const query = useBubbleQuery();
   const [tab, setTab] = useState<BubbleTab>("bolha");
@@ -267,28 +272,26 @@ export function BubbleScreen() {
 
   return (
     <Screen scroll={false}>
-      <BackHeader title="Minha Bolha" />
+      <BackHeader title={tr("Minha Bolha")} />
       {query.isLoading ? (
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       ) : !query.data ? (
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
-          Não foi possível carregar a sua bolha.
+          {tr("Não foi possível carregar a sua bolha.")}
         </Text>
       ) : (
         <>
           <Text style={{ fontSize: 13.5, lineHeight: 20, color: colors.textMuted, paddingHorizontal: 16, paddingBottom: 12 }}>
-            As pessoas com o gosto mais parecido com o seu, calculado toda semana a partir do que você e elas colocam nas
-            próprias paradas.
+            {tr("As pessoas com o gosto mais parecido com o seu, calculado toda semana a partir do que você e elas colocam nas próprias paradas.")}
           </Text>
 
           {!data ? (
             <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 18 }}>
               <Text style={{ fontSize: 16, fontWeight: "700", color: colors.text, marginBottom: 8 }}>
-                Sua bolha ainda não foi calculada
+                {tr("Sua bolha ainda não foi calculada")}
               </Text>
               <Text style={{ fontSize: 14, lineHeight: 21, color: colors.textMuted }}>
-                Isso acontece toda semana, a partir da sua parada principal publicada. Assim que houver dado suficiente,
-                as pessoas mais parecidas com você aparecem aqui.
+                {tr("Isso acontece toda semana, a partir da sua parada principal publicada. Assim que houver dado suficiente, as pessoas mais parecidas com você aparecem aqui.")}
               </Text>
             </View>
           ) : (
@@ -329,7 +332,7 @@ export function BubbleScreen() {
                     {data.matches.length > 0 ? (
                       <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
                         <Text style={{ fontSize: 17, fontWeight: "700", color: colors.text, marginBottom: 8 }}>
-                          Todos os matches
+                          {tr("Todos os matches")}
                         </Text>
                         {data.matches.map((match) => (
                           <Pressable
@@ -350,7 +353,7 @@ export function BubbleScreen() {
                                 {match.name}
                               </Text>
                               <Text numberOfLines={1} style={{ fontSize: 12.5, color: colors.textMuted, marginTop: 2 }}>
-                                {match.sharedArtists} artistas em comum · {match.sharedTracks} músicas em comum
+                                {lang === "en" ? `${match.sharedArtists} artists in common · ${match.sharedTracks} songs in common` : `${match.sharedArtists} artistas em comum · ${match.sharedTracks} músicas em comum`}
                               </Text>
                             </View>
                             <Text style={{ fontSize: 15, fontWeight: "800", color: colors.accent }}>{match.score}</Text>
@@ -363,9 +366,9 @@ export function BubbleScreen() {
 
                 {tab === "musicas" && (
                   <RecommendationList
-                    title="Músicas"
-                    hint="Músicas que a sua bolha ouve e você ainda não colocou em nenhuma parada."
-                    empty="Ainda não há música da sua bolha que você não tenha chartado."
+                    title={tr("Músicas")}
+                    hint={tr("Músicas que a sua bolha ouve e você ainda não colocou em nenhuma parada.")}
+                    empty={tr("Ainda não há música da sua bolha que você não tenha chartado.")}
                     items={data.recommendations.tracks}
                     navigation={navigation}
                   />
@@ -373,9 +376,9 @@ export function BubbleScreen() {
 
                 {tab === "albuns" && (
                   <RecommendationList
-                    title="Álbuns"
-                    hint="Álbuns que a sua bolha ouve e você ainda não colocou em nenhuma parada."
-                    empty="Ainda não há álbum da sua bolha que você não tenha chartado."
+                    title={tr("Álbuns")}
+                    hint={tr("Álbuns que a sua bolha ouve e você ainda não colocou em nenhuma parada.")}
+                    empty={tr("Ainda não há álbum da sua bolha que você não tenha chartado.")}
                     items={data.recommendations.albums}
                     navigation={navigation}
                   />
@@ -384,23 +387,23 @@ export function BubbleScreen() {
                 {tab === "artistas" && (
                   <>
                     <RecommendationList
-                      title="Nunca apareceu"
-                      hint="Artistas que a sua bolha ouve e você nunca colocou em nenhuma parada."
-                      empty="Ainda não há artista assim na sua bolha."
+                      title={tr("Nunca apareceu")}
+                      hint={tr("Artistas que a sua bolha ouve e você nunca colocou em nenhuma parada.")}
+                      empty={tr("Ainda não há artista assim na sua bolha.")}
                       items={data.recommendations.artists.never}
                       navigation={navigation}
                     />
                     <RecommendationList
-                      title="Pouco explorado"
-                      hint="Artistas que você já colocou em alguma parada, mas pouco, e sua bolha ouve bastante."
-                      empty="Ainda não há artista assim na sua bolha."
+                      title={tr("Pouco explorado")}
+                      hint={tr("Artistas que você já colocou em alguma parada, mas pouco, e sua bolha ouve bastante.")}
+                      empty={tr("Ainda não há artista assim na sua bolha.")}
                       items={data.recommendations.artists.little}
                       navigation={navigation}
                     />
                     <RecommendationList
-                      title="Em alta na sua bolha"
-                      hint="Artistas que você já ouve e pesam bastante entre as pessoas mais parecidas com você."
-                      empty="Ainda não há artista assim na sua bolha."
+                      title={tr("Em alta na sua bolha")}
+                      hint={tr("Artistas que você já ouve e pesam bastante entre as pessoas mais parecidas com você.")}
+                      empty={tr("Ainda não há artista assim na sua bolha.")}
                       items={data.recommendations.artists.trending}
                       navigation={navigation}
                     />
@@ -408,7 +411,7 @@ export function BubbleScreen() {
                 )}
 
                 <Text style={{ fontSize: 12, color: colors.textMuted, textAlign: "center", marginTop: 8 }}>
-                  Calculado em {new Date(data.calculatedAt).toLocaleDateString("pt-BR")}
+                  {tr("Calculado em")} {new Date(data.calculatedAt).toLocaleDateString(lang === "en" ? "en-US" : "pt-BR")}
                 </Text>
               </ScrollView>
             </>

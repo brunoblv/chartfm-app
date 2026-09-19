@@ -9,6 +9,7 @@ import { PillButton } from "../components/PillButton";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useAuth } from "../state/AuthContext";
 import { API_BASE_URL } from "../lib/api";
+import { useTr } from "../i18n/useTr";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Cadastro">;
 
@@ -22,6 +23,7 @@ const SIGNUP_ERROR_MESSAGES: Record<string, string> = {
 };
 
 export function SignupScreen({ navigation }: Props) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const { register } = useAuth();
   const [name, setName] = useState("");
@@ -32,7 +34,7 @@ export function SignupScreen({ navigation }: Props) {
   const handleSignup = async () => {
     if (isLoading) return;
     if (!name || !email || !password) {
-      Alert.alert("Não foi possível criar a conta", SIGNUP_ERROR_MESSAGES.missing_fields);
+      Alert.alert(tr("Não foi possível criar a conta"), tr(SIGNUP_ERROR_MESSAGES.missing_fields));
       return;
     }
     setIsLoading(true);
@@ -40,12 +42,12 @@ export function SignupScreen({ navigation }: Props) {
       const result = await register(name, email, password);
       if (result.ok) {
         Alert.alert(
-          "Confirme seu email",
-          "Enviamos um link de confirmação para o seu email. Confirme para poder entrar.",
+          tr("Confirme seu email"),
+          tr("Enviamos um link de confirmação para o seu email. Confirme para poder entrar."),
           [{ text: "OK", onPress: () => navigation.replace("Login") }]
         );
       } else {
-        Alert.alert("Não foi possível criar a conta", SIGNUP_ERROR_MESSAGES[result.error ?? ""] ?? "Tente novamente.");
+        Alert.alert(tr("Não foi possível criar a conta"), tr(SIGNUP_ERROR_MESSAGES[result.error ?? ""] ?? "Tente novamente."));
       }
     } finally {
       setIsLoading(false);
@@ -68,32 +70,32 @@ export function SignupScreen({ navigation }: Props) {
 
         <View style={{ flex: 1, justifyContent: "center" }}>
           <Text style={{ fontSize: 26, fontWeight: "800", letterSpacing: -0.6, color: colors.text, marginBottom: 4 }}>
-            Criar conta
+            {tr("Criar conta")}
           </Text>
-          <Text style={{ fontSize: 14, color: colors.textMuted, marginBottom: 26 }}>Leva menos de um minuto</Text>
+          <Text style={{ fontSize: 14, color: colors.textMuted, marginBottom: 26 }}>{tr("Leva menos de um minuto")}</Text>
 
           <View style={{ gap: 12 }}>
-            <AuthField label="Nome" value={name} onChangeText={setName} placeholder="Bruno" />
-            <AuthField label="Email" value={email} onChangeText={setEmail} placeholder="bruno@exemplo.com" />
-            <AuthField label="Senha" value={password} onChangeText={setPassword} placeholder="••••••••" secureTextEntry />
+            <AuthField label={tr("Nome")} value={name} onChangeText={setName} placeholder={tr("Bruno")} />
+            <AuthField label={tr("Email")} value={email} onChangeText={setEmail} placeholder={tr("bruno@exemplo.com")} />
+            <AuthField label={tr("Senha")} value={password} onChangeText={setPassword} placeholder="••••••••" secureTextEntry />
           </View>
 
-          <PillButton label="Criar conta" style={{ marginTop: 22 }} onPress={handleSignup} loading={isLoading} />
+          <PillButton label={tr("Criar conta")} style={{ marginTop: 22 }} onPress={handleSignup} loading={isLoading} />
 
           <Text style={{ fontSize: 11.5, color: colors.textDisabled, textAlign: "center", marginTop: 14, lineHeight: 17 }}>
-            Ao continuar, você aceita os{" "}
+            {tr("Ao continuar, você aceita os")}{" "}
             <Text
               onPress={() => Linking.openURL(`${API_BASE_URL}/terms-of-use`)}
               style={{ color: colors.accent, fontWeight: "600" }}
             >
-              Termos
+              {tr("Termos")}
             </Text>
             {" "}e a{" "}
             <Text
               onPress={() => Linking.openURL(`${API_BASE_URL}/privacy-policy`)}
               style={{ color: colors.accent, fontWeight: "600" }}
             >
-              Política de Privacidade
+              {tr("Política de Privacidade")}
             </Text>
             .
           </Text>

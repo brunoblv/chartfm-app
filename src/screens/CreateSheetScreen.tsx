@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { SheetScaffold } from "../components/SheetScaffold";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -19,6 +20,7 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
  * separada.
  */
 export function CreateSheetScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
 
@@ -53,7 +55,7 @@ export function CreateSheetScreen() {
           <View style={{ width: 38, height: 4, borderRadius: 2, backgroundColor: colors.dividerStrong }} />
         </View>
         <Text style={{ fontSize: 11, fontWeight: "700", letterSpacing: 1, textTransform: "uppercase", color: colors.textMuted, marginHorizontal: 20, marginTop: 8, marginBottom: 6 }}>
-          O que você quer fazer
+          {tr("O que você quer fazer")}
         </Text>
         <Row
           icon={
@@ -61,7 +63,7 @@ export function CreateSheetScreen() {
               <Path d="M4 6h11M4 12h11M4 18h7M18 8v10M18 8l3 2M18 8l-3 2" />
             </Svg>
           }
-          label="Montar uma parada"
+          label={tr("Montar uma parada")}
           onPress={() => {
             navigation.goBack();
             navigation.navigate("ChooseParada", { next: "CreateGuided" });
@@ -73,7 +75,7 @@ export function CreateSheetScreen() {
               <Path d="M12 3l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.1-5.4 3.1 1.3-6-4.6-4.1 6.1-.6z" />
             </Svg>
           }
-          label="Recomendar uma música"
+          label={tr("Recomendar uma música")}
           onPress={() => {
             navigation.goBack();
             navigation.navigate("RecommendSong");
@@ -86,7 +88,7 @@ export function CreateSheetScreen() {
               <Path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
             </Svg>
           }
-          label="Avaliar um álbum"
+          label={tr("Avaliar um álbum")}
           onPress={() => {
             navigation.goBack();
             navigation.navigate("WriteReview");

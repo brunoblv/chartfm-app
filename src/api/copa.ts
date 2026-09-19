@@ -1,3 +1,4 @@
+import { translateApiText } from "../i18n/apiErrors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ApiError, apiRequest } from "../lib/apiClient";
 
@@ -99,6 +100,10 @@ export function useCopaVoteMutation(copaId: string | undefined) {
 }
 
 export function copaErrorMessage(error: unknown): string {
+  return translateApiText(copaErrorMessagePt(error));
+}
+
+function copaErrorMessagePt(error: unknown): string {
   if (error instanceof ApiError) {
     if (error.status === 409) return "Você já votou nesse confronto.";
     if (error.status === 401) return "Sua sessão expirou. Faça login novamente.";

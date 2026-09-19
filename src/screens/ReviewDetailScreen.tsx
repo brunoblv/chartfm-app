@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTr } from "../i18n/useTr";
 import { View, Text, ScrollView, Image, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
@@ -15,6 +16,7 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "ReviewDetail">;
 
 export function ReviewDetailScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
@@ -79,7 +81,7 @@ export function ReviewDetailScreen() {
         style={{ flexDirection: "row", alignItems: "center", gap: 6, marginHorizontal: 16, marginTop: 16 }}
       >
         <Text style={{ fontSize: 12.5, color: marked ? colors.accent : colors.textMuted, fontWeight: "700" }}>
-          👍 {helpful} {helpful === 1 ? "achou útil" : "acharam útil"}
+          👍 {helpful} {helpful === 1 ? tr("achou útil") : tr("acharam útil")}
         </Text>
       </Pressable>
     </ScrollView>

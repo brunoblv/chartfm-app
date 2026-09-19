@@ -1,4 +1,5 @@
 import React from "react";
+import { useTr } from "../../i18n/useTr";
 import { View, Text, ScrollView, Image, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -11,6 +12,7 @@ import { RootStackParamList } from "../../navigation/RootNavigator";
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export function ReviewsRow({ reviews }: { reviews: HomeReview[] }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   if (reviews.length === 0) return null;
@@ -58,7 +60,7 @@ export function ReviewsRow({ reviews }: { reviews: HomeReview[] }) {
               <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: r.authorColor }} />
             )}
             <Text numberOfLines={1} style={{ fontSize: 11, color: colors.textMuted, flex: 1 }}>
-              {r.authorName} · {r.helpful} acharam útil
+              {r.authorName} · {r.helpful} {tr("acharam útil")}
             </Text>
           </View>
         </Pressable>

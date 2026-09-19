@@ -9,10 +9,12 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useBlockedUsersQuery, useBlockMutation, BlockedUser } from "../api/profile";
 import { resolveMediaUrl } from "../lib/api";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 function Row({ user }: { user: BlockedUser }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const blockMutation = useBlockMutation();
 
@@ -34,13 +36,14 @@ function Row({ user }: { user: BlockedUser }) {
         onPress={() => blockMutation.mutate(user.id)}
         style={{ backgroundColor: colors.fillSubtle, borderRadius: 100, paddingVertical: 8, paddingHorizontal: 16 }}
       >
-        <Text style={{ fontSize: 12.5, fontWeight: "700", color: colors.text }}>Desbloquear</Text>
+        <Text style={{ fontSize: 12.5, fontWeight: "700", color: colors.text }}>{tr("Desbloquear")}</Text>
       </Pressable>
     </View>
   );
 }
 
 export function BlockedUsersScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const blockedQuery = useBlockedUsersQuery();
@@ -48,12 +51,12 @@ export function BlockedUsersScreen() {
 
   return (
     <Screen>
-      <BackHeader title="Contas bloqueadas" />
+      <BackHeader title={tr("Contas bloqueadas")} />
       {blockedQuery.isLoading ? (
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       ) : users.length === 0 ? (
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
-          Você não bloqueou ninguém.
+          {tr("Você não bloqueou ninguém.")}
         </Text>
       ) : (
         users.map((u) => <Row key={u.id} user={u} />)

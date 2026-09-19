@@ -1,3 +1,4 @@
+import { translateApiText } from "../i18n/apiErrors";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiError, apiRequest } from "../lib/apiClient";
 
@@ -53,6 +54,10 @@ export function useSubmitAlbumReviewMutation() {
 }
 
 export function createErrorMessage(error: unknown): string {
+  return translateApiText(createErrorMessagePt(error));
+}
+
+function createErrorMessagePt(error: unknown): string {
   if (error instanceof ApiError) {
     if (typeof error.body === "object" && error.body && "error" in error.body) {
       const msg = (error.body as { error?: string }).error;

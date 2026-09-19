@@ -7,6 +7,7 @@ import { RootStackParamList } from "../navigation/RootNavigator";
 import { useReportMutation } from "../api/profile";
 import { accountErrorMessage } from "../api/account";
 import { SheetScaffold } from "../components/SheetScaffold";
+import { useTr } from "../i18n/useTr";
 
 const CHILD_SAFETY_REASON_PREFIX = "[child_safety]";
 
@@ -23,6 +24,7 @@ type Route = RouteProp<RootStackParamList, "ReportSheet">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export function ReportSheet() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
@@ -47,19 +49,19 @@ export function ReportSheet() {
 
   const submit = () => {
     if (!reasonId) {
-      Alert.alert("Escolha um motivo", "Selecione o tipo de denúncia.");
+      Alert.alert(tr("Escolha um motivo"), tr("Selecione o tipo de denúncia."));
       return;
     }
     const reason = buildReason();
     if (!reason || reason.length < 5) {
-      Alert.alert("Motivo muito curto", "Escreva um motivo com pelo menos 5 caracteres.");
+      Alert.alert(tr("Motivo muito curto"), tr("Escreva um motivo com pelo menos 5 caracteres."));
       return;
     }
     reportMutation.mutate(
       { targetType: targetType === "user" ? "USER" : "POST", targetId, reason },
       {
         onSuccess: () => setSent(true),
-        onError: (e) => Alert.alert("Não foi possível enviar", accountErrorMessage(e)),
+        onError: (e) => Alert.alert(tr("Não foi possível enviar"), accountErrorMessage(e)),
       },
     );
   };
@@ -83,17 +85,17 @@ export function ReportSheet() {
         </View>
 
         <Text style={{ fontSize: 17, fontWeight: "800", color: colors.text, marginTop: 12 }}>
-          {targetType === "user" ? `Denunciar ${label ?? "perfil"}` : "Denunciar publicação"}
+          {targetType === "user" ? `${tr("Denunciar")} ${label ?? tr("perfil")}` : tr("Denunciar publicação")}
         </Text>
 
         {sent ? (
           <Text style={{ fontSize: 14, color: colors.textSubtle, marginTop: 12 }}>
-            Denúncia enviada. Nossa equipe vai analisar.
+            {tr("Denúncia enviada. Nossa equipe vai analisar.")}
           </Text>
         ) : (
           <>
             <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 6, marginBottom: 12 }}>
-              Escolha o motivo. Isso ajuda a moderação a analisar o caso.
+              {tr("Escolha o motivo. Isso ajuda a moderação a analisar o caso.")}
             </Text>
             <View style={{ gap: 8, marginBottom: 12 }}>
               {REASONS.map((r) => {
@@ -127,7 +129,7 @@ export function ReportSheet() {
                         color: danger ? colors.downFg : colors.text,
                       }}
                     >
-                      {r.label}
+                      {tr(r.label)}
                     </Text>
                   </Pressable>
                 );
@@ -135,13 +137,13 @@ export function ReportSheet() {
             </View>
             <Text style={{ fontSize: 12, color: colors.textMuted, marginBottom: 6 }}>
               {reasonId === "child_safety"
-                ? "Se puder, descreva o que viu. Não envie imagens do conteúdo."
-                : "Detalhes"}
+                ? tr("Se puder, descreva o que viu. Não envie imagens do conteúdo.")
+                : tr("Detalhes")}
             </Text>
             <TextInput
               value={details}
               onChangeText={setDetails}
-              placeholder="O que está acontecendo?"
+              placeholder={tr("O que está acontecendo?")}
               placeholderTextColor={colors.textMuted}
               multiline
               numberOfLines={4}
@@ -168,7 +170,7 @@ export function ReportSheet() {
                 opacity: reportMutation.isPending ? 0.7 : 1,
               }}
             >
-              <Text style={{ color: "#fff", fontWeight: "700", fontSize: 14.5 }}>Enviar denúncia</Text>
+              <Text style={{ color: "#fff", fontWeight: "700", fontSize: 14.5 }}>{tr("Enviar denúncia")}</Text>
             </Pressable>
           </>
         )}

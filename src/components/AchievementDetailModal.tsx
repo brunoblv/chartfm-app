@@ -4,6 +4,7 @@ import Svg, { Path } from "react-native-svg";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { familyLabel, ProfileFamilyProgress } from "../api/profile";
 import { ACHIEVEMENT_META, TIER_ORDER, TIER_LABEL, TIER_XP } from "../data/achievements";
+import { useTr } from "../i18n/useTr";
 
 export function AchievementDetailModal({
   family,
@@ -12,6 +13,7 @@ export function AchievementDetailModal({
   family: ProfileFamilyProgress | null;
   onClose: () => void;
 }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   if (!family) return null;
 
@@ -100,7 +102,7 @@ export function AchievementDetailModal({
                     </Text>
                   </View>
                   {unlocked && (
-                    <Text style={{ fontSize: 11, fontWeight: "700", color: colors.accent }}>Desbloqueada</Text>
+                    <Text style={{ fontSize: 11, fontWeight: "700", color: colors.accent }}>{tr("Desbloqueada")}</Text>
                   )}
                 </View>
               );

@@ -10,6 +10,7 @@ import { useProfileQuery } from "../api/profile";
 import { resolveMediaUrl } from "../lib/api";
 import { SheetScaffold } from "../components/SheetScaffold";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -20,6 +21,7 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
  * e Clube do site viraram o atalho "Eventos". CriticsFM tem tela própria.
  */
 export function ProfileSheetScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const { user, signOut } = useAuth();
@@ -86,7 +88,7 @@ export function ProfileSheetScreen() {
             </Text>
             {progression && (
               <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 2 }}>
-                Level {progression.level} · {progression.xp} XP
+                {tr("Nível")} {progression.level} · {progression.xp} XP
               </Text>
             )}
           </View>
@@ -104,47 +106,47 @@ export function ProfileSheetScreen() {
 
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Circle cx={12} cy={12} r={4} /><Path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4" /></Svg>}
-          label="Meu perfil"
+          label={tr("Meu perfil")}
           onPress={() => go(() => navigation.navigate("Main", { screen: "Profile" } as never))}
         />
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></Svg>}
-          label="Conversas"
+          label={tr("Conversas")}
           onPress={() => go(() => navigation.navigate("Conversas"))}
         />
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Path d="M12 8v4l3 3" /><Circle cx={12} cy={12} r={9} /></Svg>}
-          label="Histórico"
+          label={tr("Histórico")}
           onPress={() => go(() => navigation.navigate("History", { handle: user?.handle ?? "" }))}
         />
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></Svg>}
-          label="Biblioteca"
+          label={tr("Biblioteca")}
           onPress={() => go(() => navigation.navigate("Library"))}
         />
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Path d="M12 20V10M18 20V4M6 20v-4" /></Svg>}
-          label="Estatísticas"
+          label={tr("Estatísticas")}
           onPress={() => go(() => navigation.navigate("Stats", { handle: user?.handle ?? "" }))}
         />
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Circle cx={12} cy={8} r={6} /><Path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.11" /></Svg>}
-          label="Conquistas"
+          label={tr("Conquistas")}
           onPress={() => go(() => navigation.navigate("Achievements", { handle: user?.handle ?? "" }))}
         />
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Circle cx={12} cy={12} r={3} /><Circle cx={12} cy={12} r={8} /><Path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></Svg>}
-          label="Bolha"
+          label={tr("Bolha")}
           onPress={() => go(() => navigation.navigate("Bubble"))}
         />
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><Path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></Svg>}
-          label="CriticsFM"
+          label={tr("CriticsFM")}
           onPress={() => go(() => navigation.navigate("CriticsFM"))}
         />
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z" /><Path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" /></Svg>}
-          label="Eventos"
+          label={tr("Eventos")}
           onPress={() => go(() => navigation.navigate("Events"))}
         />
 
@@ -152,12 +154,12 @@ export function ProfileSheetScreen() {
 
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.textMuted)}><Circle cx={12} cy={12} r={3} /><Path d="M12 3v2M12 19v2M4.5 7.5l1.7 1M17.8 15.5l1.7 1M4.5 16.5l1.7-1M17.8 8.5l1.7-1" /></Svg>}
-          label="Configurações"
+          label={tr("Configurações")}
           onPress={() => go(() => navigation.navigate("Settings"))}
         />
         <Row
           icon={<Svg width={18} height={18} viewBox="0 0 24 24" {...stroke(colors.downFg)}><Path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><Path d="M16 17l5-5-5-5M21 12H9" /></Svg>}
-          label="Sair"
+          label={tr("Sair")}
           danger
           onPress={() => go(() => signOut())}
         />

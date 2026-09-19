@@ -20,6 +20,7 @@ import {
 } from "../api/lastfm";
 import { useParadasQuery } from "../api/paradas";
 import type { ChartSong } from "../data/mock";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -59,7 +60,7 @@ function CountSlider({
   onChange: (n: number) => void;
   disabled?: boolean;
 }) {
-  const { colors } = useAppTheme();
+  const { colors, lang } = useAppTheme();
   const trackRef = useRef<View>(null);
   const trackWidth = useRef(1);
   const trackPageX = useRef(0);
@@ -121,7 +122,8 @@ function CountSlider({
 }
 
 export function LastfmScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const { setChart, paradaId, weekDate } = useAppState();
@@ -153,16 +155,16 @@ export function LastfmScreen() {
   const ctaLoading = connectMutation.isPending || importMutation.isPending;
   const ctaLabel = connected
     ? importCount === 1
-      ? "Importar 1 música"
-      : `Importar ${importCount} músicas`
-    : "Conectar conta";
+      ? tr("Importar 1 música")
+      : lang === "en" ? `Import ${importCount} songs` : `Importar ${importCount} músicas`
+    : tr("Conectar conta");
 
   const onCta = () => {
     if (!connected) {
       connectMutation.mutate(undefined, {
         onError: (e) => {
           const msg = lastfmErrorMessage(e);
-          if (msg !== "Conexão cancelada.") Alert.alert("Não foi possível conectar", msg);
+          if (msg !== "Conexão cancelada.") Alert.alert(tr("Não foi possível conectar"), msg);
         },
       });
       return;
@@ -174,14 +176,14 @@ export function LastfmScreen() {
           setChart((data.songs ?? []).map(songToChartSong));
           navigation.navigate("Editor");
         },
-        onError: (e) => Alert.alert("Não foi possível importar", lastfmErrorMessage(e)),
+        onError: (e) => Alert.alert(tr("Não foi possível importar"), lastfmErrorMessage(e)),
       }
     );
   };
 
   return (
     <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
-      <BackHeader title="Importar do Last.fm" />
+      <BackHeader title={tr("Importar do Last.fm")} />
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 100 + insets.bottom }}>
         {statusQuery.isLoading ? (
@@ -212,10 +214,10 @@ export function LastfmScreen() {
                 <SocialIcon name="lastfm" size={28} color="#fff" />
               </View>
               <Text style={{ fontSize: 20, fontWeight: "800", letterSpacing: -0.5, color: colors.text, textAlign: "center" }}>
-                Conecte sua conta
+                {tr("Conecte sua conta")}
               </Text>
               <Text style={{ fontSize: 14, lineHeight: 21, color: colors.textMuted, textAlign: "center", marginTop: 10 }}>
-                Autorize o Last.fm para importar as músicas que você mais ouviu direto na sua parada.
+                {tr("Autorize o Last.fm para importar as músicas que você mais ouviu direto na sua parada.")}
               </Text>
             </View>
           </View>
@@ -239,7 +241,7 @@ export function LastfmScreen() {
                   Importar do Last.fm ({periodMeta.label.toLowerCase()})
                 </Text>
               </View>
-              <Text style={{ fontSize: 13, color: colors.textMuted, lineHeight: 19 }}>{periodMeta.desc}</Text>
+              <Text style={{ fontSize: 13, color: colors.textMuted, lineHeight: 19 }}>{tr(periodMeta.desc)}</Text>
             </View>
 
             <View
@@ -266,7 +268,7 @@ export function LastfmScreen() {
                 <SocialIcon name="lastfm" size={15} color="#fff" />
               </View>
               <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={{ fontSize: 11, color: colors.textMuted, fontWeight: "600" }}>Conta Last.fm</Text>
+                <Text style={{ fontSize: 11, color: colors.textMuted, fontWeight: "600" }}>{tr("Conta Last.fm")}</Text>
                 <Text style={{ fontSize: 14, fontWeight: "700", color: colors.text, marginTop: 1 }}>
                   @{statusQuery.data?.username ?? "…"}
                 </Text>
@@ -305,7 +307,7 @@ export function LastfmScreen() {
                     >
                       {active ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.accent }} /> : null}
                     </View>
-                    <Text style={{ flex: 1, fontSize: 15, fontWeight: "600", color: colors.text }}>{p.label}</Text>
+                    <Text style={{ flex: 1, fontSize: 15, fontWeight: "600", color: colors.text }}>{tr(p.label)}</Text>
                   </Pressable>
                 );
               })}
@@ -313,7 +315,7 @@ export function LastfmScreen() {
 
             <View>
               <Text style={{ fontSize: 13, fontWeight: "700", color: colors.text, marginBottom: 10 }}>
-                Quantas músicas importar?
+                {tr("Quantas músicas importar?")}
               </Text>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
                 <View style={{ flex: 1 }}>
@@ -370,8 +372,8 @@ export function LastfmScreen() {
               </View>
               <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 8 }}>
                 {period === "7days"
-                  ? "Máximo de 200 músicas. Período: últimos 7 dias."
-                  : "Máximo de 200 músicas. Período: últimos 30 dias."}
+                  ? tr("Máximo de 200 músicas. Período: últimos 7 dias.")
+                  : tr("Máximo de 200 músicas. Período: últimos 30 dias.")}
               </Text>
             </View>
 
@@ -403,19 +405,19 @@ export function LastfmScreen() {
                 {chartSize ? (
                   <>
                     <Text style={{ fontSize: 13, fontWeight: "700", color: colors.text }}>
-                      Sua parada tem {chartSize} {chartSize === 1 ? "posição" : "posições"}
+                      {lang === "en" ? `Your chart has ${chartSize} ${chartSize === 1 ? "spot" : "spots"}` : `Sua parada tem ${chartSize} ${chartSize === 1 ? "posição" : "posições"}`}
                     </Text>
                     <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 3, lineHeight: 18 }}>
-                      Ao publicar, músicas além da {chartSize}ª posição serão automaticamente descartadas. Importe mais
-                      músicas para ter opções e reordene a lista antes de publicar.
+                      {lang === "en"
+                        ? `When you publish, songs beyond spot ${chartSize} are dropped automatically. Import more songs to have options and reorder the list before publishing.`
+                        : `Ao publicar, músicas além da ${chartSize}ª posição serão automaticamente descartadas. Importe mais músicas para ter opções e reordene a lista antes de publicar.`}
                     </Text>
                   </>
                 ) : (
                   <>
-                    <Text style={{ fontSize: 13, fontWeight: "700", color: colors.text }}>Tamanho da parada não definido</Text>
+                    <Text style={{ fontSize: 13, fontWeight: "700", color: colors.text }}>{tr("Tamanho da parada não definido")}</Text>
                     <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 3, lineHeight: 18 }}>
-                      Defina o tamanho da sua parada nas configurações para que o corte seja aplicado automaticamente ao
-                      publicar.
+                      {tr("Defina o tamanho da sua parada nas configurações para que o corte seja aplicado automaticamente ao publicar.")}
                     </Text>
                   </>
                 )}

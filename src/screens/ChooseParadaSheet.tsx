@@ -8,6 +8,7 @@ import { useAppState } from "../state/AppState";
 import { useParadasQuery } from "../api/paradas";
 import { SheetScaffold } from "../components/SheetScaffold";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList, "ChooseParada">;
 type Route = RouteProp<RootStackParamList, "ChooseParada">;
@@ -18,6 +19,7 @@ type Route = RouteProp<RootStackParamList, "ChooseParada">;
  * passo, sem tela extra.
  */
 export function ChooseParadaSheet() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
@@ -66,10 +68,10 @@ export function ChooseParadaSheet() {
           <View style={{ width: 38, height: 4, borderRadius: 2, backgroundColor: colors.dividerStrong }} />
         </View>
         <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.5, color: colors.text, marginHorizontal: 20, marginBottom: 4 }}>
-          Qual parada você quer atualizar?
+          {tr("Qual parada você quer atualizar?")}
         </Text>
         <Text style={{ fontSize: 13, color: colors.textMuted, marginHorizontal: 20, marginBottom: 12, lineHeight: 18 }}>
-          Cada parada tem a própria lista da semana.
+          {tr("Cada parada tem a própria lista da semana.")}
         </Text>
 
         {waiting ? (
@@ -99,7 +101,7 @@ export function ChooseParadaSheet() {
                   </View>
                   <Text style={{ flex: 1, fontSize: 15, fontWeight: "600", color: colors.text }}>{p.name}</Text>
                   {p.isPrimary ? (
-                    <Text style={{ fontSize: 11, color: colors.textMuted }}>principal</Text>
+                    <Text style={{ fontSize: 11, color: colors.textMuted }}>{tr("principal")}</Text>
                   ) : null}
                 </Pressable>
               );

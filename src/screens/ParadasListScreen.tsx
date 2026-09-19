@@ -8,11 +8,13 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { useUserParadasQuery, ParadaCard } from "../api/profile";
 import { resolveMediaUrl } from "../lib/api";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Route = RouteProp<RootStackParamList, "ParadasList">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 function ParadaCardItem({ parada, handle, navigation }: { parada: ParadaCard; handle: string; navigation: Nav }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   return (
     <Pressable
@@ -35,7 +37,7 @@ function ParadaCardItem({ parada, handle, navigation }: { parada: ParadaCard; ha
         )}
         {parada.isPrimary && (
           <View style={{ backgroundColor: colors.accentTint, borderRadius: 100, paddingHorizontal: 8, paddingVertical: 3 }}>
-            <Text style={{ fontSize: 10, fontWeight: "800", color: colors.accent, letterSpacing: 0.3 }}>PRIMÁRIA</Text>
+            <Text style={{ fontSize: 10, fontWeight: "800", color: colors.accent, letterSpacing: 0.3 }}>{tr("PRIMÁRIA")}</Text>
           </View>
         )}
       </View>
@@ -50,7 +52,7 @@ function ParadaCardItem({ parada, handle, navigation }: { parada: ParadaCard; ha
       <View style={{ flexDirection: "row", gap: 14, marginTop: 2 }}>
         <View>
           <Text style={{ fontSize: 15, fontWeight: "800", color: colors.text }}>{parada.stats.weeks}</Text>
-          <Text style={{ fontSize: 10, color: colors.textMuted }}>semanas</Text>
+          <Text style={{ fontSize: 10, color: colors.textMuted }}>{tr("semanas")}</Text>
         </View>
         <View>
           <Text style={{ fontSize: 15, fontWeight: "800", color: colors.text }}>{parada.stats.numberOnes}</Text>
@@ -58,7 +60,7 @@ function ParadaCardItem({ parada, handle, navigation }: { parada: ParadaCard; ha
         </View>
         <View>
           <Text style={{ fontSize: 15, fontWeight: "800", color: colors.text }}>{parada.stats.songs}</Text>
-          <Text style={{ fontSize: 10, color: colors.textMuted }}>músicas</Text>
+          <Text style={{ fontSize: 10, color: colors.textMuted }}>{tr("músicas")}</Text>
         </View>
       </View>
       {parada.lastWeekLabel && (
@@ -69,6 +71,7 @@ function ParadaCardItem({ parada, handle, navigation }: { parada: ParadaCard; ha
 }
 
 export function ParadasListScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
@@ -78,7 +81,7 @@ export function ParadasListScreen() {
   if (query.isLoading) {
     return (
       <Screen scroll={false}>
-        <BackHeader title="Paradas" />
+        <BackHeader title={tr("Paradas")} />
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       </Screen>
     );
@@ -91,7 +94,7 @@ export function ParadasListScreen() {
       <BackHeader title={query.data?.isOwn ? "Minhas paradas" : "Paradas"} />
       {paradas.length === 0 ? (
         <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40 }}>
-          Nenhuma parada publicada ainda.
+          {tr("Nenhuma parada publicada ainda.")}
         </Text>
       ) : (
         <FlatList

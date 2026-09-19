@@ -15,13 +15,14 @@ import {
   useLibraryQuery,
 } from "../api/library";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 const FILTERS: LibraryFilter[] = ["tudo", "song", "album", "artist", "chart", "review"];
 
-function formatSavedAt(iso: string): string {
-  return new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
+function formatSavedAt(iso: string, lang: string): string {
+  return new Date(iso).toLocaleDateString(lang === "en" ? "en-US" : "pt-BR", { day: "2-digit", month: "short", year: "numeric" });
 }
 
 function openEntry(entry: LibraryEntry, navigation: Nav) {
@@ -49,7 +50,8 @@ function openEntry(entry: LibraryEntry, navigation: Nav) {
 }
 
 export function LibraryScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const [filter, setFilter] = useState<LibraryFilter>("tudo");
   const query = useLibraryQuery(filter);
@@ -58,11 +60,10 @@ export function LibraryScreen() {
 
   return (
     <Screen scroll={false}>
-      <BackHeader title="Biblioteca" />
+      <BackHeader title={tr("Biblioteca")} />
 
       <Text style={{ fontSize: 13.5, lineHeight: 20, color: colors.textMuted, paddingHorizontal: 16, paddingBottom: 12 }}>
-        O que você encontrou no ChartFM e quis guardar. Não substitui o Spotify nem o Apple Music: serve para lembrar do
-        que apareceu por aqui.
+        {tr("O que você encontrou no ChartFM e quis guardar. Não substitui o Spotify nem o Apple Music: serve para lembrar do que apareceu por aqui.")}
       </Text>
 
       <ScrollView
@@ -84,7 +85,7 @@ export function LibraryScreen() {
               }}
             >
               <Text style={{ color: filter === f ? "#fff" : colors.text, fontWeight: "700", fontSize: 12.5 }}>
-                {LIBRARY_FILTER_LABELS[f]}
+                {tr(LIBRARY_FILTER_LABELS[f])}
                 {count != null ? ` (${count})` : ""}
               </Text>
             </Pressable>
@@ -97,22 +98,22 @@ export function LibraryScreen() {
       ) : entries.length === 0 ? (
         <View style={{ paddingHorizontal: 24, marginTop: 36, alignItems: "center" }}>
           <Text style={{ fontSize: 14.5, lineHeight: 21, color: colors.textMuted, textAlign: "center" }}>
-            Sua biblioteca está vazia. O botão de salvar aparece nas páginas de música, álbum, artista, parada e
-            avaliação.
+            {tr("Sua biblioteca está vazia. O botão de salvar aparece nas páginas de música, álbum, artista, parada e avaliação.")}
           </Text>
           <Pressable
             onPress={() => navigation.navigate("Main", { screen: "Discover" } as never)}
             style={{ marginTop: 16, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 100, backgroundColor: colors.accent }}
           >
-            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 13.5 }}>Descobrir alguma coisa</Text>
+            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 13.5 }}>{tr("Descobrir alguma coisa")}</Text>
           </Pressable>
         </View>
       ) : (
         <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
           {data && data.withSource > 0 ? (
             <Text style={{ fontSize: 12.5, lineHeight: 18, color: colors.textMuted, paddingHorizontal: 16, paddingBottom: 10 }}>
-              {data.fromPeople} dos {data.withSource} itens com origem registrada chegaram até você através de outra
-              pessoa.
+              {lang === "en"
+                ? `${data.fromPeople} of ${data.withSource} items with a recorded source reached you through another person.`
+                : `${data.fromPeople} dos ${data.withSource} itens com origem registrada chegaram até você através de outra pessoa.`}
             </Text>
           ) : null}
           {entries.map((entry) => {
@@ -139,7 +140,7 @@ export function LibraryScreen() {
                 )}
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 11, fontWeight: "700", color: colors.textMuted, marginBottom: 2 }}>
-                    {LIBRARY_TYPE_LABELS[entry.itemType]}
+                    {tr(LIBRARY_TYPE_LABELS[entry.itemType])}
                   </Text>
                   <Text numberOfLines={1} style={{ fontSize: 14.5, fontWeight: "700", color: colors.text }}>
                     {entry.title}
@@ -150,8 +151,8 @@ export function LibraryScreen() {
                     </Text>
                   ) : null}
                   <Text numberOfLines={1} style={{ fontSize: 11.5, color: colors.textSubtle, marginTop: 4 }}>
-                    Salvo em {formatSavedAt(entry.savedAt)}
-                    {through ? ` · através de ${through}` : where ? ` · em ${where}` : ""}
+                    {tr("Salvo em")} {formatSavedAt(entry.savedAt, lang)}
+                    {through ? ` · ${tr("através de")} ${through}` : where ? ` · ${tr("em")} ${tr(where)}` : ""}
                   </Text>
                 </View>
               </Pressable>

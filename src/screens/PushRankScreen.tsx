@@ -16,9 +16,11 @@ import {
   PushSubmissionRow,
 } from "../api/push";
 import { resolveMediaUrl } from "../lib/api";
+import { useTr } from "../i18n/useTr";
 
 export function PushRankScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation();
   const roundQuery = usePushRoundQuery();
   const round = roundQuery.data?.round;
@@ -50,9 +52,9 @@ export function PushRankScreen() {
     const votes = order.map((s, i) => ({ submissionId: s.id, position: i + 1 }));
     voteMutation.mutate(votes, {
       onSuccess: () => {
-        Alert.alert("Avaliação enviada", "Seu ranking foi registrado.", [{ text: "OK", onPress: () => navigation.goBack() }]);
+        Alert.alert(tr("Avaliação enviada"), tr("Seu ranking foi registrado."), [{ text: tr("OK"), onPress: () => navigation.goBack() }]);
       },
-      onError: (error) => Alert.alert("Não foi possível enviar", pushErrorMessage(error)),
+      onError: (error) => Alert.alert(tr("Não foi possível enviar"), pushErrorMessage(error)),
     });
   };
 
@@ -95,24 +97,24 @@ export function PushRankScreen() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.bg }}>
       <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
-        <BackHeader title="Avaliar rodada — Push" />
+        <BackHeader title={tr("Avaliar rodada — Push")} />
 
         {roundQuery.isLoading ? (
           <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
         ) : !round ? (
-          <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40 }}>Nenhuma rodada ativa.</Text>
+          <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40 }}>{tr("Nenhuma rodada ativa.")}</Text>
         ) : !canVote ? (
           <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40, paddingHorizontal: 30 }}>
-            {round.title} está em "{pushPhaseLabel(round.phase)}" — avaliação só é aceita nos períodos de escuta e avaliação.
+            {lang === "en" ? `${round.title} is in "${tr(pushPhaseLabel(round.phase))}" — ratings are only accepted during the listening and rating periods.` : `${round.title} está em "${pushPhaseLabel(round.phase)}" — avaliação só é aceita nos períodos de escuta e avaliação.`}
           </Text>
         ) : eligible.length === 0 ? (
           <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40, paddingHorizontal: 30 }}>
-            Não há indicações de outras pessoas para avaliar nesta rodada ainda.
+            {tr("Não há indicações de outras pessoas para avaliar nesta rodada ainda.")}
           </Text>
         ) : (
           <>
             <Text style={{ paddingHorizontal: 20, fontSize: 12.5, color: colors.textMuted, marginBottom: 10 }}>
-              Segure e arraste para ordenar da que você mais gosta (topo) para a que menos gosta.
+              {tr("Segure e arraste para ordenar da que você mais gosta (topo) para a que menos gosta.")}
             </Text>
             <DraggableFlatList
               data={order}
@@ -123,7 +125,7 @@ export function PushRankScreen() {
               contentContainerStyle={{ paddingBottom: 96 }}
             />
             <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: 16, backgroundColor: colors.bgTopbar, borderTopWidth: 0.5, borderTopColor: colors.divider }}>
-              <PillButton label="Enviar avaliação" onPress={handleSubmit} loading={voteMutation.isPending} />
+              <PillButton label={tr("Enviar avaliação")} onPress={handleSubmit} loading={voteMutation.isPending} />
             </View>
           </>
         )}

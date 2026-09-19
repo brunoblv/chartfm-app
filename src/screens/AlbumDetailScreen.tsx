@@ -10,12 +10,14 @@ import { resolveMediaUrl } from "../lib/api";
 import { useAlbumQuery, useAlbumReviewsQuery, useToggleReviewHelpfulMutation } from "../api/album";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { SaveLibraryButton } from "../components/SaveLibraryButton";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "AlbumDetail">;
 
 export function AlbumDetailScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const albumId = route.params?.albumId;
@@ -28,7 +30,7 @@ export function AlbumDetailScreen() {
     return (
       <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
-        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>Álbum não encontrado.</Text>
+        <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>{tr("Álbum não encontrado.")}</Text>
       </SafeAreaView>
     );
   }
@@ -47,7 +49,7 @@ export function AlbumDetailScreen() {
       <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.bg }}>
         <BackHeader />
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
-          Não foi possível carregar esse álbum.
+          {tr("Não foi possível carregar esse álbum.")}
         </Text>
       </SafeAreaView>
     );
@@ -69,7 +71,7 @@ export function AlbumDetailScreen() {
             }
             style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 100, backgroundColor: colors.accentTint }}
           >
-            <Text style={{ fontSize: 13, fontWeight: "700", color: colors.accent }}>Avaliar</Text>
+            <Text style={{ fontSize: 13, fontWeight: "700", color: colors.accent }}>{tr("Avaliar")}</Text>
           </Pressable>
         }
       />
@@ -105,7 +107,7 @@ export function AlbumDetailScreen() {
         )}
         {album.spotifyUrl && (
           <Pressable onPress={() => Linking.openURL(album.spotifyUrl!)} style={{ marginTop: 12 }}>
-            <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>Ouvir no Spotify</Text>
+            <Text style={{ fontSize: 12.5, color: colors.accent, fontWeight: "700" }}>{tr("Ouvir no Spotify")}</Text>
           </Pressable>
         )}
       </View>
@@ -120,8 +122,9 @@ export function AlbumDetailScreen() {
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 16 }}>
           <ScoreSquare score={album.reception.score} size={40} />
           <Text style={{ flex: 1, fontSize: 13, color: colors.textSubtle }}>
-            Nota da crítica, com base em {album.reception.reviewCount}{" "}
-            {album.reception.reviewCount === 1 ? "review" : "reviews"}.
+            {lang === "en"
+              ? `Critics score, based on ${album.reception.reviewCount} ${album.reception.reviewCount === 1 ? "review" : "reviews"}.`
+              : `Nota da crítica, com base em ${album.reception.reviewCount} ${album.reception.reviewCount === 1 ? "review" : "reviews"}.`}
           </Text>
         </View>
       ) : null}
@@ -156,7 +159,7 @@ export function AlbumDetailScreen() {
       {album.topFans.length > 0 && (
         <View style={{ marginTop: 26 }}>
           <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, paddingHorizontal: 20, paddingBottom: 12 }}>
-            Maiores fãs
+            {tr("Maiores fãs")}
           </Text>
           <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
             {album.topFans.map((f, i) => (
@@ -187,7 +190,7 @@ export function AlbumDetailScreen() {
       )}
 
       <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, paddingHorizontal: 20, paddingTop: 26, paddingBottom: 12 }}>
-        Faixas
+        {tr("Faixas")}
       </Text>
       <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
         {album.songs.map((s, i) => (
@@ -209,7 +212,7 @@ export function AlbumDetailScreen() {
             </Text>
             {s.weeks > 0 ? (
               <Text style={{ fontSize: 11, color: colors.textMuted }}>
-                {s.weeks} sem · pico #{s.peak}
+                {s.weeks} {tr("sem")} · {tr("pico")} #{s.peak}
               </Text>
             ) : null}
           </Pressable>
@@ -217,10 +220,10 @@ export function AlbumDetailScreen() {
       </View>
 
       <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.4, color: colors.text, paddingHorizontal: 20, paddingTop: 26, paddingBottom: 12 }}>
-        Reviews
+        {tr("Reviews")}
       </Text>
       {(reviewsQuery.data?.length ?? 0) === 0 ? (
-        <Text style={{ paddingHorizontal: 20, fontSize: 13, color: colors.textMuted }}>Nenhuma review ainda.</Text>
+        <Text style={{ paddingHorizontal: 20, fontSize: 13, color: colors.textMuted }}>{tr("Nenhuma review ainda.")}</Text>
       ) : (
         <View style={{ marginHorizontal: 16, gap: 10 }}>
           {reviewsQuery.data!.map((r) => (
@@ -248,7 +251,7 @@ export function AlbumDetailScreen() {
                 style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 10 }}
               >
                 <Text style={{ fontSize: 12, color: colors.textMuted, fontWeight: "600" }}>
-                  👍 {r.helpful} {r.helpful === 1 ? "achou útil" : "acharam útil"}
+                  👍 {r.helpful} {r.helpful === 1 ? tr("achou útil") : tr("acharam útil")}
                 </Text>
               </Pressable>
             </View>

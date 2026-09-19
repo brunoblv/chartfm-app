@@ -11,6 +11,7 @@ import { resolveMediaUrl } from "../lib/api";
 import { useChartDetailQuery } from "../api/chartDetail";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { SaveLibraryButton } from "../components/SaveLibraryButton";
+import { useTr } from "../i18n/useTr";
 
 type Route = RouteProp<RootStackParamList, "ChartDetail">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -18,6 +19,7 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
 const SPOTLIGHT_ORDER: SpotlightKind[] = ["flashback", "destaque", "nacional", "push", "radar"];
 
 export function ChartDetailScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
@@ -39,13 +41,13 @@ export function ChartDetailScreen() {
         <ActivityIndicator color={colors.text} style={{ marginTop: 40 }} />
       ) : !data ? (
         <Text style={{ textAlign: "center", marginTop: 40, color: colors.textMuted }}>
-          Não foi possível carregar essa parada.
+          {tr("Não foi possível carregar essa parada.")}
         </Text>
       ) : (
         <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
           <Text style={{ paddingHorizontal: 16, fontSize: 12.5, color: colors.textMuted }}>
             {data.chart.weekLabel} · {data.chart.entries.length}{" "}
-            {data.chart.entries.length === 1 ? "música" : "músicas"}
+            {data.chart.entries.length === 1 ? tr("música") : tr("músicas")}
           </Text>
           <View style={{ paddingHorizontal: 16, alignItems: "flex-start" }}>
             <SaveLibraryButton itemType="chart" itemId={data.chart.id} source="chart" />
@@ -64,7 +66,7 @@ export function ChartDetailScreen() {
                   color: colors.text,
                 }}
               >
-                Destaques
+                {tr("Destaques")}
               </Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
                 {spotlights.map(({ kind, song }) => (
@@ -124,7 +126,7 @@ export function ChartDetailScreen() {
                     </Text>
                   )}
                   <Text style={{ fontSize: 10.5, color: colors.textMuted, marginTop: 1 }}>
-                    {e.weeks} {e.weeks === 1 ? "sem" : "sems"} · pico #{e.peak}
+                    {e.weeks} {tr("sem")} · {tr("pico")} #{e.peak}
                   </Text>
                 </View>
                 <MovementBadge status={e.status as MovementStatus} delta={e.delta ?? undefined} compact />

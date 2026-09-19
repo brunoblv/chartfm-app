@@ -6,6 +6,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { useAppState } from "../state/AppState";
 import { useParadasQuery } from "../api/paradas";
 import { SheetScaffold } from "./SheetScaffold";
+import { useTr } from "../i18n/useTr";
 
 function toDateInput(d: Date): string {
   const y = d.getFullYear();
@@ -27,6 +28,7 @@ function usePastDateStepper(stepDays: number) {
 }
 
 export function ParadaWeekPickerSheet() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation();
   const { paradaId, setParadaId, weekDate, setWeekDate } = useAppState();
@@ -66,7 +68,7 @@ export function ParadaWeekPickerSheet() {
           <View style={{ width: 38, height: 4, borderRadius: 2, backgroundColor: colors.dividerStrong }} />
         </View>
         <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.5, color: colors.text, marginHorizontal: 20, marginBottom: 12 }}>
-          Parada e período
+          {tr("Parada e período")}
         </Text>
 
         {paradasQuery.isLoading ? (
@@ -74,7 +76,7 @@ export function ParadaWeekPickerSheet() {
         ) : (
           <>
             <Text style={{ fontSize: 11, fontWeight: "700", letterSpacing: 1, textTransform: "uppercase", color: colors.textMuted, marginHorizontal: 20, marginBottom: 6 }}>
-              Parada
+              {tr("Parada")}
             </Text>
             {paradas.map((p) => {
               const isSelected = p.id === (paradaId ?? selected?.id);
@@ -99,7 +101,7 @@ export function ParadaWeekPickerSheet() {
                   </View>
                   <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.text }}>{p.name}</Text>
                   {p.isPrimary ? (
-                    <Text style={{ fontSize: 10.5, color: colors.textMuted }}>· principal</Text>
+                    <Text style={{ fontSize: 10.5, color: colors.textMuted }}>{tr("· principal")}</Text>
                   ) : null}
                 </Pressable>
               );
@@ -117,7 +119,7 @@ export function ParadaWeekPickerSheet() {
                 marginBottom: 6,
               }}
             >
-              Período
+              {tr("Período")}
             </Text>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 20 }}>
               <Pressable
@@ -150,7 +152,7 @@ export function ParadaWeekPickerSheet() {
           onPress={() => navigation.goBack()}
           style={{ marginTop: 20, marginHorizontal: 20, backgroundColor: colors.accent, borderRadius: 100, paddingVertical: 13, alignItems: "center" }}
         >
-          <Text style={{ color: "#fff", fontWeight: "700", fontSize: 14.5 }}>Confirmar</Text>
+          <Text style={{ color: "#fff", fontWeight: "700", fontSize: 14.5 }}>{tr("Confirmar")}</Text>
         </Pressable>
     </SheetScaffold>
   );

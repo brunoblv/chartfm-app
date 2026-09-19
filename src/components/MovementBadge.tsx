@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useAppTheme } from "../theme/ThemeProvider";
+import { useTr } from "../i18n/useTr";
 
 export type MovementStatus = "new" | "return" | "same" | "up" | "down";
 
@@ -14,6 +15,7 @@ export function MovementBadge({
   delta?: number;
   compact?: boolean;
 }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const base = {
     flexDirection: "row" as const,
@@ -30,14 +32,14 @@ export function MovementBadge({
   if (status === "new") {
     return (
       <View style={[base, { backgroundColor: colors.newBg }]}>
-        <Text style={{ color: colors.newFg, fontSize, fontWeight: "600" }}>NOVA</Text>
+        <Text style={{ color: colors.newFg, fontSize, fontWeight: "600" }}>{tr("NOVA")}</Text>
       </View>
     );
   }
   if (status === "return") {
     return (
       <View style={[base, { backgroundColor: "#111827" }]}>
-        <Text style={{ color: "#fff", fontSize, fontWeight: "600" }}>RETORNO</Text>
+        <Text style={{ color: "#fff", fontSize, fontWeight: "600" }}>{tr("RETORNO")}</Text>
       </View>
     );
   }

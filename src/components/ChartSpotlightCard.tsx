@@ -3,6 +3,7 @@ import { View, Text, Pressable, Linking } from "react-native";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { Cover } from "./Cover";
 import { ChartSpotlightSong } from "../api/chartDetail";
+import { useTr } from "../i18n/useTr";
 
 export type SpotlightKind = "flashback" | "destaque" | "nacional" | "push" | "radar";
 
@@ -23,6 +24,7 @@ export const SPOTLIGHT_KIND_COLOR: Record<SpotlightKind, string> = {
 };
 
 export function ChartSpotlightCard({ kind, song }: { kind: SpotlightKind; song: ChartSpotlightSong }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const color = SPOTLIGHT_KIND_COLOR[kind];
   const url = song.spotifyUrl ?? (song.spotifyId ? `https://open.spotify.com/track/${song.spotifyId}` : null);
@@ -50,7 +52,7 @@ export function ChartSpotlightCard({ kind, song }: { kind: SpotlightKind; song: 
       </Text>
       {url ? (
         <Pressable onPress={() => Linking.openURL(url)} style={{ marginTop: 8 }}>
-          <Text style={{ fontSize: 11, fontWeight: "700", color: colors.accent }}>Abrir no Spotify</Text>
+          <Text style={{ fontSize: 11, fontWeight: "700", color: colors.accent }}>{tr("Abrir no Spotify")}</Text>
         </Pressable>
       ) : null}
     </View>

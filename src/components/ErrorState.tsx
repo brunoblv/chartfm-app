@@ -3,8 +3,10 @@ import { View, Text } from "react-native";
 import Svg, { Circle, Path, Line } from "react-native-svg";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { PillButton } from "./PillButton";
+import { useTr } from "../i18n/useTr";
 
 export function ErrorState({ onRetry, reference = "b74a1" }: { onRetry?: () => void; reference?: string }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 40 }}>
@@ -15,12 +17,12 @@ export function ErrorState({ onRetry, reference = "b74a1" }: { onRetry?: () => v
           <Circle cx={12} cy={12} r={9} />
         </Svg>
       </View>
-      <Text style={{ fontSize: 19, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>Algo deu errado</Text>
+      <Text style={{ fontSize: 19, fontWeight: "800", letterSpacing: -0.4, color: colors.text }}>{tr("Algo deu errado")}</Text>
       <Text style={{ fontSize: 13.5, color: colors.textMuted, lineHeight: 19, marginTop: 8, textAlign: "center", maxWidth: 260 }}>
-        Não conseguimos carregar este conteúdo agora. Isso costuma se resolver tentando de novo.
+        {tr("Não conseguimos carregar este conteúdo agora. Isso costuma se resolver tentando de novo.")}
       </Text>
-      <PillButton label="Tentar de novo" onPress={onRetry} style={{ marginTop: 22, paddingHorizontal: 32, alignSelf: "center" }} />
-      <Text style={{ marginTop: 10, fontSize: 12.5, color: colors.textDisabled }}>Erro 503 · ref {reference}</Text>
+      <PillButton label={tr("Tentar de novo")} onPress={onRetry} style={{ marginTop: 22, paddingHorizontal: 32, alignSelf: "center" }} />
+      <Text style={{ marginTop: 10, fontSize: 12.5, color: colors.textDisabled }}>{tr("Erro")} 503 · ref {reference}</Text>
     </View>
   );
 }

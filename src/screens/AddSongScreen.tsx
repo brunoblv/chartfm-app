@@ -11,6 +11,7 @@ import type { ChartSong } from "../data/mock";
 import { sameChartSong } from "../data/mock";
 import { resolveMediaUrl } from "../lib/api";
 import { SheetScaffold } from "../components/SheetScaffold";
+import { useTr } from "../i18n/useTr";
 
 function catalogToChartSong(song: SearchSong, seed: number): ChartSong {
   return {
@@ -122,6 +123,7 @@ function SectionLabel({ children }: { children: string }) {
 }
 
 export function AddSongScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const insets = useSafeAreaInsets();
   const { chart, addSong } = useAppState();
@@ -176,10 +178,10 @@ export function AddSongScreen() {
         </View>
         <View style={{ paddingHorizontal: 20, paddingBottom: 12, flexDirection: "row", alignItems: "center" }}>
           <Text style={{ flex: 1, fontSize: 17, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
-            Adicionar música
+            {tr("Adicionar música")}
           </Text>
           <Pressable onPress={() => navigation.goBack()} hitSlop={8}>
-            <Text style={{ fontSize: 14, fontWeight: "700", color: colors.accent }}>Pronto</Text>
+            <Text style={{ fontSize: 14, fontWeight: "700", color: colors.accent }}>{tr("Pronto")}</Text>
           </Pressable>
         </View>
         <View style={{ paddingHorizontal: 20, paddingBottom: 12 }}>
@@ -201,7 +203,7 @@ export function AddSongScreen() {
               value={query}
               onChangeText={setQuery}
               autoFocus
-              placeholder="Buscar no catálogo ou no Spotify"
+              placeholder={tr("Buscar no catálogo ou no Spotify")}
               placeholderTextColor={colors.textMuted}
               style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text, padding: 0 }}
             />
@@ -211,12 +213,11 @@ export function AddSongScreen() {
           {!searching ? (
             <View style={{ paddingHorizontal: 16 }}>
               <Text style={{ fontSize: 13, color: colors.textMuted, marginBottom: 14, paddingHorizontal: 4 }}>
-                Digite para buscar no catálogo do ChartFM e no Spotify. A música entra na parada; você reordena no
-                editor.
+                {tr("Digite para buscar no catálogo do ChartFM e no Spotify. A música entra na parada; você reordena no editor.")}
               </Text>
               {suggestions.length > 0 ? (
                 <>
-                  <SectionLabel>Mais ouvidas no Global 100</SectionLabel>
+                  <SectionLabel>{tr("Mais ouvidas no Global 100")}</SectionLabel>
                   <View
                     style={{
                       backgroundColor: colors.surface,
@@ -254,12 +255,12 @@ export function AddSongScreen() {
           ) : loading ? (
             <ActivityIndicator color={colors.text} style={{ marginTop: 20 }} />
           ) : empty ? (
-            <Text style={{ paddingHorizontal: 20, fontSize: 13, color: colors.textMuted }}>Nenhuma música encontrada.</Text>
+            <Text style={{ paddingHorizontal: 20, fontSize: 13, color: colors.textMuted }}>{tr("Nenhuma música encontrada.")}</Text>
           ) : (
             <View style={{ paddingHorizontal: 16, gap: 16 }}>
               {catalogSongs.length > 0 ? (
                 <View>
-                  <SectionLabel>Catálogo</SectionLabel>
+                  <SectionLabel>{tr("Catálogo")}</SectionLabel>
                   <View
                     style={{
                       backgroundColor: colors.surface,
@@ -288,7 +289,7 @@ export function AddSongScreen() {
               ) : null}
               {spotifyTracks.length > 0 ? (
                 <View>
-                  <SectionLabel>Spotify</SectionLabel>
+                  <SectionLabel>{tr("Spotify")}</SectionLabel>
                   <View
                     style={{
                       backgroundColor: colors.surface,
@@ -316,7 +317,7 @@ export function AddSongScreen() {
                 </View>
               ) : spotifyQuery.data?.unavailable ? (
                 <Text style={{ fontSize: 13, color: colors.textMuted, paddingHorizontal: 4 }}>
-                  {spotifyQuery.data.error ?? "Spotify indisponível no momento. Tente de novo em alguns minutos."}
+                  {spotifyQuery.data.error ?? tr("Spotify indisponível no momento. Tente de novo em alguns minutos.")}
                 </Text>
               ) : null}
             </View>

@@ -7,6 +7,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useBlockMutation, useMuteMutation } from "../api/profile";
 import { SheetScaffold } from "../components/SheetScaffold";
+import { useTr } from "../i18n/useTr";
 
 type Route = RouteProp<RootStackParamList, "UserActionsSheet">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -17,6 +18,7 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
  * ProfileSheetScreen/CreateSheetScreen.
  */
 export function UserActionsSheet() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
@@ -61,23 +63,23 @@ export function UserActionsSheet() {
   const handleMute = () => {
     muteMutation.mutate(userId, {
       onSuccess: (data) => setMuted(data.muted),
-      onError: () => Alert.alert("Não foi possível concluir", "Tente novamente."),
+      onError: () => Alert.alert(tr("Não foi possível concluir"), tr("Tente novamente.")),
     });
   };
 
   const handleBlock = () => {
     Alert.alert(
-      "Bloquear @" + handle,
-      "Vocês não vão mais se encontrar no ChartFM, e o follow entre vocês será desfeito.",
+      tr("Bloquear") + " @" + handle,
+      tr("Vocês não vão mais se encontrar no ChartFM, e o follow entre vocês será desfeito."),
       [
-        { text: "Cancelar", style: "cancel" },
+        { text: tr("Cancelar"), style: "cancel" },
         {
-          text: "Bloquear",
+          text: tr("Bloquear"),
           style: "destructive",
           onPress: () =>
             blockMutation.mutate(userId, {
               onSuccess: () => navigation.goBack(),
-              onError: () => Alert.alert("Não foi possível bloquear", "Tente novamente."),
+              onError: () => Alert.alert(tr("Não foi possível bloquear"), tr("Tente novamente.")),
             }),
         },
       ],
@@ -121,7 +123,7 @@ export function UserActionsSheet() {
               )}
             </Svg>
           }
-          label={muted ? "Deixar de silenciar" : "Silenciar"}
+          label={muted ? tr("Deixar de silenciar") : tr("Silenciar")}
           onPress={handleMute}
           disabled={muteMutation.isPending}
         />
@@ -132,7 +134,7 @@ export function UserActionsSheet() {
               <Path d="M5.5 5.5l13 13" />
             </Svg>
           }
-          label="Bloquear"
+          label={tr("Bloquear")}
           danger
           onPress={handleBlock}
           disabled={blockMutation.isPending}
@@ -144,7 +146,7 @@ export function UserActionsSheet() {
               <Path d="M4 21V4a1 1 0 0 1 1-1h10l4 4v9.5a1 1 0 0 1-1 1H8l-4 3.5z" />
             </Svg>
           }
-          label="Denunciar"
+          label={tr("Denunciar")}
           onPress={handleReport}
         />
     </SheetScaffold>

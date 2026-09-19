@@ -11,6 +11,7 @@ import { resolveMediaUrl } from "../lib/api";
 import { PillButton } from "../components/PillButton";
 import { SheetScaffold } from "../components/SheetScaffold";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "WriteReview">;
@@ -19,7 +20,7 @@ const MIN_REVIEW_CHARS = 50;
 
 /** Nota tocável de 0 a 100. Sem `@react-native-community/slider` no projeto, um `View` com o responder nativo basta. */
 function RatingBar({ value, onChange }: { value: number; onChange: (v: number) => void }) {
-  const { colors } = useAppTheme();
+  const { colors, lang } = useAppTheme();
   const [width, setWidth] = useState(0);
 
   const setFromX = (x: number) => {
@@ -60,7 +61,8 @@ function RatingBar({ value, onChange }: { value: number; onChange: (v: number) =
  * com 50+ caracteres, senão é descartado).
  */
 export function WriteReviewScreen() {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const preselected = route.params;
@@ -92,7 +94,7 @@ export function WriteReviewScreen() {
       { albumId: selected.id, rating, reviewBody: text.trim() || undefined },
       {
         onSuccess: () => navigation.goBack(),
-        onError: (error) => Alert.alert("Não foi possível avaliar", createErrorMessage(error)),
+        onError: (error) => Alert.alert(tr("Não foi possível avaliar"), createErrorMessage(error)),
       }
     );
   };
@@ -128,7 +130,7 @@ export function WriteReviewScreen() {
                 </Pressable>
               )}
               <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
-                Avaliar álbum
+                {tr("Avaliar álbum")}
               </Text>
             </View>
 
@@ -150,20 +152,20 @@ export function WriteReviewScreen() {
 
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 22, marginBottom: 10 }}>
               <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.4, textTransform: "uppercase", color: colors.textMuted }}>
-                Sua nota
+                {tr("Sua nota")}
               </Text>
               <Text style={{ fontSize: 22, fontWeight: "800", color: scoreColor(rating) }}>{rating}</Text>
             </View>
             <RatingBar value={rating} onChange={setRating} />
 
             <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.4, textTransform: "uppercase", color: colors.textMuted, marginTop: 22, marginBottom: 8 }}>
-              Review (opcional, mín. {MIN_REVIEW_CHARS} caracteres)
+              {lang === "en" ? `Review (optional, min. ${MIN_REVIEW_CHARS} characters)` : `Review (opcional, mín. ${MIN_REVIEW_CHARS} caracteres)`}
             </Text>
             <TextInput
               value={text}
               onChangeText={setText}
               multiline
-              placeholder="O que você achou desse álbum?"
+              placeholder={tr("O que você achou desse álbum?")}
               placeholderTextColor={colors.textMuted}
               style={{
                 minHeight: 110,
@@ -177,12 +179,12 @@ export function WriteReviewScreen() {
             />
             {textTooShort && (
               <Text style={{ fontSize: 12, color: colors.downFg, marginTop: 6 }}>
-                Faltam {MIN_REVIEW_CHARS - text.trim().length} caracteres, ou apague tudo para avaliar só com a nota.
+                {lang === "en" ? `${MIN_REVIEW_CHARS - text.trim().length} more characters needed, or clear everything to rate with the score only.` : `Faltam ${MIN_REVIEW_CHARS - text.trim().length} caracteres, ou apague tudo para avaliar só com a nota.`}
               </Text>
             )}
 
             <PillButton
-              label="Publicar avaliação"
+              label={tr("Publicar avaliação")}
               onPress={handleSubmit}
               loading={mutation.isPending}
               disabled={textTooShort}
@@ -193,7 +195,7 @@ export function WriteReviewScreen() {
           <>
             <View style={{ paddingHorizontal: 20, paddingBottom: 12 }}>
               <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
-                Avaliar álbum
+                {tr("Avaliar álbum")}
               </Text>
               <View style={{ marginTop: 12, flexDirection: "row", alignItems: "center", gap: 9, backgroundColor: colors.fillSubtle, borderRadius: 12, padding: 13 }}>
                 <Svg width={17} height={17} viewBox="0 0 24 24" fill="none" stroke={colors.text} strokeWidth={2} strokeLinecap="round">
@@ -204,7 +206,7 @@ export function WriteReviewScreen() {
                   value={query}
                   onChangeText={setQuery}
                   autoFocus
-                  placeholder="buscar álbum ou artista"
+                  placeholder={tr("buscar álbum ou artista")}
                   placeholderTextColor={colors.textMuted}
                   style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text, padding: 0 }}
                 />
@@ -213,7 +215,7 @@ export function WriteReviewScreen() {
             <ScrollView>
               {query.trim().length < 2 ? (
                 <Text style={{ paddingHorizontal: 20, fontSize: 13, color: colors.textMuted }}>
-                  Digite pelo menos 2 letras para buscar.
+                  {tr("Digite pelo menos 2 letras para buscar.")}
                 </Text>
               ) : isLoading ? (
                 <ActivityIndicator color={colors.text} style={{ marginTop: 20 }} />
@@ -250,7 +252,7 @@ export function WriteReviewScreen() {
                     </Pressable>
                   ))}
                   {results.length === 0 && (
-                    <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>Nenhum álbum encontrado.</Text>
+                    <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>{tr("Nenhum álbum encontrado.")}</Text>
                   )}
                 </View>
               )}

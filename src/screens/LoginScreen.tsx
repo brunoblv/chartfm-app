@@ -10,6 +10,7 @@ import { PillButton } from "../components/PillButton";
 import { SocialIcon } from "../components/SocialIcon";
 import { RootStackParamList } from "../navigation/RootNavigator";
 import { useAuth } from "../state/AuthContext";
+import { useTr } from "../i18n/useTr";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -28,6 +29,7 @@ const LOGIN_ERROR_MESSAGES: Record<string, string> = {
 };
 
 export function LoginScreen({ navigation }: Props) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const { signInWithGoogle, signInWithPassword } = useAuth();
   const [email, setEmail] = useState("");
@@ -43,7 +45,7 @@ export function LoginScreen({ navigation }: Props) {
       if (result.ok) {
         navigation.replace("Main");
       } else if (result.error !== "cancelled") {
-        Alert.alert("Não foi possível entrar", GOOGLE_ERROR_MESSAGES[result.error ?? ""] ?? "Tente novamente.");
+        Alert.alert(tr("Não foi possível entrar"), tr(GOOGLE_ERROR_MESSAGES[result.error ?? ""] ?? "Tente novamente."));
       }
     } finally {
       setIsGoogleLoading(false);
@@ -53,7 +55,7 @@ export function LoginScreen({ navigation }: Props) {
   const handlePasswordLogin = async () => {
     if (isLoginLoading) return;
     if (!email || !password) {
-      Alert.alert("Não foi possível entrar", LOGIN_ERROR_MESSAGES.missing_fields);
+      Alert.alert(tr("Não foi possível entrar"), tr(LOGIN_ERROR_MESSAGES.missing_fields));
       return;
     }
     setIsLoginLoading(true);
@@ -62,7 +64,7 @@ export function LoginScreen({ navigation }: Props) {
       if (result.ok) {
         navigation.replace("Main");
       } else {
-        Alert.alert("Não foi possível entrar", LOGIN_ERROR_MESSAGES[result.error ?? ""] ?? "Tente novamente.");
+        Alert.alert(tr("Não foi possível entrar"), tr(LOGIN_ERROR_MESSAGES[result.error ?? ""] ?? "Tente novamente."));
       }
     } finally {
       setIsLoginLoading(false);
@@ -86,24 +88,24 @@ export function LoginScreen({ navigation }: Props) {
         <View style={{ flex: 1, justifyContent: "center" }}>
           <ChartFMLogo size={40} />
           <Text style={{ fontSize: 26, fontWeight: "800", letterSpacing: -0.6, color: colors.text, marginTop: 18, marginBottom: 4 }}>
-            Entrar
+            {tr("Entrar")}
           </Text>
-          <Text style={{ fontSize: 14, color: colors.textMuted, marginBottom: 26 }}>Continue de onde parou</Text>
+          <Text style={{ fontSize: 14, color: colors.textMuted, marginBottom: 26 }}>{tr("Continue de onde parou")}</Text>
 
           <View style={{ gap: 12 }}>
-            <AuthField label="Email" value={email} onChangeText={setEmail} placeholder="voce@exemplo.com" />
-            <AuthField label="Senha" value={password} onChangeText={setPassword} secureTextEntry placeholder="••••••••" />
+            <AuthField label={tr("Email")} value={email} onChangeText={setEmail} placeholder={tr("voce@exemplo.com")} />
+            <AuthField label={tr("Senha")} value={password} onChangeText={setPassword} secureTextEntry placeholder="••••••••" />
           </View>
 
           <Pressable style={{ alignSelf: "flex-end", marginTop: 10 }}>
-            <Text style={{ fontSize: 13, color: colors.accent, fontWeight: "600" }}>Esqueci minha senha</Text>
+            <Text style={{ fontSize: 13, color: colors.accent, fontWeight: "600" }}>{tr("Esqueci minha senha")}</Text>
           </Pressable>
 
-          <PillButton label="Entrar" style={{ marginTop: 22 }} onPress={handlePasswordLogin} loading={isLoginLoading} />
+          <PillButton label={tr("Entrar")} style={{ marginTop: 22 }} onPress={handlePasswordLogin} loading={isLoginLoading} />
 
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginVertical: 22 }}>
             <View style={{ flex: 1, height: 1, backgroundColor: colors.divider }} />
-            <Text style={{ fontSize: 12, color: colors.textMuted }}>ou continue com</Text>
+            <Text style={{ fontSize: 12, color: colors.textMuted }}>{tr("ou continue com")}</Text>
             <View style={{ flex: 1, height: 1, backgroundColor: colors.divider }} />
           </View>
 
@@ -127,7 +129,7 @@ export function LoginScreen({ navigation }: Props) {
             ) : (
               <>
                 <SocialIcon name="google" size={16} />
-                <Text style={{ fontWeight: "700", fontSize: 14, color: colors.text }}>Google</Text>
+                <Text style={{ fontWeight: "700", fontSize: 14, color: colors.text }}>{tr("Google")}</Text>
               </>
             )}
           </Pressable>
@@ -139,7 +141,7 @@ export function LoginScreen({ navigation }: Props) {
           style={{ alignItems: "center", paddingVertical: 14, marginBottom: 12 }}
         >
           <Text style={{ fontSize: 14, color: colors.textMuted }}>
-            Não tem conta? <Text style={{ color: colors.accent, fontWeight: "700" }}>Criar conta</Text>
+            Não tem conta? <Text style={{ color: colors.accent, fontWeight: "700" }}>{tr("Criar conta")}</Text>
           </Text>
         </Pressable>
       </View>

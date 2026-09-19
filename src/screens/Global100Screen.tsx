@@ -9,6 +9,7 @@ import { BackHeader } from "../components/BackHeader";
 import { SongRow } from "../components/SongRow";
 import { useGlobalArtistsQuery, useGlobalSongsQuery, songItemToGlobalSong } from "../api/global";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -20,18 +21,19 @@ const TABS = [
 ] as const;
 
 function ComingSoon({ label }: { label: string }) {
-  const { colors } = useAppTheme();
+  const { colors, lang } = useAppTheme();
   return (
     <View style={{ marginHorizontal: 16, paddingVertical: 40, alignItems: "center" }}>
       <Text style={{ color: colors.textMuted, fontSize: 13.5, textAlign: "center" }}>
-        Ranking de {label} ainda não está disponível.
+        {lang === "en" ? `${label} ranking is not available yet.` : `Ranking de ${label} ainda não está disponível.`}
       </Text>
     </View>
   );
 }
 
 export function Global100Screen({ asTab }: { asTab?: boolean } = {}) {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("songs");
@@ -60,9 +62,9 @@ export function Global100Screen({ asTab }: { asTab?: boolean } = {}) {
           </View>
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={{ fontSize: 11, fontWeight: "600", letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.7)" }}>
-              {header?.weekLabel ?? "Carregando…"}
+              {header?.weekLabel ?? tr("Carregando…")}
             </Text>
-            <Text style={{ fontSize: 32, fontWeight: "800", letterSpacing: -0.7, color: "#fff", marginTop: 4 }}>Global 100</Text>
+            <Text style={{ fontSize: 32, fontWeight: "800", letterSpacing: -0.7, color: "#fff", marginTop: 4 }}>{tr("Global 100")}</Text>
           </View>
         </View>
         {header ? (
@@ -78,14 +80,14 @@ export function Global100Screen({ asTab }: { asTab?: boolean } = {}) {
             onPress={() => header?.prevWeekIndex && setWeek(header.prevWeekIndex)}
             style={{ borderWidth: 1, borderColor: header?.hasPrevWeek ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.12)", paddingVertical: 8, paddingHorizontal: 13, borderRadius: 10 }}
           >
-            <Text style={{ color: header?.hasPrevWeek ? "#fff" : "rgba(255,255,255,0.45)", fontWeight: "600", fontSize: 12.5 }}>‹ Anterior</Text>
+            <Text style={{ color: header?.hasPrevWeek ? "#fff" : "rgba(255,255,255,0.45)", fontWeight: "600", fontSize: 12.5 }}>{tr("‹ Anterior")}</Text>
           </Pressable>
           <Pressable
             disabled={!header?.hasNextWeek}
             onPress={() => header?.nextWeekIndex && setWeek(header.nextWeekIndex)}
             style={{ borderWidth: 1, borderColor: header?.hasNextWeek ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.12)", paddingVertical: 8, paddingHorizontal: 13, borderRadius: 10 }}
           >
-            <Text style={{ color: header?.hasNextWeek ? "#fff" : "rgba(255,255,255,0.45)", fontWeight: "600", fontSize: 12.5 }}>Próxima ›</Text>
+            <Text style={{ color: header?.hasNextWeek ? "#fff" : "rgba(255,255,255,0.45)", fontWeight: "600", fontSize: 12.5 }}>{tr("Próxima ›")}</Text>
           </Pressable>
         </View>
       </View>
@@ -97,22 +99,22 @@ export function Global100Screen({ asTab }: { asTab?: boolean } = {}) {
             onPress={() => setTab(t.id)}
             style={{ backgroundColor: tab === t.id ? colors.btnDarkBg : colors.fillSubtle, borderRadius: 100, paddingVertical: 10, paddingHorizontal: 15, marginRight: 8 }}
           >
-            <Text style={{ color: tab === t.id ? colors.btnDarkFg : colors.textSubtle, fontWeight: "700", fontSize: 13 }}>{t.label}</Text>
+            <Text style={{ color: tab === t.id ? colors.btnDarkFg : colors.textSubtle, fontWeight: "700", fontSize: 13 }}>{tr(t.label)}</Text>
           </Pressable>
         ))}
       </ScrollView>
 
       {tab === "clips" ? (
-        <ComingSoon label="clipes" />
+        <ComingSoon label={tr("clipes")} />
       ) : tab === "albums" ? (
-        <ComingSoon label="álbuns" />
+        <ComingSoon label={tr("álbuns")} />
       ) : active.isLoading ? (
         <View style={{ paddingVertical: 40, alignItems: "center" }}>
           <ActivityIndicator color={colors.text} />
         </View>
       ) : active.isError ? (
         <View style={{ paddingVertical: 40, alignItems: "center" }}>
-          <Text style={{ color: colors.textMuted, fontSize: 13.5 }}>Não foi possível carregar o ranking.</Text>
+          <Text style={{ color: colors.textMuted, fontSize: 13.5 }}>{tr("Não foi possível carregar o ranking.")}</Text>
         </View>
       ) : (
         <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden" }}>
@@ -122,7 +124,7 @@ export function Global100Screen({ asTab }: { asTab?: boolean } = {}) {
                   key={`${a.position}-${a.name}`}
                   song={{ t: a.name, a: "", mv: a.movement, d: a.delta ?? undefined, cover: { palette: ["#1D1D1F", "#5B5B60"], seed: i } }}
                   position={a.position}
-                  meta={`${a.weeks} ${a.weeks === 1 ? "semana" : "semanas"} · pico #${a.peak}`}
+                  meta={lang === "en" ? `${a.weeks} ${a.weeks === 1 ? "week" : "weeks"} · peak #${a.peak}` : `${a.weeks} ${a.weeks === 1 ? "semana" : "semanas"} · pico #${a.peak}`}
                   last={i === (artistsQuery.data?.items.length ?? 0) - 1}
                 />
               ))

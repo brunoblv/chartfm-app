@@ -4,9 +4,11 @@ import { useAppTheme } from "../../theme/ThemeProvider";
 import { SuggestedPerson } from "../../api/homeHub";
 import { useFollowMutation } from "../../api/profile";
 import { resolveMediaUrl } from "../../lib/api";
+import { useTr } from "../../i18n/useTr";
 
 export function PeopleToMeetRow({ people, onPress }: { people: SuggestedPerson[]; onPress: (handle: string) => void }) {
-  const { colors } = useAppTheme();
+  const tr = useTr();
+  const { colors, lang } = useAppTheme();
   const followMutation = useFollowMutation();
   if (people.length === 0) return null;
 
@@ -38,18 +40,18 @@ export function PeopleToMeetRow({ people, onPress }: { people: SuggestedPerson[]
             {p.name}
           </Text>
           <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 2 }}>
-            {p.commonGenres.length > 0 ? `${p.commonGenres.length} gêneros em comum` : `${p.chartsPublished} paradas`}
+            {p.commonGenres.length > 0 ? lang === "en" ? `${p.commonGenres.length} genres in common` : `${p.commonGenres.length} gêneros em comum` : lang === "en" ? `${p.chartsPublished} charts` : `${p.chartsPublished} paradas`}
           </Text>
           <Pressable
             disabled={followMutation.isPending}
             onPress={() =>
               followMutation.mutate(p.id, {
-                onError: () => Alert.alert("Não foi possível seguir", "Tente novamente."),
+                onError: () => Alert.alert(tr("Não foi possível seguir"), tr("Tente novamente.")),
               })
             }
             style={{ marginTop: 11, backgroundColor: colors.accent, borderRadius: 100, paddingVertical: 9, width: "100%", alignItems: "center" }}
           >
-            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>Seguir</Text>
+            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>{tr("Seguir")}</Text>
           </Pressable>
         </View>
       ))}

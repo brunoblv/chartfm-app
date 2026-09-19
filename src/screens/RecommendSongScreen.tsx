@@ -10,6 +10,7 @@ import { resolveMediaUrl } from "../lib/api";
 import { PillButton } from "../components/PillButton";
 import { SheetScaffold } from "../components/SheetScaffold";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -19,6 +20,7 @@ type Nav = NativeStackNavigationProp<RootStackParamList>;
  * música, escreve um comentário opcional e publica via `POST /api/recommendations`.
  */
 export function RecommendSongScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const [query, setQuery] = useState("");
@@ -41,7 +43,7 @@ export function RecommendSongScreen() {
       },
       {
         onSuccess: () => navigation.goBack(),
-        onError: (error) => Alert.alert("Não foi possível recomendar", createErrorMessage(error)),
+        onError: (error) => Alert.alert(tr("Não foi possível recomendar"), createErrorMessage(error)),
       }
     );
   };
@@ -75,7 +77,7 @@ export function RecommendSongScreen() {
                 </Svg>
               </Pressable>
               <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
-                Recomendar música
+                {tr("Recomendar música")}
               </Text>
             </View>
 
@@ -96,14 +98,14 @@ export function RecommendSongScreen() {
             </View>
 
             <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.4, textTransform: "uppercase", color: colors.textMuted, marginTop: 20, marginBottom: 8 }}>
-              Por que essa música? (opcional)
+              {tr("Por que essa música? (opcional)")}
             </Text>
             <TextInput
               value={text}
               onChangeText={setText}
               multiline
               maxLength={1000}
-              placeholder="Escreva um comentário para quem for ouvir…"
+              placeholder={tr("Escreva um comentário para quem for ouvir…")}
               placeholderTextColor={colors.textMuted}
               style={{
                 minHeight: 90,
@@ -117,7 +119,7 @@ export function RecommendSongScreen() {
             />
 
             <PillButton
-              label="Publicar recomendação"
+              label={tr("Publicar recomendação")}
               onPress={handleSubmit}
               loading={mutation.isPending}
               style={{ marginTop: 20, marginBottom: 12 }}
@@ -127,7 +129,7 @@ export function RecommendSongScreen() {
           <>
             <View style={{ paddingHorizontal: 20, paddingBottom: 12 }}>
               <Text style={{ fontSize: 17, fontWeight: "800", letterSpacing: -0.5, color: colors.text }}>
-                Recomendar música
+                {tr("Recomendar música")}
               </Text>
               <View style={{ marginTop: 12, flexDirection: "row", alignItems: "center", gap: 9, backgroundColor: colors.fillSubtle, borderRadius: 12, padding: 13 }}>
                 <Svg width={17} height={17} viewBox="0 0 24 24" fill="none" stroke={colors.text} strokeWidth={2} strokeLinecap="round">
@@ -138,7 +140,7 @@ export function RecommendSongScreen() {
                   value={query}
                   onChangeText={setQuery}
                   autoFocus
-                  placeholder="buscar música ou artista"
+                  placeholder={tr("buscar música ou artista")}
                   placeholderTextColor={colors.textMuted}
                   style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text, padding: 0 }}
                 />
@@ -147,7 +149,7 @@ export function RecommendSongScreen() {
             <ScrollView>
               {query.trim().length < 2 ? (
                 <Text style={{ paddingHorizontal: 20, fontSize: 13, color: colors.textMuted }}>
-                  Digite pelo menos 2 letras para buscar.
+                  {tr("Digite pelo menos 2 letras para buscar.")}
                 </Text>
               ) : isLoading ? (
                 <ActivityIndicator color={colors.text} style={{ marginTop: 20 }} />
@@ -183,7 +185,7 @@ export function RecommendSongScreen() {
                     </Pressable>
                   ))}
                   {results.length === 0 && (
-                    <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>Nenhuma música encontrada.</Text>
+                    <Text style={{ padding: 16, fontSize: 13, color: colors.textMuted }}>{tr("Nenhuma música encontrada.")}</Text>
                   )}
                 </View>
               )}

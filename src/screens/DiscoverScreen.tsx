@@ -15,10 +15,12 @@ import { useRecommendationsQuery } from "../api/discover";
 import { useGlobalSongsQuery, songItemToGlobalSong } from "../api/global";
 import { useHomeDiscoveryQuery, useHomeHubQuery } from "../api/homeHub";
 import { useFollowMutation } from "../api/profile";
+import { useTr } from "../i18n/useTr";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export function DiscoverScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const { cards: trending, isLoading: isTrendingLoading } = useRecommendationsQuery();
@@ -36,7 +38,7 @@ export function DiscoverScreen() {
   return (
     <Screen>
       <View style={{ paddingHorizontal: 20, paddingBottom: 12 }}>
-        <Text style={{ fontSize: 30, fontWeight: "800", letterSpacing: -0.8, color: colors.text }}>Discover</Text>
+        <Text style={{ fontSize: 30, fontWeight: "800", letterSpacing: -0.8, color: colors.text }}>{tr("Discover")}</Text>
       </View>
       <View style={{ paddingHorizontal: 16, paddingBottom: 8 }}>
         <Pressable
@@ -47,11 +49,11 @@ export function DiscoverScreen() {
             <Circle cx={11} cy={11} r={7} />
             <Path d="M20 20l-3.5-3.5" />
           </Svg>
-          <Text style={{ fontSize: 14.5, color: colors.textMuted }}>Músicas, artistas, paradas, pessoas</Text>
+          <Text style={{ fontSize: 14.5, color: colors.textMuted }}>{tr("Músicas, artistas, paradas, pessoas")}</Text>
         </Pressable>
       </View>
 
-      <SectionHeader title="Em alta esta semana" />
+      <SectionHeader title={tr("Em alta esta semana")} />
       {isTrendingLoading ? (
         <ActivityIndicator color={colors.textMuted} style={{ marginVertical: 12 }} />
       ) : (
@@ -68,12 +70,12 @@ export function DiscoverScreen() {
             </Pressable>
           ))}
           {trending.length === 0 && (
-            <Text style={{ fontSize: 13, color: colors.textMuted, paddingVertical: 8 }}>Nada em alta no momento.</Text>
+            <Text style={{ fontSize: 13, color: colors.textMuted, paddingVertical: 8 }}>{tr("Nada em alta no momento.")}</Text>
           )}
         </ScrollView>
       )}
 
-      <SectionHeader title="Paradas populares" />
+      <SectionHeader title={tr("Paradas populares")} />
       {discoveryQuery.isLoading ? (
         <ActivityIndicator color={colors.textMuted} style={{ marginVertical: 12 }} />
       ) : (
@@ -99,7 +101,7 @@ export function DiscoverScreen() {
                     {pc.paradaNome}
                   </Text>
                   <Text numberOfLines={1} style={{ fontSize: 11, color: colors.textMuted }}>
-                    @{pc.authorHandle} · {pc.likes} curtidas
+                    @{pc.authorHandle} · {pc.likes} {tr("curtidas")}
                   </Text>
                 </View>
               </View>
@@ -117,12 +119,12 @@ export function DiscoverScreen() {
             </Pressable>
           ))}
           {popularCharts.length === 0 && (
-            <Text style={{ fontSize: 13, color: colors.textMuted, paddingVertical: 8 }}>Nenhuma parada popular no momento.</Text>
+            <Text style={{ fontSize: 13, color: colors.textMuted, paddingVertical: 8 }}>{tr("Nenhuma parada popular no momento.")}</Text>
           )}
         </ScrollView>
       )}
 
-      <SectionHeader title="Subindo rápido" />
+      <SectionHeader title={tr("Subindo rápido")} />
       <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, overflow: "hidden", marginHorizontal: 16 }}>
         {climbing.map((s, i) => (
           <SongRow
@@ -136,7 +138,7 @@ export function DiscoverScreen() {
 
       {people.length > 0 && (
         <>
-          <SectionHeader title="Pessoas com gosto parecido" />
+          <SectionHeader title={tr("Pessoas com gosto parecido")} />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
             {people.map((u) => (
               <View
@@ -162,12 +164,12 @@ export function DiscoverScreen() {
                   disabled={followMutation.isPending}
                   onPress={() =>
                     followMutation.mutate(u.id, {
-                      onError: () => Alert.alert("Não foi possível seguir", "Tente novamente."),
+                      onError: () => Alert.alert(tr("Não foi possível seguir"), tr("Tente novamente.")),
                     })
                   }
                   style={{ marginTop: 11, backgroundColor: colors.accent, borderRadius: 100, paddingVertical: 9, width: "100%", alignItems: "center" }}
                 >
-                  <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>Seguir</Text>
+                  <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>{tr("Seguir")}</Text>
                 </Pressable>
               </View>
             ))}

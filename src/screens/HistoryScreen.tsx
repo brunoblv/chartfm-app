@@ -14,6 +14,7 @@ import {
   historyEventVerb,
 } from "../api/history";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Route = RouteProp<RootStackParamList, "History">;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -23,6 +24,7 @@ function formatDate(iso: string): string {
 }
 
 function EventRow({ event, navigation }: { event: HistoryEvent; navigation: Nav }) {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const chartMatch = event.href?.match(/^\/chart\/([^/]+)/);
   const profileMatch = event.href?.match(/^\/profile\/([^/]+)/);
@@ -46,7 +48,7 @@ function EventRow({ event, navigation }: { event: HistoryEvent; navigation: Nav 
     >
       <Text style={{ fontSize: 10.5, color: colors.textMuted, marginBottom: 3 }}>{formatDate(event.at)}</Text>
       <Text style={{ fontSize: 14, color: colors.text }}>
-        Você {historyEventVerb(event.kind)}{" "}
+        {tr("Você")} {tr(historyEventVerb(event.kind))}{" "}
         <Text style={{ fontWeight: "700" }}>{event.target}</Text>
       </Text>
       {event.excerpt ? (
@@ -59,6 +61,7 @@ function EventRow({ event, navigation }: { event: HistoryEvent; navigation: Nav 
 }
 
 export function HistoryScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
@@ -80,7 +83,7 @@ export function HistoryScreen() {
 
   return (
     <Screen scroll={false}>
-      <BackHeader title="Histórico" />
+      <BackHeader title={tr("Histórico")} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingBottom: 12 }}>
         {HISTORY_FILTERS.map((f) => (
           <Pressable
@@ -94,7 +97,7 @@ export function HistoryScreen() {
             }}
           >
             <Text style={{ color: filter === f ? "#fff" : colors.text, fontWeight: "700", fontSize: 12.5 }}>
-              {HISTORY_FILTER_LABELS[f]}
+              {tr(HISTORY_FILTER_LABELS[f])}
               {query.data?.counts[f] != null ? ` (${query.data.counts[f]})` : ""}
             </Text>
           </Pressable>
@@ -105,7 +108,7 @@ export function HistoryScreen() {
         <ActivityIndicator color={colors.text} style={{ marginTop: 30 }} />
       ) : events.length === 0 ? (
         <Text style={{ textAlign: "center", color: colors.textMuted, marginTop: 40 }}>
-          Nenhuma atividade nessa categoria ainda.
+          {tr("Nenhuma atividade nessa categoria ainda.")}
         </Text>
       ) : (
         <ScrollView>
@@ -117,7 +120,7 @@ export function HistoryScreen() {
               {query.isFetching ? (
                 <ActivityIndicator color={colors.text} />
               ) : (
-                <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 13 }}>Carregar mais</Text>
+                <Text style={{ color: colors.accent, fontWeight: "700", fontSize: 13 }}>{tr("Carregar mais")}</Text>
               )}
             </Pressable>
           )}

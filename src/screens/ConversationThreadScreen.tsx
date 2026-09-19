@@ -6,6 +6,7 @@ import { BackHeader } from "../components/BackHeader";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { useConversationQuery, useSendMessageMutation, useMarkConversationReadMutation, DmMessage } from "../api/conversas";
 import { RootStackParamList } from "../navigation/RootNavigator";
+import { useTr } from "../i18n/useTr";
 
 type Route = RouteProp<RootStackParamList, "ConversationThread">;
 
@@ -30,6 +31,7 @@ function Bubble({ message }: { message: DmMessage }) {
 }
 
 export function ConversationThreadScreen() {
+  const tr = useTr();
   const { colors } = useAppTheme();
   const route = useRoute<Route>();
   const { conversationId, name } = route.params;
@@ -70,7 +72,7 @@ export function ConversationThreadScreen() {
           <TextInput
             value={text}
             onChangeText={setText}
-            placeholder="Escreva uma mensagem…"
+            placeholder={tr("Escreva uma mensagem…")}
             placeholderTextColor={colors.textMuted}
             style={{
               flex: 1,

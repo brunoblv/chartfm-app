@@ -29,3 +29,11 @@ Se um dia parte disso virar conteúdo público (por exemplo, um recorte dos núm
 ## Nota: organização do admin (site)
 
 O admin do site (`C:\ChartFM`) deve seguir sempre um layout de sistema organizado (menus agrupados, tabelas em vez de listas soltas empilhadas, sem seções "soltas"). Isso é administrativo/puramente do site — não se aplica a telas do app mobile — mas fica registrado aqui pois é uma diretriz permanente de produto.
+
+## Regra permanente: toda tela nova nasce em português e inglês
+
+Ao criar uma tela (ou texto novo em tela existente), a versão em inglês é obrigatória, no mesmo commit. Nada de texto fixo em português na tela.
+
+Na prática: use `const tr = useTr()` (`src/i18n/useTr.ts`) e envolva cada texto visível: `tr("Texto em português")`, com a tradução adicionada em `src/i18n/en.ts` (a chave é o texto exato em português). Vale para títulos, botões, placeholders, estados vazios, mensagens de erro e textos de acessibilidade. Texto com variável usa duas frases completas (`lang === "en" ? ... : ...`), não concatenação. Mensagens de erro que o site devolve em português entram em `src/i18n/apiErrors.ts` (o cliente da API e os `*ErrorMessage` já passam por ele). Conteúdo de outro tipo que vem do servidor não é traduzido no app; se a tela exibir texto gerado pela API, o site precisa devolvê-lo no idioma certo.
+
+Plano de tradução das telas antigas: `docs/PLANO_TRADUCAO.md`. Depois de mexer em textos, rode `python scripts/check_i18n.py` para achar `tr("...")` sem tradução.
