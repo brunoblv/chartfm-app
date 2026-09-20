@@ -53,3 +53,16 @@ Ao criar uma tela (ou texto novo em tela existente), a versão em inglês é obr
 Na prática: use `const tr = useTr()` (`src/i18n/useTr.ts`) e envolva cada texto visível: `tr("Texto em português")`, com a tradução adicionada em `src/i18n/en.ts` (a chave é o texto exato em português). Vale para títulos, botões, placeholders, estados vazios, mensagens de erro e textos de acessibilidade. Texto com variável usa duas frases completas (`lang === "en" ? ... : ...`), não concatenação. Mensagens de erro que o site devolve em português entram em `src/i18n/apiErrors.ts` (o cliente da API e os `*ErrorMessage` já passam por ele). Conteúdo de outro tipo que vem do servidor não é traduzido no app; se a tela exibir texto gerado pela API, o site precisa devolvê-lo no idioma certo.
 
 Plano de tradução das telas antigas: `docs/PLANO_TRADUCAO.md`. Depois de mexer em textos, rode `python scripts/check_i18n.py` para achar `tr("...")` sem tradução.
+
+## Nota: aba "Parada da semana" do admin não tem espelho no app
+
+Em `/admin/parada-global` (site) há uma aba que mostra o Global 100 da semana para os admins antes da publicação: prévia calculada na hora (sem gravar) desde a segunda, e o snapshot congelado depois que o cron publica. É puramente administrativa, sem tela correspondente no app. Não é esquecimento da regra de espelhamento.
+
+## Regra permanente: o corte das paradas fecha SEMPRE domingo às 23:59 (BRT)
+
+O corte de envio das paradas pessoais para o Global 100 é fixo: a semana fecha domingo às 23:59 (BRT), ou seja, só entra `publishedAt < segunda 00:00 BRT`. Ele NÃO depende do horário de publicação configurado em `/admin/parada-global` e nunca foi "1h antes da publicação" (isso era um desvio do código, corrigido). Nunca reintroduzir corte relativo à publicação.
+
+- O ranking é calculado a partir da segunda às 01:00 (BRT) e fica visível para os admins na aba "Parada da semana" de `/admin/parada-global`.
+- A publicação ao público (página, notificações, playlists, posts nas redes) acontece no dia/horário programado nessa mesma tela, sempre depois do corte.
+- No código: `getGlobalSnapshotDeadline` (corte, fixo) e `getGlobalPublishAt` (publicação, pelo slot) em `lib/chart-week.ts` no site (`C:\ChartFM`). Os textos públicos (FAQ, guias, artigo editorial, PT e EN) dizem "domingo às 23:59" via `formatGlobalDeadlineSlot`.
+- O app não calcula nem exibe o corte por conta própria: qualquer texto sobre prazo de envio no app deve dizer domingo às 23:59.
