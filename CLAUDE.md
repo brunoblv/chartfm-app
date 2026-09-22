@@ -58,6 +58,12 @@ Plano de tradução das telas antigas: `docs/PLANO_TRADUCAO.md`. Depois de mexer
 
 Em `/admin/parada-global` (site) há uma aba que mostra o Global 100 da semana para os admins antes da publicação: prévia calculada na hora (sem gravar) desde a segunda, e o snapshot congelado depois que o cron publica. É puramente administrativa, sem tela correspondente no app. Não é esquecimento da regra de espelhamento.
 
+## Nota: "Qual é o Clipe?" — só o desafio do dia está no app por enquanto
+
+O jogo "Qual é o Clipe?" do site (`C:\ChartFM`, `app/games/qual-e-o-clipe/*`) entrou no app com a tela do desafio diário (`GuessTheClipScreen`, acessível pelo card em Eventos na Home): 5 imagens do clipe, da mais difícil para a mais fácil, pontuação, sequência (streak) e comparação com as outras pessoas depois de responder.
+
+Ainda não têm tela no app (ficam só no site por enquanto): ranking de temporada, ranking geral (carreira) e a página de estatísticas do jogador (`/games/qual-e-o-clipe/ranking`, `/stats`, `/seasons`). Não é esquecimento da regra de espelhamento — é o próximo passo natural, usando os endpoints que já existem (`/api/games/guess-the-clip/ranking/*`, `/me`, `/seasons`).
+
 ## Regra permanente: o corte das paradas fecha SEMPRE domingo às 23:59 (BRT)
 
 O corte de envio das paradas pessoais para o Global 100 é fixo: a semana fecha domingo às 23:59 (BRT), ou seja, só entra `publishedAt < segunda 00:00 BRT`. Ele NÃO depende do horário de publicação configurado em `/admin/parada-global` e nunca foi "1h antes da publicação" (isso era um desvio do código, corrigido). Nunca reintroduzir corte relativo à publicação.

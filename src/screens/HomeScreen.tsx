@@ -19,6 +19,7 @@ import { RootStackParamList } from "../navigation/RootNavigator";
 import { useAuth } from "../state/AuthContext";
 import { useGlobalSongsQuery, songItemToGlobalSong } from "../api/global";
 import { useCopaQuery, useCopaFixturesQuery } from "../api/copa";
+import { useTodayClipGameQuery } from "../api/games/guessTheClip";
 import { useProfileQuery } from "../api/profile";
 import { useRecommendationsQuery } from "../api/discover";
 import { useNotificationsQuery } from "../api/notifications";
@@ -96,6 +97,8 @@ function InicioTab() {
   const copa = copaQuery.data?.copa;
   const copaFixturesQuery = useCopaFixturesQuery(copa?.id);
   const copaLiveCount = (copaFixturesQuery.data?.fixtures ?? []).filter((f) => f.status === "LIVE" && !f.myVote).length;
+  const clipGameQuery = useTodayClipGameQuery();
+  const clipGame = clipGameQuery.data?.game;
   const recommendationsQuery = useRecommendationsQuery();
   const hubQuery = useHomeHubQuery(true);
   const hub = hubQuery.data;
@@ -162,40 +165,75 @@ function InicioTab() {
         ))}
       </Card>
 
+      {copa || clipGame ? <SectionHeader title={tr("Eventos")} /> : null}
+
       {copa ? (
-        <>
-          <SectionHeader title={tr("Eventos")} />
-          <View
-            style={{
-              marginHorizontal: 16,
-              borderRadius: 16,
-              padding: 18,
-              backgroundColor: "#1D1D1F",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 14,
-            }}
-          >
-            <LinearGradient colors={["#FA243C", "#FF5858"]} style={{ width: 44, height: 44, borderRadius: 13, alignItems: "center", justifyContent: "center" }}>
-              <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8} strokeLinecap="round">
-                <Path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z" />
-                <Path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
-              </Svg>
-            </LinearGradient>
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 15, fontWeight: "700", color: "#fff" }}>{copa.name}</Text>
-              <Text style={{ fontSize: 12.5, color: "rgba(255,255,255,0.72)", marginTop: 2 }}>
-                {copaLiveCount > 0 ? (lang === "en" ? `${copaLiveCount} match(es) waiting for your vote` : `${copaLiveCount} confronto(s) esperando seu voto`) : tr("Nenhum confronto pendente")}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => navigation.navigate("Copa")}
-              style={{ backgroundColor: colors.accent, borderRadius: 100, paddingHorizontal: 14, paddingVertical: 9 }}
-            >
-              <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>{tr("VOTAR")}</Text>
-            </Pressable>
+        <View
+          style={{
+            marginHorizontal: 16,
+            marginBottom: clipGame ? 10 : 0,
+            borderRadius: 16,
+            padding: 18,
+            backgroundColor: "#1D1D1F",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 14,
+          }}
+        >
+          <LinearGradient colors={["#FA243C", "#FF5858"]} style={{ width: 44, height: 44, borderRadius: 13, alignItems: "center", justifyContent: "center" }}>
+            <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8} strokeLinecap="round">
+              <Path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z" />
+              <Path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
+            </Svg>
+          </LinearGradient>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={{ fontSize: 15, fontWeight: "700", color: "#fff" }}>{copa.name}</Text>
+            <Text style={{ fontSize: 12.5, color: "rgba(255,255,255,0.72)", marginTop: 2 }}>
+              {copaLiveCount > 0 ? (lang === "en" ? `${copaLiveCount} match(es) waiting for your vote` : `${copaLiveCount} confronto(s) esperando seu voto`) : tr("Nenhum confronto pendente")}
+            </Text>
           </View>
-        </>
+          <Pressable
+            onPress={() => navigation.navigate("Copa")}
+            style={{ backgroundColor: colors.accent, borderRadius: 100, paddingHorizontal: 14, paddingVertical: 9 }}
+          >
+            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>{tr("VOTAR")}</Text>
+          </Pressable>
+        </View>
+      ) : null}
+
+      {clipGame ? (
+        <View
+          style={{
+            marginHorizontal: 16,
+            borderRadius: 16,
+            padding: 18,
+            backgroundColor: "#1D1D1F",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 14,
+          }}
+        >
+          <LinearGradient colors={["#7C3AED", "#C026D3"]} style={{ width: 44, height: 44, borderRadius: 13, alignItems: "center", justifyContent: "center" }}>
+            <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8} strokeLinecap="round">
+              <Path d="M15 10l4.55-2.6a1 1 0 0 1 1.45.9v7.4a1 1 0 0 1-1.45.9L15 14" />
+              <Path d="M3 6h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3z" />
+            </Svg>
+          </LinearGradient>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={{ fontSize: 15, fontWeight: "700", color: "#fff" }}>{tr("Qual é o Clipe?")}</Text>
+            <Text style={{ fontSize: 12.5, color: "rgba(255,255,255,0.72)", marginTop: 2 }}>
+              {clipGame.completed
+                ? tr("Você já jogou hoje. Toque para ver o resultado.")
+                : tr("Adivinhe a música pelas imagens do clipe.")}
+            </Text>
+          </View>
+          <Pressable
+            onPress={() => navigation.navigate("GuessTheClip")}
+            style={{ backgroundColor: colors.accent, borderRadius: 100, paddingHorizontal: 14, paddingVertical: 9 }}
+          >
+            <Text style={{ color: "#fff", fontWeight: "700", fontSize: 12 }}>{clipGame.completed ? tr("VER") : tr("JOGAR")}</Text>
+          </Pressable>
+        </View>
       ) : null}
 
       {hub && hub.people.length > 0 && (
