@@ -1,6 +1,7 @@
 import React from "react";
-import { View, ScrollView, StatusBar } from "react-native";
+import { View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 import { useAppTheme } from "../theme/ThemeProvider";
 
 export function Screen({
@@ -16,7 +17,7 @@ export function Screen({
   const Body = scroll ? ScrollView : View;
   return (
     <SafeAreaView edges={edges} style={{ flex: 1, backgroundColor: colors.bg }}>
-      <StatusBar barStyle={theme === "dark" ? "light-content" : "dark-content"} />
+      <StatusBar style={theme === "dark" ? "light" : "dark"} />
       <Body style={{ flex: 1 }} contentContainerStyle={scroll ? { paddingBottom: 24 } : undefined}>
         {children}
       </Body>
