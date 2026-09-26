@@ -525,4 +525,6 @@ export const en: Record<string, string> = {
   "Escolha uma música": "Pick a song",
   "Desafio não encontrado": "Challenge not found",
   "Não há mais imagens para liberar": "No more images to unlock",
+  "Playlists do ChartFM": "ChartFM playlists",
+  "Ouvir agora": "Listen now",
 };

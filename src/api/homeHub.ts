@@ -60,11 +60,21 @@ export interface WeekStatus {
   thisWeekChartId: string | null;
 }
 
+/** Espelha `HomePlaylistItem` de c:\ChartFM\lib\home-playlists.ts. */
+export interface HomePlaylist {
+  id: string;
+  title: string;
+  description: string | null;
+  coverUrl: string | null;
+  url: string;
+}
+
 export interface HomeHubResponse {
   weekStatus: WeekStatus;
   recap: WeeklyRecap;
   friendCharts: FriendChart[];
   people: SuggestedPerson[];
+  playlists?: HomePlaylist[];
 }
 
 export function useHomeHubQuery(enabled: boolean) {

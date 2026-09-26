@@ -32,6 +32,7 @@ import { PeopleToMeetRow } from "../components/home/PeopleToMeetRow";
 import { ReviewsRow } from "../components/home/ReviewsRow";
 import { ReleasesRow } from "../components/home/ReleasesRow";
 import { ClipReleasesRow } from "../components/home/ClipReleasesRow";
+import { PlaylistsCarousel } from "../components/home/PlaylistsCarousel";
 import { FeedList } from "../components/feed/FeedList";
 import { FeedTab as FeedTabType } from "../api/feed";
 
@@ -122,6 +123,12 @@ function InicioTab() {
       {hub?.recap && (
         <View style={{ marginTop: 14 }}>
           <WeeklyRecapCard recap={hub.recap} />
+        </View>
+      )}
+
+      {!!hub?.playlists?.length && (
+        <View style={{ marginTop: 14 }}>
+          <PlaylistsCarousel playlists={hub.playlists} />
         </View>
       )}
 
