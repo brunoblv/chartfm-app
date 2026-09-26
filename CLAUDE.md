@@ -72,3 +72,11 @@ O corte de envio das paradas pessoais para o Global 100 é fixo: a semana fecha 
 - A publicação ao público (página, notificações, playlists, posts nas redes) acontece no dia/horário programado nessa mesma tela, sempre depois do corte.
 - No código: `getGlobalSnapshotDeadline` (corte, fixo) e `getGlobalPublishAt` (publicação, pelo slot) em `lib/chart-week.ts` no site (`C:\ChartFM`). Os textos públicos (FAQ, guias, artigo editorial, PT e EN) dizem "domingo às 23:59" via `formatGlobalDeadlineSlot`.
 - O app não calcula nem exibe o corte por conta própria: qualquer texto sobre prazo de envio no app deve dizer domingo às 23:59.
+
+## Nota: vídeos "Top 10 [Artista]" e "Quantas você conhece?" não têm espelho no app
+
+Os dois formatos de vídeo automático da Central de Mídias do site (aba "Top 10 e Quantas você conhece?" em `/admin/midias`) são puramente administrativos: o admin escolhe 10 músicas, clipes e trechos, gera o vídeo 9:16 e agenda nas redes. Não existe tela correspondente aqui e não é esquecimento da regra de espelhamento.
+
+## Nota: carrossel de playlists da Home tem espelho no app
+
+O card de playlists oficiais (gerenciado em `/admin/playlists-home` no site) chega ao app pelo campo `playlists` de `GET /api/home/hub` e aparece na Home (`src/components/home/PlaylistsCarousel.tsx`). Só as ativas vêm, na ordem do admin; sem nenhuma, o card não aparece.
