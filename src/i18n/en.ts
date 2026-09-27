@@ -226,6 +226,7 @@ export const en: Record<string, string> = {
   "+ Buscar música": "+ Search song",
   "Adicionar música": "Add song",
   "Pronto": "Done",
+  "Buscar no catálogo, no Spotify ou colar um link": "Search the catalog, Spotify, or paste a link",
   "Buscar no catálogo ou no Spotify": "Search the catalog or Spotify",
   "Digite para buscar no catálogo do ChartFM e no Spotify. A música entra na parada; você reordena no editor.": "Type to search the ChartFM catalog and Spotify. The song goes into your chart; you reorder it in the editor.",
   "Mais ouvidas no Global 100": "Most played on the Global 100",

@@ -203,7 +203,7 @@ export function AddSongScreen() {
               value={query}
               onChangeText={setQuery}
               autoFocus
-              placeholder={tr("Buscar no catálogo ou no Spotify")}
+              placeholder={tr("Buscar no catálogo, no Spotify ou colar um link")}
               placeholderTextColor={colors.textMuted}
               style={{ flex: 1, fontSize: 14.5, fontWeight: "600", color: colors.text, padding: 0 }}
             />
