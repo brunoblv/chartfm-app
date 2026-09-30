@@ -77,6 +77,23 @@ O corte de envio das paradas pessoais para o Global 100 é fixo: a semana fecha 
 
 Os dois formatos de vídeo automático da Central de Mídias do site (aba "Top 10 e Quantas você conhece?" em `/admin/midias`) são puramente administrativos: o admin escolhe 10 músicas, clipes e trechos, gera o vídeo 9:16 e agenda nas redes. Não existe tela correspondente aqui e não é esquecimento da regra de espelhamento.
 
+## Nota: "Batalha de Clipes" não tem espelho no app
+
+O gerador de story "Batalha de Clipes" (Central de Mídias do site, `C:\ChartFM`) é puramente administrativo: o admin escolhe o Clipe A e o Clipe B (busca, nunca digitação livre — ver regra de cadastro de artista/música), o sistema busca o trecho no YouTube (6s de cada clipe, por padrão, com segundo inicial configurável), monta o vídeo no formato do template (design "BATALHA DE CLIPES", 9:16, VS entre os dois clipes) e o admin baixa o arquivo para postar manualmente no Instagram Stories. A votação/engajamento acontece no Instagram, fora do ChartFM — não existe jogo, ranking ou votação dentro do site ou do app. Não existe tela correspondente aqui e não é esquecimento da regra de espelhamento.
+
+## Nota: "ChartFM Indica" não tem espelho no app
+
+O gerador de Reels "ChartFM Indica" (Central de Mídias do site, `C:\ChartFM`) é puramente administrativo: o admin escolhe a música por busca (Spotify/banco — ver regra de cadastro de artista/música), o sistema busca o clipe no YouTube, corta o trecho em 16:9 (duração configurável, 15s por padrão) e encaixa no fundo fixo do template (foto do quarto + "CHARTFM INDICA" + CTA pro `chartfm.com.br`, com o nome da música/artista desenhados por cima). O admin confere o preview, ajusta o trecho se precisar e, aprovando, segue para a mesma tela de legenda/hashtags/agendamento dos outros formatos da Central. A publicação é manual no Instagram; o CTA "monte seu ranking" aponta para a parada pessoal que o usuário já monta no site/app — não introduz nada novo do lado do usuário. Não existe tela correspondente aqui e não é esquecimento da regra de espelhamento.
+
+## Nota: "Feliz Aniversário" e "Nostalgia" não têm espelho no app
+
+Mesmo esquema do "ChartFM Indica" (Central de Mídias do site, `C:\ChartFM`), puramente administrativos:
+
+- **Feliz Aniversário**: homenagem ao artista aniversariante do dia. O admin escolhe uma música do artista por busca (Spotify/banco), o clipe do YouTube é cortado em 16:9 e encaixado no template (post de feed, formato 3:4 — diferente dos outros, que são 9:16 de story/reel). Só o nome do artista aparece no vídeo, não o da música.
+- **Nostalgia**: resgata um clipe antigo dentro de uma "TV retrô" do template (story 9:16), mostrando artista, música e ano (o admin digita o ano manualmente, texto livre curto).
+
+Os dois seguem o mesmo fluxo: busca música → sugere clipe do YouTube → corta o trecho → preview → se não ficar bom, ajusta e gera de novo → aprovando, segue para a tela de legenda/hashtags/agendamento da Central. Publicação manual no Instagram. Não existe tela correspondente aqui e não é esquecimento da regra de espelhamento.
+
 ## Nota: carrossel de playlists da Home tem espelho no app
 
 O card de playlists oficiais (gerenciado em `/admin/playlists-home` no site) chega ao app pelo campo `playlists` de `GET /api/home/hub` e aparece na Home (`src/components/home/PlaylistsCarousel.tsx`). Só as ativas vêm, na ordem do admin; sem nenhuma, o card não aparece.
