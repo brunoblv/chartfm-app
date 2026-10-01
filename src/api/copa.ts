@@ -50,7 +50,7 @@ export interface CopaFixture {
 export function useCopaFixturesQuery(copaId: string | undefined) {
   return useQuery({
     queryKey: ["copa", copaId, "fixtures"],
-    queryFn: () => apiRequest<{ fixtures: CopaFixture[] }>(`/api/copa/${copaId}/fixtures`, { auth: false }),
+    queryFn: () => apiRequest<{ fixtures: CopaFixture[] }>(`/api/copa/${copaId}/fixtures`),
     enabled: Boolean(copaId),
     refetchInterval: 60_000,
   });
@@ -95,6 +95,12 @@ export function useCopaVoteMutation(copaId: string | undefined) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["copa", copaId, "fixtures"] });
       queryClient.invalidateQueries({ queryKey: ["copa", copaId, "standings"] });
+    },
+    onError: (error) => {
+      // 409: o voto já existe; recarrega para a tela mostrar o resultado.
+      if (error instanceof ApiError && error.status === 409) {
+        queryClient.invalidateQueries({ queryKey: ["copa", copaId, "fixtures"] });
+      }
     },
   });
 }

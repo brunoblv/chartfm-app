@@ -83,7 +83,7 @@ O gerador de story "Batalha de Clipes" (Central de Mídias do site, `C:\ChartFM`
 
 ## Nota: "ChartFM Indica" não tem espelho no app
 
-O gerador de Reels "ChartFM Indica" (Central de Mídias do site, `C:\ChartFM`) é puramente administrativo: o admin escolhe a música por busca (Spotify/banco — ver regra de cadastro de artista/música), o sistema busca o clipe no YouTube, corta o trecho em 16:9 (duração configurável, 15s por padrão) e encaixa no fundo fixo do template (foto do quarto + "CHARTFM INDICA" + CTA pro `chartfm.com.br`, com o nome da música/artista desenhados por cima). O admin confere o preview, ajusta o trecho se precisar e, aprovando, segue para a mesma tela de legenda/hashtags/agendamento dos outros formatos da Central. A publicação é manual no Instagram; o CTA "monte seu ranking" aponta para a parada pessoal que o usuário já monta no site/app — não introduz nada novo do lado do usuário. Não existe tela correspondente aqui e não é esquecimento da regra de espelhamento.
+O gerador de Reels "ChartFM Indica" (Central de Mídias do site, `C:\ChartFM`) é puramente administrativo: o admin escolhe a música por busca (Spotify/banco — ver regra de cadastro de artista/música), o sistema busca o clipe no YouTube, corta o trecho em 16:9 (duração configurável, 30s por padrão) e encaixa no fundo fixo do template (foto do quarto + "CHARTFM INDICA" + CTA pro `chartfm.com.br`, com o nome da música/artista desenhados por cima). O admin confere o preview, ajusta o trecho se precisar e, aprovando, segue para a mesma tela de legenda/hashtags/agendamento dos outros formatos da Central. A publicação é manual no Instagram; o CTA "monte seu ranking" aponta para a parada pessoal que o usuário já monta no site/app — não introduz nada novo do lado do usuário. Não existe tela correspondente aqui e não é esquecimento da regra de espelhamento.
 
 ## Nota: "Feliz Aniversário" e "Nostalgia" não têm espelho no app
 
@@ -97,3 +97,17 @@ Os dois seguem o mesmo fluxo: busca música → sugere clipe do YouTube → cort
 ## Nota: carrossel de playlists da Home tem espelho no app
 
 O card de playlists oficiais (gerenciado em `/admin/playlists-home` no site) chega ao app pelo campo `playlists` de `GET /api/home/hub` e aparece na Home (`src/components/home/PlaylistsCarousel.tsx`). Só as ativas vêm, na ordem do admin; sem nenhuma, o card não aparece.
+
+## Nota: fila ao vivo e menu lateral da Central de Mídias não têm espelho no app
+
+Na Central de Mídias do site (`C:\ChartFM`) o menu de seções passou da barra horizontal para a lateral esquerda, e a aba "Fila e agenda" ganhou o painel "Fila ao vivo" (saindo agora com barra de progresso por rede, próximos com contagem regressiva, reagendamentos, falhas com "Tentar de novo"), alimentado por `GET /api/admin/social/queue`. É puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+## Nota: edição de tags na página da música não tem espelho no app
+
+Na página da música do site (`C:\ChartFM`, `app/song/[slug]/page.tsx`), quem tem papel privilegiado vê as tags (gêneros) como badges editáveis (× remove, "+ tag" adiciona), usando o mesmo `EditableTagBadges` e a mesma rota inline de `/admin/dados` (`PATCH /api/admin/edicao-de-dados/inline`, `field: "genres"`). É edição de dados, só para admin, sem tela correspondente aqui. O público continua vendo as tags como antes. Não é esquecimento da regra de espelhamento.
+
+O mesmo vale para a página do álbum (`components/album/AlbumHub.tsx`): o admin vê a união das tags das faixas e adiciona/remove uma tag para TODAS as faixas do álbum de uma vez (`PATCH` inline com `kind: "albums"`, `field: "songGenresAdd"` / `"songGenresRemove"`). O álbum não tem campo de tags próprio; a tag mora em cada música.
+
+## Nota: agenda do "Qual é o Clipe?" no admin não tem espelho no app
+
+A agenda de desafios do admin do site (`/admin/games/clip-game`, `C:\ChartFM`) mostra a temporada inteira em calendário: o admin arrasta um desafio para outro dia (dia ocupado = troca de lugar) e pode reativar desafios cancelados. É puramente administrativa, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
