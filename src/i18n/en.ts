@@ -508,7 +508,7 @@ export const en: Record<string, string> = {
   "trouxe de volta": "brought back",
   "Não foi possível completar a ação. Tente novamente.": "Couldn't complete the action. Please try again.",
   // Qual é o Clipe?
-  "Qual é o Clipe?": "Guess the Clip",
+  "Qual é o Clipe?": "Guess the Video",
   "Você acertou!": "You got it!",
   "Você não acertou dessa vez": "You didn't get it this time",
   "Você acertou com só 1 imagem.": "You got it with just 1 image.",
@@ -517,7 +517,7 @@ export const en: Record<string, string> = {
   "1 pessoa jogou hoje.": "1 person played today.",
   "Não acertou": "Missed it",
   "Sem desafio hoje": "No challenge today",
-  "Volte mais tarde para o próximo desafio do Qual é o Clipe?": "Check back later for the next Guess the Clip challenge.",
+  "Volte mais tarde para o próximo desafio do Qual é o Clipe?": "Check back later for the next Guess the Video challenge.",
   "Qual é a música?": "What's the song?",
   "Você já jogou hoje. Toque para ver o resultado.": "You already played today. Tap to see the result.",
   "Adivinhe a música pelas imagens do clipe.": "Guess the song from the music video stills.",

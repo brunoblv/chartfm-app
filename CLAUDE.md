@@ -111,3 +111,7 @@ O mesmo vale para a página do álbum (`components/album/AlbumHub.tsx`): o admin
 ## Nota: agenda do "Qual é o Clipe?" no admin não tem espelho no app
 
 A agenda de desafios do admin do site (`/admin/games/clip-game`, `C:\ChartFM`) mostra a temporada inteira em calendário: o admin arrasta um desafio para outro dia (dia ocupado = troca de lugar) e pode reativar desafios cancelados. É puramente administrativa, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+## Nota: hub de aprovação do AdSense (admin) não tem espelho no app
+
+O `/admin/adsense` do site (`C:\ChartFM`) reúne checagens técnicas, métricas de conteúdo e indexação no Google para a aprovação do AdSense. É puramente administrativo e específico de AdSense/SEO, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
