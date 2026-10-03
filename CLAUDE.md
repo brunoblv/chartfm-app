@@ -130,3 +130,7 @@ Na Central de Mídias do site (`C:\ChartFM`, aba "Editor de templates") o admin 
 Design em `Forum.dc.html` (projeto "Redesign central de mídia" no Claude Design) e briefing em `docs/FORUM_UI_CLAUDE_DESIGN.md`. No site (`C:\ChartFM`): modelos `Forum*` no prisma (migrations `20261002000000_forum` e `20261002000001_report_forum_targets`), `lib/forum.ts` e rotas em `app/api/forum/*` (categorias, tópicos, comentários, curtir, salvar, moderação). Denúncias de tópico/resposta entram na fila de `/admin/reports`. No app: `ForumScreen`, `ForumTopicScreen`, `ForumCreateScreen` (entrada pelo card em Descobrir).
 
 Pendente: telas web do fórum (site), notificações do fórum, aba "Atividade" no perfil, aba de clipes no seletor de entidade e upload de imagens nos tópicos. As migrations ainda não foram aplicadas em nenhum banco.
+
+## Nota: admin do Fórum (`/admin/forum`) não tem espelho no app
+
+No site (`C:\ChartFM`, `app/admin/forum`) o admin modera tópicos (fixar, fechar, remover/restaurar, mover de categoria, trocar tag) e gerencia categorias e tags de formato (criar, renomear, ordenar, trocar ícone e cor, ativar/desativar; só exclui o que não tem tópicos). Categorias e tags agora vêm do banco (`ForumCategory`, `ForumTagDef`, migration `20261003000000_forum_admin_taxonomy`; os padrões são gravados na primeira leitura) e o app as consome por `GET /api/forum/categories` e `GET /api/forum/tags`. A tela de admin é puramente administrativa, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.

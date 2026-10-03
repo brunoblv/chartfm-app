@@ -5,18 +5,40 @@ import { useAppTheme } from "../../theme/ThemeProvider";
 import { UserAvatar } from "../UserAvatar";
 import { resolveMediaUrl } from "../../lib/api";
 import { useTr } from "../../i18n/useTr";
-import { ForumEntity, ForumTag, ForumTopic, ForumTopicRemoved, relativeTime } from "../../api/forum";
+import { ForumEntity, ForumTopic, ForumTopicRemoved, relativeTime, useForumTagsQuery } from "../../api/forum";
 
-export const TAG_META: Record<ForumTag, { label: string; color: string; icon: string[] }> = {
-  album: { label: "Álbum", color: "#FA243C", icon: ["M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z", "M12 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"] },
-  single: { label: "Single", color: "#FF7A1A", icon: ["M9 18V5l12-2v13", "M6 15a3 3 0 1 0 0 6 3 3 0 0 0 0-6z", "M18 13a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"] },
-  clipe: { label: "Clipe", color: "#7B61FF", icon: ["M5 4h14a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z", "M10 9l5 3-5 3z"] },
-  noticia: { label: "Notícia", color: "#0A84FF", icon: ["M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2z", "M18 14h-8", "M15 18h-5", "M10 6h8v4h-8z"] },
-  debate: { label: "Debate", color: "#1FA463", icon: ["M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2z", "M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"] },
-  lista: { label: "Lista", color: "#D99A00", icon: ["M10 6h11", "M10 12h11", "M10 18h11", "M4 6h1v4", "M4 10h2"] },
-  evento: { label: "Evento", color: "#FF2D92", icon: ["M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z", "M16 2v4", "M8 2v4", "M3 10h18"] },
-  tela: { label: "Filme & Série", color: "#5E5CE6", icon: ["M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z", "M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3z"] },
+/** Chave de ícone (definida no admin do site) → desenho. */
+export const TAG_ICON_PATHS: Record<string, string[]> = {
+  disc: ["M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z", "M12 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"],
+  music: ["M9 18V5l12-2v13", "M6 15a3 3 0 1 0 0 6 3 3 0 0 0 0-6z", "M18 13a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"],
+  clip: ["M5 4h14a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z", "M10 9l5 3-5 3z"],
+  news: ["M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2z", "M18 14h-8", "M15 18h-5", "M10 6h8v4h-8z"],
+  debate: ["M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2z", "M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"],
+  list: ["M10 6h11", "M10 12h11", "M10 18h11", "M4 6h1v4", "M4 10h2"],
+  calendar: ["M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z", "M16 2v4", "M8 2v4", "M3 10h18"],
+  clapper: ["M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z", "M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3z"],
+  star: ["m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"],
+  flame: ["M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"],
+  mic: ["M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z", "M19 10v2a7 7 0 0 1-14 0v-2", "M12 19v3"],
+  heart: ["M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"],
+  tag: ["M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l8.59-8.59a1 1 0 0 0 0-1.41z", "M7 7h.01"],
 };
+
+export interface TagMeta {
+  label: string;
+  color: string;
+  icon: string[];
+}
+
+/** Resolve a tag pelo que o admin definiu (API); sem a definição, mostra um rótulo neutro. */
+export function useTagMeta(): (tag: string) => TagMeta {
+  const tags = useForumTagsQuery().data;
+  return (tag) => {
+    const t = tags?.find((x) => x.id === tag);
+    if (t) return { label: t.label, color: t.color, icon: TAG_ICON_PATHS[t.icon] ?? TAG_ICON_PATHS.tag };
+    return { label: tag, color: "#86868B", icon: TAG_ICON_PATHS.tag };
+  };
+}
 
 export function Icon({ d, size = 16, color, strokeWidth = 1.9, fill }: { d: string[]; size?: number; color: string; strokeWidth?: number; fill?: string }) {
   return (
@@ -44,13 +66,12 @@ export const ICONS = {
   x: ["M18 6 6 18", "m6 6 12 12"],
 };
 
-export function TopicTag({ tag }: { tag: ForumTag }) {
-  const tr = useTr();
-  const m = TAG_META[tag];
+export function TopicTag({ tag }: { tag: string }) {
+  const m = useTagMeta()(tag);
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: 5, alignSelf: "flex-start", paddingVertical: 3, paddingHorizontal: 8, borderRadius: 100, backgroundColor: m.color + "1F" }}>
       <Icon d={m.icon} size={12} color={m.color} strokeWidth={2.1} />
-      <Text style={{ fontSize: 11.5, fontWeight: "700", color: m.color }}>{tr(m.label)}</Text>
+      <Text style={{ fontSize: 11.5, fontWeight: "700", color: m.color }}>{m.label}</Text>
     </View>
   );
 }

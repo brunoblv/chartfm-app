@@ -10,14 +10,13 @@ import { RootStackParamList } from "../navigation/RootNavigator";
 import { useTr } from "../i18n/useTr";
 import { resolveMediaUrl } from "../lib/api";
 import { useSearchQuery } from "../api/search";
-import { ForumCreateInput, ForumTag, forumErrorKey, useForumCategoriesQuery, useForumCreateTopic } from "../api/forum";
-import { Chip, ICONS, Icon, LinkedMusicCard, TAG_META } from "../components/forum/ForumParts";
+import { ForumCreateInput, ForumTag, forumErrorKey, useForumCategoriesQuery, useForumCreateTopic, useForumTagsQuery } from "../api/forum";
+import { Chip, ICONS, Icon, LinkedMusicCard, TAG_ICON_PATHS } from "../components/forum/ForumParts";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Route = RouteProp<RootStackParamList, "ForumCreate">;
 type Entity = NonNullable<ForumCreateInput["entity"]>;
 
-const TAGS = Object.keys(TAG_META) as ForumTag[];
 const MIN = 10;
 const MAX = 80;
 
@@ -29,6 +28,7 @@ export function ForumCreateScreen() {
 
   const categories = useForumCategoriesQuery();
   const create = useForumCreateTopic();
+  const tagsQuery = useForumTagsQuery();
 
   const [categoryId, setCategoryId] = React.useState<string | undefined>(params?.categoryId);
   const [tag, setTag] = React.useState<ForumTag | null>(null);
@@ -103,13 +103,13 @@ export function ForumCreateScreen() {
           <View>
             {label(tr("Tipo do tópico"), true)}
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-              {TAGS.map((t) => (
+              {(tagsQuery.data ?? []).map((t) => (
                 <Chip
-                  key={t}
-                  label={tr(TAG_META[t].label)}
-                  active={tag === t}
-                  onPress={() => setTag(t)}
-                  icon={<Icon d={TAG_META[t].icon} size={13} color={tag === t ? colors.bg : TAG_META[t].color} strokeWidth={2.1} />}
+                  key={t.id}
+                  label={t.label}
+                  active={tag === t.id}
+                  onPress={() => setTag(t.id)}
+                  icon={<Icon d={TAG_ICON_PATHS[t.icon] ?? TAG_ICON_PATHS.tag} size={13} color={tag === t.id ? colors.bg : t.color} strokeWidth={2.1} />}
                 />
               ))}
             </View>

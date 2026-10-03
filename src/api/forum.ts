@@ -1,7 +1,15 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ApiError, apiRequest } from "../lib/apiClient";
 
-export type ForumTag = "album" | "single" | "clipe" | "noticia" | "debate" | "lista" | "evento" | "tela";
+/** Slug da tag, definida no admin do site. */
+export type ForumTag = string;
+
+export interface ForumTagDef {
+  id: string;
+  label: string;
+  icon: string;
+  color: string;
+}
 export type ForumSort = "hot" | "recent" | "top" | "unanswered";
 
 export interface ForumCategory {
@@ -106,6 +114,14 @@ export function useForumCategoriesQuery() {
   return useQuery({
     queryKey: ["forum", "categories"],
     queryFn: () => apiRequest<ForumCategory[]>("/api/forum/categories", { auth: false }),
+  });
+}
+
+export function useForumTagsQuery() {
+  return useQuery({
+    queryKey: ["forum", "tags"],
+    staleTime: 5 * 60_000,
+    queryFn: () => apiRequest<ForumTagDef[]>("/api/forum/tags", { auth: false }),
   });
 }
 

@@ -13,9 +13,10 @@ import {
   ForumSort,
   ForumTag,
   useForumCategoriesQuery,
+  useForumTagsQuery,
   useForumTopicsQuery,
 } from "../api/forum";
-import { Chip, EmptyState, ICONS, Icon, SkeletonCard, TAG_META, TopicCard } from "../components/forum/ForumParts";
+import { Chip, EmptyState, ICONS, Icon, SkeletonCard, TAG_ICON_PATHS, TopicCard } from "../components/forum/ForumParts";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -25,7 +26,6 @@ const SORTS: { id: ForumSort; label: string }[] = [
   { id: "top", label: "Mais curtidos" },
   { id: "unanswered", label: "Sem respostas" },
 ];
-const FILTER_TAGS: ForumTag[] = ["album", "single", "clipe", "noticia", "debate", "lista"];
 
 export function ForumScreen() {
   const tr = useTr();
@@ -41,6 +41,7 @@ export function ForumScreen() {
   const q = useDebouncedValue(search.trim(), 350);
 
   const categories = useForumCategoriesQuery();
+  const tagsQuery = useForumTagsQuery();
   const topics = useForumTopicsQuery({ category, tag, sort, q: q.length >= 2 ? q : undefined });
   const items = topics.data?.pages.flatMap((p) => p.topics) ?? [];
   const activeCat = categories.data?.find((c) => c.id === category);
@@ -96,13 +97,13 @@ export function ForumScreen() {
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 14 }}>
         <Chip label={tr("Todos")} active={!tag} onPress={() => setTag(null)} />
-        {FILTER_TAGS.map((t) => (
+        {(tagsQuery.data ?? []).map((t) => (
           <Chip
-            key={t}
-            label={tr(TAG_META[t].label)}
-            active={tag === t}
-            onPress={() => setTag(tag === t ? null : t)}
-            icon={<Icon d={TAG_META[t].icon} size={13} color={tag === t ? colors.bg : TAG_META[t].color} strokeWidth={2.1} />}
+            key={t.id}
+            label={t.label}
+            active={tag === t.id}
+            onPress={() => setTag(tag === t.id ? null : t.id)}
+            icon={<Icon d={TAG_ICON_PATHS[t.icon] ?? TAG_ICON_PATHS.tag} size={13} color={tag === t.id ? colors.bg : t.color} strokeWidth={2.1} />}
           />
         ))}
       </ScrollView>
