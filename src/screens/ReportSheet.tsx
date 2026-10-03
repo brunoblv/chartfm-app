@@ -58,7 +58,7 @@ export function ReportSheet() {
       return;
     }
     reportMutation.mutate(
-      { targetType: targetType === "user" ? "USER" : "POST", targetId, reason },
+      { targetType: targetType === "user" ? "USER" : targetType === "forum_topic" ? "FORUM_TOPIC" : targetType === "forum_comment" ? "FORUM_COMMENT" : "POST", targetId, reason },
       {
         onSuccess: () => setSent(true),
         onError: (e) => Alert.alert(tr("Não foi possível enviar"), accountErrorMessage(e)),
@@ -85,7 +85,7 @@ export function ReportSheet() {
         </View>
 
         <Text style={{ fontSize: 17, fontWeight: "800", color: colors.text, marginTop: 12 }}>
-          {targetType === "user" ? `${tr("Denunciar")} ${label ?? tr("perfil")}` : tr("Denunciar publicação")}
+          {targetType === "user" ? `${tr("Denunciar")} ${label ?? tr("perfil")}` : targetType === "forum_comment" ? tr("Denunciar resposta") : targetType === "forum_topic" ? tr("Denunciar tópico") : tr("Denunciar publicação")}
         </Text>
 
         {sent ? (

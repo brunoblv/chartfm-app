@@ -180,7 +180,7 @@ export function useMuteMutation() {
 
 export function useReportMutation() {
   return useMutation({
-    mutationFn: (vars: { targetType: "USER" | "POST"; targetId: string; reason: string }) =>
+    mutationFn: (vars: { targetType: "USER" | "POST" | "FORUM_TOPIC" | "FORUM_COMMENT"; targetId: string; reason: string }) =>
       apiRequest<{ ok: true }>("/api/report", { method: "POST", body: vars }),
   });
 }

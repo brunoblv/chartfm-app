@@ -11,6 +11,9 @@ import { LoginScreen } from "../screens/LoginScreen";
 import { SignupScreen } from "../screens/SignupScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import { DiscoverScreen } from "../screens/DiscoverScreen";
+import { ForumScreen, ForumListScreen } from "../screens/ForumScreen";
+import { ForumTopicScreen } from "../screens/ForumTopicScreen";
+import { ForumCreateScreen } from "../screens/ForumCreateScreen";
 import { EventsScreen } from "../screens/EventsScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { EditorScreen } from "../screens/EditorScreen";
@@ -103,7 +106,11 @@ export type RootStackParamList = {
   Library: undefined;
   Bubble: undefined;
   UserActionsSheet: { userId: string; handle: string; initialMuted?: boolean };
-  ReportSheet: { targetType: "user" | "post"; targetId: string; label?: string };
+  Forum: undefined;
+  ForumList: { mode: "mine" | "saved" };
+  ForumTopic: { topicId: string };
+  ForumCreate: { categoryId?: string } | undefined;
+  ReportSheet: { targetType: "user" | "post" | "forum_topic" | "forum_comment"; targetId: string; label?: string };
   BlockedUsers: undefined;
 };
 
@@ -226,6 +233,10 @@ export function RootNavigator() {
         <Stack.Screen name="Library" component={LibraryScreen} />
         <Stack.Screen name="Bubble" component={BubbleScreen} />
         <Stack.Screen name="BlockedUsers" component={BlockedUsersScreen} />
+        <Stack.Screen name="Forum" component={ForumScreen} />
+        <Stack.Screen name="ForumList" component={ForumListScreen as any} />
+        <Stack.Screen name="ForumTopic" component={ForumTopicScreen} />
+        <Stack.Screen name="ForumCreate" component={ForumCreateScreen} />
         <Stack.Screen name="CreateSheet" component={CreateSheetScreen} options={sheetScreenOptions} />
         <Stack.Screen name="ChooseParada" component={ChooseParadaSheet} options={sheetScreenOptions} />
         <Stack.Screen name="ProfileSheet" component={ProfileSheetScreen} options={sheetScreenOptions} />

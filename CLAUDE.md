@@ -112,6 +112,21 @@ O mesmo vale para a página do álbum (`components/album/AlbumHub.tsx`): o admin
 
 A agenda de desafios do admin do site (`/admin/games/clip-game`, `C:\ChartFM`) mostra a temporada inteira em calendário: o admin arrasta um desafio para outro dia (dia ocupado = troca de lugar) e pode reativar desafios cancelados. É puramente administrativa, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
 
+## Nota: reescrita de artigos curtos com Gemini (admin) não tem espelho no app
+
+Na aba Conteúdo do `/admin/adsense` do site (`C:\ChartFM`), cada artigo abaixo do piso de palavras ganha o botão "Reescrever com Gemini" (e há um para reescrever todos de uma vez): o Gemini amplia o texto sem inventar fatos, retraduz a versão em inglês e a tela mostra palavras antes/depois, custo e "Desfazer". Rota: `POST /api/admin/editorial/expand`. É puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
 ## Nota: hub de aprovação do AdSense (admin) não tem espelho no app
 
 O `/admin/adsense` do site (`C:\ChartFM`) reúne checagens técnicas, métricas de conteúdo e indexação no Google para a aprovação do AdSense. É puramente administrativo e específico de AdSense/SEO, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+## Nota: Editor de templates da Central de Mídias não tem espelho no app
+
+Na Central de Mídias do site (`C:\ChartFM`, aba "Editor de templates") o admin arrasta o quadro do vídeo e os textos dos templates Nostalgia, ChartFM Indica e Feliz Aniversário sobre o fundo, com preview idêntico ao render, e salva o layout para os próximos vídeos (`SocialTemplateLayout`, `remotion/template-layout.ts`). É puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+
+## Nota: Fórum — backend e telas do app prontos, telas web ainda não
+
+Design em `Forum.dc.html` (projeto "Redesign central de mídia" no Claude Design) e briefing em `docs/FORUM_UI_CLAUDE_DESIGN.md`. No site (`C:\ChartFM`): modelos `Forum*` no prisma (migrations `20261002000000_forum` e `20261002000001_report_forum_targets`), `lib/forum.ts` e rotas em `app/api/forum/*` (categorias, tópicos, comentários, curtir, salvar, moderação). Denúncias de tópico/resposta entram na fila de `/admin/reports`. No app: `ForumScreen`, `ForumTopicScreen`, `ForumCreateScreen` (entrada pelo card em Descobrir).
+
+Pendente: telas web do fórum (site), notificações do fórum, aba "Atividade" no perfil, aba de clipes no seletor de entidade e upload de imagens nos tópicos. As migrations ainda não foram aplicadas em nenhum banco.

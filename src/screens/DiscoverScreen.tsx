@@ -53,6 +53,25 @@ export function DiscoverScreen() {
         </Pressable>
       </View>
 
+      <View style={{ paddingHorizontal: 16, paddingBottom: 8 }}>
+        <Pressable
+          onPress={() => navigation.navigate("Forum")}
+          accessibilityRole="button"
+          style={{ flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 14 }}
+        >
+          <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: colors.accentTint, alignItems: "center", justifyContent: "center" }}>
+            <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={colors.accent} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <Path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2z" />
+              <Path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1" />
+            </Svg>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 15, fontWeight: "800", color: colors.text }}>{tr("Fórum")}</Text>
+            <Text style={{ fontSize: 12.5, color: colors.textMuted, marginTop: 1 }}>{tr("Converse com a comunidade sobre música e lançamentos")}</Text>
+          </View>
+        </Pressable>
+      </View>
+
       <SectionHeader title={tr("Em alta esta semana")} />
       {isTrendingLoading ? (
         <ActivityIndicator color={colors.textMuted} style={{ marginVertical: 12 }} />
