@@ -134,3 +134,11 @@ Pendente: telas web do fórum (site), notificações do fórum, aba "Atividade" 
 ## Nota: admin do Fórum (`/admin/forum`) não tem espelho no app
 
 No site (`C:\ChartFM`, `app/admin/forum`) o admin modera tópicos (fixar, fechar, remover/restaurar, mover de categoria, trocar tag) e gerencia categorias e tags de formato (criar, renomear, ordenar, trocar ícone e cor, ativar/desativar; só exclui o que não tem tópicos). Categorias e tags agora vêm do banco (`ForumCategory`, `ForumTagDef`, migration `20261003000000_forum_admin_taxonomy`; os padrões são gravados na primeira leitura) e o app as consome por `GET /api/forum/categories` e `GET /api/forum/tags`. A tela de admin é puramente administrativa, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+## Nota: "Tarefas automáticas" (`/admin/cron-jobs`) não tem espelho no app
+
+No site (`C:\ChartFM`) o admin vê cada cron da VPS com descrição, horário, peso e última execução, e liga/desliga os que não são fundamentais (`lib/cron-registry.ts`, rotas `/api/cron-control/*` e `/api/admin/cron-jobs`). É puramente administrativo e de infraestrutura, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+## Nota: "Monitoramento do servidor" (`/admin/monitoramento`) não tem espelho no app
+
+No site (`C:\ChartFM`) o admin vê CPU, steal, carga e memória da VPS, os processos que mais pesam e os picos das últimas horas (`lib/vps-monitor.ts`, `/api/admin/vps-monitor`). É puramente administrativo e de infraestrutura, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
