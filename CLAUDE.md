@@ -142,3 +142,11 @@ No site (`C:\ChartFM`) o admin vê cada cron da VPS com descrição, horário, p
 ## Nota: "Monitoramento do servidor" (`/admin/monitoramento`) não tem espelho no app
 
 No site (`C:\ChartFM`) o admin vê CPU, steal, carga e memória da VPS, os processos que mais pesam e os picos das últimas horas (`lib/vps-monitor.ts`, `/api/admin/vps-monitor`). É puramente administrativo e de infraestrutura, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+## Nota: tempo e ordem do carrossel de clipes da semana — sem tela de configuração no app
+
+No site (`C:\ChartFM`), o admin de Lançamentos (aba clipes) define a ordem dos clipes (setas subir/descer) e quantos segundos cada um fica na tela do carrossel da home (`WeeklyClipItem.durationSeconds`, migration `20261004000000_weekly_clip_duration`, ação `setClipDuration`). A ordem já chega ao app em `clipReleases` (`/api/home/discovery`). O app mostra os clipes em fileira (`ClipReleasesRow`), sem auto-avanço, então `durationSeconds` (também exposto no item) não é usado por enquanto. A tela de configuração é administrativa e não tem espelho aqui.
+
+## Nota: "Editor de playlists" (`/admin/editor-playlists`) não tem espelho no app
+
+No site (`C:\ChartFM`) o admin monta playlists (busca no Spotify, arrastar/ordenar com o ordenador das paradas, nome, descrição, capa) e sincroniza com a conta Spotify do ChartFM num clique (`EditorPlaylist`, migration `20261004000001_editor_playlists`, `lib/editor-playlists.ts`, `/api/admin/editor-playlists/*`). A capa é enviada ao Spotify (JPEG até 256 KB) e exige o escopo `ugc-image-upload`, pedido só na conexão da conta @chartfm (`SPOTIFY_SITE_OWNER_EXTRA_SCOPES`); é preciso reconectar o Spotify dessa conta uma vez. É puramente administrativo, sem tela correspondente aqui. O que o usuário vê (a playlist no Spotify) não muda no app. Não é esquecimento da regra de espelhamento.
