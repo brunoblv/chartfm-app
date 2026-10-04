@@ -113,6 +113,16 @@ export function EventsScreen() {
       </View>
 
       <Pressable
+        onPress={() => navigation.navigate("CommunityRanking")}
+        style={{ marginHorizontal: 16, marginTop: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 18 }}
+      >
+        <Text style={{ fontSize: 16, fontWeight: "700", color: colors.text }}>{tr("Ranking da comunidade")}</Text>
+        <Text style={{ fontSize: 11.5, color: colors.textMuted, marginTop: 4 }}>
+          {tr("Sua pontuação ChartFM, o ranking dos jogos e as vitórias dos extras")}
+        </Text>
+      </Pressable>
+
+      <Pressable
         onPress={() => navigation.navigate("CriticsFM")}
         style={{ marginHorizontal: 16, marginTop: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.divider, borderRadius: 16, padding: 18, flexDirection: "row", alignItems: "center", gap: 14 }}
       >

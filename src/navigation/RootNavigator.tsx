@@ -19,6 +19,7 @@ import { ProfileScreen } from "../screens/ProfileScreen";
 import { EditorScreen } from "../screens/EditorScreen";
 import { CopaScreen } from "../screens/CopaScreen";
 import { GuessTheClipScreen } from "../screens/GuessTheClipScreen";
+import { CommunityRankingScreen } from "../screens/CommunityRankingScreen";
 import { CreateSheetScreen } from "../screens/CreateSheetScreen";
 import { ProfileSheetScreen } from "../screens/ProfileSheetScreen";
 import { AddSongScreen } from "../screens/AddSongScreen";
@@ -70,6 +71,7 @@ export type RootStackParamList = {
   CreateGuided: undefined;
   Copa: undefined;
   GuessTheClip: undefined;
+  CommunityRanking: undefined;
   Events: undefined;
   CreateSheet: undefined;
   ChooseParada: { next: ChartFlowNext };
@@ -204,6 +206,7 @@ export function RootNavigator() {
         <Stack.Screen name="CreateGuided" component={CreateGuidedScreen} />
         <Stack.Screen name="Copa" component={CopaScreen} />
         <Stack.Screen name="GuessTheClip" component={GuessTheClipScreen} />
+        <Stack.Screen name="CommunityRanking" component={CommunityRankingScreen} />
         <Stack.Screen name="Events" component={EventsScreen} />
         <Stack.Screen name="Lastfm" component={LastfmScreen} />
         <Stack.Screen name="Global100" component={Global100Screen} />

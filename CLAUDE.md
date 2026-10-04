@@ -150,3 +150,15 @@ No site (`C:\ChartFM`), o admin de Lançamentos (aba clipes) define a ordem dos 
 ## Nota: "Editor de playlists" (`/admin/editor-playlists`) não tem espelho no app
 
 No site (`C:\ChartFM`) o admin monta playlists (busca no Spotify, arrastar/ordenar com o ordenador das paradas, nome, descrição, capa) e sincroniza com a conta Spotify do ChartFM num clique (`EditorPlaylist`, migration `20261004000001_editor_playlists`, `lib/editor-playlists.ts`, `/api/admin/editor-playlists/*`). A capa é enviada ao Spotify (JPEG até 256 KB) e exige o escopo `ugc-image-upload`, pedido só na conexão da conta @chartfm (`SPOTIFY_SITE_OWNER_EXTRA_SCOPES`); é preciso reconectar o Spotify dessa conta uma vez. É puramente administrativo, sem tela correspondente aqui. O que o usuário vê (a playlist no Spotify) não muda no app. Não é esquecimento da regra de espelhamento.
+
+## Nota: Ranking da comunidade e pontuação ChartFM — site e app prontos
+
+Site (`C:\ChartFM`): `/ranking` (`app/ranking/page.tsx`), `GET /api/ranking` e `lib/chartfm-score.ts`. App: `CommunityRankingScreen` (cards em Descobrir e Eventos), API em `src/api/ranking.ts`.
+
+A pontuação ChartFM é a soma da pontuação de carreira nos jogos que pontuam: Qual é o Clipe? (`ClipGamePlayerStats.lifetimeScore`) e Push (`loadPushRanking`, que já inclui o extra Push da parada semanal). A página mostra o ranking geral, o de cada jogo e o ranking de vitórias semanais dos extras (Melhor da Semana, Flashback, Destaque Nacional e Destaque Push, via `WeeklySpotlightNomination` em opções `isWinner`). Vitórias dos extras são contagem e NÃO somam pontos (senão o Push contaria duas vezes). Cache de 60s no servidor.
+
+Em aberto: a Copa não tem pontuação por pessoa (só XP), então não entra na soma nem tem aba. Para incluir um jogo novo, adicione-o em `SCORE_GAMES` e em `buildBoard` no `lib/chartfm-score.ts`.
+
+## Nota: "Novidades Admin" (`/admin/novidades`) não tem espelho no app
+
+No site (`C:\ChartFM`) há uma tela de whats new só para admins, com todas as correções e recursos novos (o que mudou e o que faz), alimentada por `lib/admin-whats-new-entries.ts` e com notificação aos admins a cada entrada nova. **Regra permanente: toda alteração feita no site entra lá automaticamente, no mesmo commit** (regra detalhada no CLAUDE.md do site). Puramente administrativa, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
