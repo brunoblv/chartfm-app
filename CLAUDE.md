@@ -162,3 +162,7 @@ Em aberto: a Copa não tem pontuação por pessoa (só XP), então não entra na
 ## Nota: "Novidades Admin" (`/admin/novidades`) não tem espelho no app
 
 No site (`C:\ChartFM`) há uma tela de whats new só para admins, com todas as correções e recursos novos (o que mudou e o que faz), alimentada por `lib/admin-whats-new-entries.ts` e com notificação aos admins a cada entrada nova. **Regra permanente: toda alteração feita no site entra lá automaticamente, no mesmo commit** (regra detalhada no CLAUDE.md do site). Puramente administrativa, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+## Nota: motor de render (Remotion ou HyperFrames) e vídeo da Under My Skin não têm espelho no app
+
+No site (`C:\ChartFM`), a Central de Mídias deixa o admin escolher o motor do render (Remotion, o padrão, ou HyperFrames) no Nostalgia, no ChartFM Indica, no Feliz Aniversário e em "Gerar vídeo" (Global 100, Disk MTV e a parada pessoal "Under My Skin Video Countdown", que gera as 20 posições da edição mais recente com template próprio). Código em `lib/social-media/hyperframes/*`, coluna `SocialMediaPost.renderEngine` (migration `20261008000000_social_render_engine`) e tipo de post `UNDER_MY_SKIN`. É puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
