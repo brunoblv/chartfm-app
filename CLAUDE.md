@@ -125,11 +125,13 @@ O `/admin/adsense` do site (`C:\ChartFM`) reúne checagens técnicas, métricas 
 Na Central de Mídias do site (`C:\ChartFM`, aba "Editor de templates") o admin arrasta o quadro do vídeo e os textos dos templates Nostalgia, ChartFM Indica e Feliz Aniversário sobre o fundo, com preview idêntico ao render, e salva o layout para os próximos vídeos (`SocialTemplateLayout`, `remotion/template-layout.ts`). É puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
 
 
-## Nota: Fórum — backend e telas do app prontos, telas web ainda não
+## Nota: Fórum — backend, app e site prontos
 
 Design em `Forum.dc.html` (projeto "Redesign central de mídia" no Claude Design) e briefing em `docs/FORUM_UI_CLAUDE_DESIGN.md`. No site (`C:\ChartFM`): modelos `Forum*` no prisma (migrations `20261002000000_forum` e `20261002000001_report_forum_targets`), `lib/forum.ts` e rotas em `app/api/forum/*` (categorias, tópicos, comentários, curtir, salvar, moderação). Denúncias de tópico/resposta entram na fila de `/admin/reports`. No app: `ForumScreen`, `ForumTopicScreen`, `ForumCreateScreen` (entrada pelo card em Descobrir).
 
-Pendente: telas web do fórum (site), notificações do fórum, aba "Atividade" no perfil, aba de clipes no seletor de entidade e upload de imagens nos tópicos. As migrations ainda não foram aplicadas em nenhum banco.
+No site: `/forum` (lista com filtros, busca, Meus tópicos e Salvos), `/forum/[id]` (tópico com respostas, curtir, salvar, denunciar e moderação) e `/forum/novo`; o Fórum ocupa o lugar do Editorial na barra superior do site (Editorial foi para o menu "Mais"). No app a entrada continua pelo card em Descobrir.
+
+Pendente: notificações do fórum, aba "Atividade" no perfil, aba de clipes no seletor de entidade e upload de imagens nos tópicos. As migrations ainda não foram aplicadas em nenhum banco.
 
 ## Nota: admin do Fórum (`/admin/forum`) não tem espelho no app
 
@@ -165,4 +167,4 @@ No site (`C:\ChartFM`) há uma tela de whats new só para admins, com todas as c
 
 ## Nota: motor de render (Remotion ou HyperFrames) e vídeo da Under My Skin não têm espelho no app
 
-No site (`C:\ChartFM`), a Central de Mídias deixa o admin escolher o motor do render (Remotion, o padrão, ou HyperFrames) no Nostalgia, no ChartFM Indica, no Feliz Aniversário e em "Gerar vídeo" (Global 100, Disk MTV e a parada pessoal "Under My Skin Video Countdown", que gera as 20 posições da edição mais recente com template próprio). Código em `lib/social-media/hyperframes/*`, coluna `SocialMediaPost.renderEngine` (migration `20261008000000_social_render_engine`) e tipo de post `UNDER_MY_SKIN`. É puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+No site (`C:\ChartFM`), a Central de Mídias deixa o admin escolher o motor do render (Remotion, o padrão, ou HyperFrames) no Nostalgia, no ChartFM Indica, no Feliz Aniversário e em "Gerar vídeo" (Global 100, Disk MTV). A parada pessoal "Under My Skin Video Countdown" tem aba própria na Central (mesmo esquema do Nostalgia: escolhe a edição, gera as 20 posições com template próprio, preview e aprovação; `lib/social-media/under-my-skin.ts`, `/api/admin/social-media/under-my-skin`). Código em `lib/social-media/hyperframes/*`, coluna `SocialMediaPost.renderEngine` (migration `20261008000000_social_render_engine`) e tipo de post `UNDER_MY_SKIN`. É puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
