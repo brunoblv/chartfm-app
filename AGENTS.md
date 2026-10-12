@@ -18,4 +18,6 @@ Isso é relevante principalmente para o admin do site (fora do escopo deste app 
 
 ## Nota: organização do admin (site)
 
+**11/10/2026, capas de Reels Nostalgia:** a geração, revisão, upload, agendamento e envio de capas foram implementados na Central de Mídias administrativa do site (`C:\ChartFM`). Não há tela correspondente neste app: a publicação nos perfis oficiais é uma função exclusiva do admin do site. Registro técnico: `C:\ChartFM\docs\nostalgia-reel-covers.md`.
+
 O admin do site (`C:\ChartFM`) deve seguir sempre um layout de sistema organizado (menus agrupados, tabelas em vez de listas soltas empilhadas, sem seções "soltas"). Isso é administrativo/puramente do site — não se aplica a telas do app mobile — mas fica registrado aqui pois é uma diretriz permanente de produto.

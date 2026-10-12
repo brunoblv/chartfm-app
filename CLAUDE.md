@@ -168,3 +168,11 @@ No site (`C:\ChartFM`) há uma tela de whats new só para admins, com todas as c
 ## Nota: motor de render (Remotion ou HyperFrames) e vídeo da Under My Skin não têm espelho no app
 
 No site (`C:\ChartFM`), a Central de Mídias deixa o admin escolher o motor do render (Remotion, o padrão, ou HyperFrames) no Nostalgia, no ChartFM Indica, no Feliz Aniversário e em "Gerar vídeo" (Global 100, Disk MTV). A parada pessoal "Under My Skin Video Countdown" tem aba própria na Central (mesmo esquema do Nostalgia: escolhe a edição, gera as 20 posições com template próprio, preview e aprovação; `lib/social-media/under-my-skin.ts`, `/api/admin/social-media/under-my-skin`). Código em `lib/social-media/hyperframes/*`, coluna `SocialMediaPost.renderEngine` (migration `20261008000000_social_render_engine`) e tipo de post `UNDER_MY_SKIN`. É puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+## Nota: vídeos com letra traduzida (Central de Mídias) não têm espelho no app
+
+Na Central de Mídias do site (`C:\ChartFM`, aba "Letra traduzida"), o admin monta um vídeo vertical de um trecho de música com a tradução sincronizada, fundo preto e desenhos de linha fina animados (HyperFrames). O fluxo: envia o áudio, marca o trecho, cola letra e tradução, ajusta os tempos, monta as cenas (biblioteca, upload ou IA externa por prompt), confere a prévia e baixa o MP4 e a capa. Código em `lib/lyric-video/*` e `app/admin/midias/lyric/*`. É puramente administrativo e não entra nas redes do ChartFM, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+## Nota: tela "blv.hits" (`/admin/blv-hits`) não tem espelho no app
+
+No site (`C:\ChartFM`) os vídeos com letra traduzida saíram da Central de Mídias e foram para a tela de admin blv.hits, que tem a agenda própria do Instagram @blv.hits (Reels e Story, com conta conectada à parte, `BlvHitsPost`/`BlvHitsPublication`, cron `blv-hits-dispatch`). É puramente administrativo e publica numa conta que não é do ChartFM, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
