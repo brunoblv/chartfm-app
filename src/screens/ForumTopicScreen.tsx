@@ -22,6 +22,7 @@ import {
   useForumToggleSave,
   useForumTopicQuery,
 } from "../api/forum";
+import { ForumRichText } from "../components/forum/ForumRichText";
 import { Badge, EmptyState, ICONS, Icon, LinkedMusicCard, TopicTag, UserLine } from "../components/forum/ForumParts";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -134,7 +135,7 @@ export function ForumTopicScreen() {
           <Text style={{ fontSize: 13, color: colors.textMuted, marginTop: 2 }}>{tr("Toque para ler")}</Text>
         </Pressable>
       ) : (
-        <Text selectable style={{ fontSize: 16, lineHeight: 26, color: colors.text }}>{topic.body}</Text>
+        <ForumRichText text={topic.body ?? ""} style={{ fontSize: 16, lineHeight: 26, color: colors.text }} />
       )}
 
       {topic.entity && <LinkedMusicCard entity={topic.entity} />}
@@ -183,7 +184,7 @@ export function ForumTopicScreen() {
             {c.featured && <Badge text={tr("Resposta em destaque")} accent />}
             <Text style={{ fontSize: 12.5, color: colors.textMuted }}>· {relativeTime(c.createdAt, lang)}</Text>
           </View>
-          <Text selectable style={{ fontSize: 15, lineHeight: 22, color: colors.text }}>{c.text}</Text>
+          <ForumRichText text={c.text} style={{ fontSize: 15, lineHeight: 22, color: colors.text }} />
           <View style={{ flexDirection: "row", alignItems: "center", gap: 18, marginTop: 2 }}>
             <Pressable
               onPress={() => !requireLogin() && commentLike.mutate(c.id)}

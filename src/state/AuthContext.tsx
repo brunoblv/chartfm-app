@@ -16,6 +16,8 @@ export interface AuthUser {
   image: string | null;
   needsHandle: boolean;
   role: "USER" | "ADMIN" | "DEV";
+  /** Conta banida pelo site: o app só mostra a tela de bloqueio (`BannedScreen`). */
+  banned?: boolean;
 }
 
 interface AuthContextValue {

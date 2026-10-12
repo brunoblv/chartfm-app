@@ -131,6 +131,8 @@ Design em `Forum.dc.html` (projeto "Redesign central de mídia" no Claude Design
 
 No site: `/forum` (lista com filtros, busca, Meus tópicos e Salvos), `/forum/[id]` (tópico com respostas, curtir, salvar, denunciar e moderação) e `/forum/novo`; o Fórum ocupa o lugar do Editorial na barra superior do site (Editorial foi para o menu "Mais"). No app a entrada continua pelo card em Descobrir.
 
+Incorporação de Spotify/YouTube: o link sozinho numa linha do texto (tópico ou resposta) vira player. Não há campo no banco; site (`lib/forum-embeds.ts`) e app (`src/lib/forumEmbeds.ts`) fazem a mesma leitura. No site é o player embutido; no app é um card com capa e título (oEmbed público) que abre no app do Spotify/YouTube, porque o app não tem `react-native-webview` (exigiria build nativo novo).
+
 Pendente: notificações do fórum, aba "Atividade" no perfil, aba de clipes no seletor de entidade e upload de imagens nos tópicos. As migrations ainda não foram aplicadas em nenhum banco.
 
 ## Nota: admin do Fórum (`/admin/forum`) não tem espelho no app
@@ -176,3 +178,7 @@ Na Central de Mídias do site (`C:\ChartFM`, aba "Letra traduzida"), o admin mon
 ## Nota: tela "blv.hits" (`/admin/blv-hits`) não tem espelho no app
 
 No site (`C:\ChartFM`) os vídeos com letra traduzida saíram da Central de Mídias e foram para a tela de admin blv.hits, que tem a agenda própria do Instagram @blv.hits (Reels e Story, com conta conectada à parte, `BlvHitsPost`/`BlvHitsPublication`, cron `blv-hits-dispatch`). É puramente administrativo e publica numa conta que não é do ChartFM, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+## Nota: conta banida — site e app prontos
+
+Conta banida no site (`User.excludedFromAggregates`, por várias contas no mesmo IP) não participa de nada. Site (`C:\ChartFM`): regras em `lib/account-ban.ts`, página `/conta-banida`, middleware recusa escrita na API e `getApiUser` trata a conta como deslogada em escrita. App: `/api/auth/mobile/login` e `/me` devolvem `banned`, e o `RootNavigator` mostra só a `BannedScreen` (aviso, "Sair da conta" e link de contato).

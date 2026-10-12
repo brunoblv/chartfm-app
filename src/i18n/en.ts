@@ -589,6 +589,8 @@ export const en: Record<string, string> = {
   "editado": "edited",
   "Este tópico contém spoiler": "This topic contains spoilers",
   "Toque para ler": "Tap to read",
+  "Vídeo do YouTube": "YouTube video",
+  "Para incorporar música ou vídeo, cole o link do Spotify ou do YouTube sozinho numa linha.": "To embed music or video, paste a Spotify or YouTube link on its own line.",
   "Curtir": "Like",
   "Responder": "Reply",
   "Salvo": "Saved",
@@ -655,4 +657,8 @@ export const en: Record<string, string> = {
   "Nenhuma vitória nos extras ainda.": "No extra wins yet.",
   "Cada vez que uma música indicada por você na parada semanal vence a votação da semana, você ganha uma vitória no extra dela.": "Every time a song you nominated in your weekly chart wins the weekly vote, you earn a win in that extra.",
   "A pontuação ChartFM soma os pontos de carreira no Qual é o Clipe? e no Push. As vitórias dos extras (Melhor da Semana, Flashback, Destaque Nacional e Destaque Push) são contadas à parte e não somam pontos, para o Push não contar duas vezes.": "The ChartFM score adds up your career points in Guess the Video and Push. Extra wins (Best of the Week, Throwback, Brazilian Artist and Push) are counted separately and add no points, so Push isn't counted twice.",
+  "Sua conta foi banida": "Your account has been banned",
+  "Encontramos várias contas criadas no mesmo IP, o que vai contra as regras do ChartFM. Por isso, esta conta não pode mais participar do app nem do site.": "We found several accounts created from the same IP address, which goes against the ChartFM rules. Because of that, this account can no longer take part in the app or the site.",
+  "Você não pode publicar paradas, votar, comentar, jogar nem seguir ninguém.": "You can't publish charts, vote, comment, play or follow anyone.",
+  "Acha que foi um engano? Fale com a gente": "Think this is a mistake? Contact us",
 };

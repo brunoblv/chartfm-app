@@ -11,6 +11,8 @@ import { useTr } from "../i18n/useTr";
 import { resolveMediaUrl } from "../lib/api";
 import { useSearchQuery } from "../api/search";
 import { ForumCreateInput, ForumTag, forumErrorKey, useForumCategoriesQuery, useForumCreateTopic, useForumTagsQuery } from "../api/forum";
+import { ForumEmbedCard } from "../components/forum/ForumRichText";
+import { splitForumBody } from "../lib/forumEmbeds";
 import { Chip, ICONS, Icon, LinkedMusicCard, TAG_ICON_PATHS } from "../components/forum/ForumParts";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -43,6 +45,10 @@ export function ForumCreateScreen() {
   const search = useSearchQuery(term);
   const titleLen = title.trim().length;
   const titleOk = titleLen >= MIN && titleLen <= MAX;
+  const embeds = React.useMemo(
+    () => splitForumBody(body).flatMap((s) => (s.kind === "embed" ? [s.embed] : [])),
+    [body],
+  );
   const valid = !!categoryId && !!tag && titleOk && body.trim().length > 0;
   const dirty = !!(title || body || entity);
 
@@ -200,6 +206,16 @@ export function ForumCreateScreen() {
               style={{ minHeight: 160, borderWidth: 1, borderColor: touched && !body.trim() ? colors.accent : colors.divider, borderRadius: 12, padding: 14, fontSize: 16, lineHeight: 24, color: colors.text, backgroundColor: colors.surface, textAlignVertical: "top" }}
             />
             {touched && !body.trim() && err(tr("Escreva o texto do tópico."))}
+            <Text style={{ fontSize: 12.5, color: colors.textMuted, marginTop: 6 }}>
+              {tr("Para incorporar música ou vídeo, cole o link do Spotify ou do YouTube sozinho numa linha.")}
+            </Text>
+            {embeds.length > 0 && (
+              <View style={{ gap: 10, marginTop: 10 }}>
+                {embeds.map((e, i) => (
+                  <ForumEmbedCard key={`${e.url}-${i}`} embed={e} />
+                ))}
+              </View>
+            )}
           </View>
 
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>

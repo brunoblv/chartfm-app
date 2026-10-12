@@ -7,6 +7,7 @@ const API_ERRORS_EN: Record<string, string> = {
   "Não autenticado": "Not signed in",
   "Não autenticado.": "Not signed in.",
   "Sua conta não pode votar em enquetes e na Copa.": "Your account cannot vote in polls or the Cup.",
+  "Sua conta foi banida porque encontramos várias contas criadas no mesmo IP.": "Your account has been banned because we found several accounts created from the same IP address.",
   "Acesso negado": "Access denied",
   "Acesso negado.": "Access denied.",
   "Sem permissão.": "You do not have permission.",

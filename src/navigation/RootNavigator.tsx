@@ -8,6 +8,7 @@ import { useAuth } from "../state/AuthContext";
 import { TabBar } from "./TabBar";
 import { OnboardingScreen } from "../screens/OnboardingScreen";
 import { LoginScreen } from "../screens/LoginScreen";
+import { BannedScreen } from "../screens/BannedScreen";
 import { SignupScreen } from "../screens/SignupScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import { DiscoverScreen } from "../screens/DiscoverScreen";
@@ -181,7 +182,7 @@ function MainTabs() {
 
 export function RootNavigator() {
   const { colors } = useAppTheme();
-  const { isLoading, isSignedIn } = useAuth();
+  const { isLoading, isSignedIn, user } = useAuth();
 
   if (isLoading) {
     return (
@@ -190,6 +191,8 @@ export function RootNavigator() {
       </View>
     );
   }
+
+  if (isSignedIn && user?.banned) return <BannedScreen />;
 
   return (
     <NavigationContainer>
