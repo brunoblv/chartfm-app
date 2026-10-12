@@ -5,11 +5,15 @@ import { useTr } from "../../i18n/useTr";
 import { HomePlaylist } from "../../api/homeHub";
 import { resolveMediaUrl } from "../../lib/api";
 
-const AUTO_ADVANCE_MS = 6000;
+/** Mesmo padrão do site quando a playlist não traz a duração. */
+const DEFAULT_DURATION_SECONDS = 6;
 /** Depois de um gesto manual, o avanço automático espera um pouco antes de voltar. */
 const RESUME_AFTER_TOUCH_MS = 10000;
 
-/** Espelha o card de playlists da Home do site: avança sozinho, mas o gesto manual tem prioridade. */
+/**
+ * Espelha o card de playlists da Home do site: avança sozinho (cada playlist fica na tela pelo
+ * tempo definido no admin), mas o gesto manual tem prioridade.
+ */
 export function PlaylistsCarousel({ playlists }: { playlists: HomePlaylist[] }) {
   const { colors } = useAppTheme();
   const tr = useTr();
@@ -19,18 +23,26 @@ export function PlaylistsCarousel({ playlists }: { playlists: HomePlaylist[] }) 
   const pausedUntil = useRef(0);
   const count = playlists.length;
 
+  const seconds = playlists[Math.min(index, count - 1)]?.durationSeconds ?? DEFAULT_DURATION_SECONDS;
+
   useEffect(() => {
     if (count <= 1 || width === 0) return;
-    const timer = setInterval(() => {
-      if (Date.now() < pausedUntil.current) return;
-      setIndex((current) => {
-        const next = (current + 1) % count;
+    let timer: ReturnType<typeof setTimeout>;
+    const schedule = (ms: number) => {
+      timer = setTimeout(() => {
+        const waitTouch = pausedUntil.current - Date.now();
+        if (waitTouch > 0) {
+          schedule(waitTouch);
+          return;
+        }
+        const next = (index + 1) % count;
         scrollRef.current?.scrollTo({ x: next * width, animated: true });
-        return next;
-      });
-    }, AUTO_ADVANCE_MS);
-    return () => clearInterval(timer);
-  }, [count, width]);
+        setIndex(next);
+      }, ms);
+    };
+    schedule(seconds * 1000);
+    return () => clearTimeout(timer);
+  }, [count, width, index, seconds]);
 
   if (count === 0) return null;
 

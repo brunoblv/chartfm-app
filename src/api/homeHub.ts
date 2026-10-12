@@ -60,13 +60,15 @@ export interface WeekStatus {
   thisWeekChartId: string | null;
 }
 
-/** Espelha `HomePlaylistItem` de c:\ChartFM\lib\home-playlists.ts. */
+/** Espelha `HomePlaylistItem` de c:\ChartFM\lib\home-playlists-shared.ts. */
 export interface HomePlaylist {
   id: string;
   title: string;
   description: string | null;
   coverUrl: string | null;
   url: string;
+  /** Segundos na tela antes de o carrossel avançar (definido no admin). Servidor antigo não manda. */
+  durationSeconds?: number;
 }
 
 export interface HomeHubResponse {

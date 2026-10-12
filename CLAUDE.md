@@ -96,7 +96,7 @@ Os dois seguem o mesmo fluxo: busca música → sugere clipe do YouTube → cort
 
 ## Nota: carrossel de playlists da Home tem espelho no app
 
-O card de playlists oficiais (gerenciado em `/admin/playlists-home` no site) chega ao app pelo campo `playlists` de `GET /api/home/hub` e aparece na Home (`src/components/home/PlaylistsCarousel.tsx`). Só as ativas vêm, na ordem do admin; sem nenhuma, o card não aparece.
+O card de playlists oficiais (gerenciado em `/admin/playlists-home` no site) chega ao app pelo campo `playlists` de `GET /api/home/hub` e aparece na Home (`src/components/home/PlaylistsCarousel.tsx`). Só as ativas vêm, na ordem do admin; sem nenhuma, o card não aparece. Cada playlist traz `durationSeconds` (tempo na tela antes de avançar, 3 a 60 s, padrão 6, definido no admin); o app respeita esse tempo e cai em 6 s se o campo não vier.
 
 ## Nota: fila ao vivo e menu lateral da Central de Mídias não têm espelho no app
 
