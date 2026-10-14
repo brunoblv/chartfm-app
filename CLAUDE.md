@@ -182,3 +182,7 @@ No site (`C:\ChartFM`) os vídeos com letra traduzida saíram da Central de Míd
 ## Nota: conta banida — site e app prontos
 
 Conta banida no site (`User.excludedFromAggregates`, por várias contas no mesmo IP) não participa de nada. Site (`C:\ChartFM`): regras em `lib/account-ban.ts`, página `/conta-banida`, middleware recusa escrita na API e `getApiUser` trata a conta como deslogada em escrita. App: `/api/auth/mobile/login` e `/me` devolvem `banned`, e o `RootNavigator` mostra só a `BannedScreen` (aviso, "Sair da conta" e link de contato).
+
+## Nota: aba "Global 100" (vídeo com corte manual) da Central de Mídias não tem espelho no app
+
+No site (`C:\ChartFM`, `/admin/midias`, aba Global 100) o admin escolhe, por posição do Global 100, o vídeo do YouTube, o início e a duração do corte e gera a contagem em HyperFrames (`lib/social-media/global-countdown.ts`). É puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
