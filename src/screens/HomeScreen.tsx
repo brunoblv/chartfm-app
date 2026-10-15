@@ -33,6 +33,7 @@ import { ReviewsRow } from "../components/home/ReviewsRow";
 import { ReleasesRow } from "../components/home/ReleasesRow";
 import { ClipReleasesRow } from "../components/home/ClipReleasesRow";
 import { PlaylistsCarousel } from "../components/home/PlaylistsCarousel";
+import { ForumHomeSection } from "../components/home/ForumHomeSection";
 import { FeedList } from "../components/feed/FeedList";
 import { FeedTab as FeedTabType } from "../api/feed";
 
@@ -242,6 +243,13 @@ function InicioTab() {
           </Pressable>
         </View>
       ) : null}
+
+      <SectionHeader title={tr("Fórum")} action={tr("Ver todos")} onAction={() => navigation.navigate("Forum")} />
+      <ForumHomeSection
+        topics={hub?.forum ?? []}
+        onOpenForum={() => navigation.navigate("Forum")}
+        onOpenTopic={(topicId) => navigation.navigate("ForumTopic", { topicId })}
+      />
 
       {hub && hub.people.length > 0 && (
         <>

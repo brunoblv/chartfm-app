@@ -135,6 +135,10 @@ Incorporação de Spotify/YouTube: o link sozinho numa linha do texto (tópico o
 
 Pendente: notificações do fórum, aba "Atividade" no perfil, aba de clipes no seletor de entidade e upload de imagens nos tópicos. As migrations ainda não foram aplicadas em nenhum banco.
 
+## Nota: Fórum na Home (site e app) — prontos
+
+Site (`C:\ChartFM`): `lib/home-forum.ts` (`getHomeForumHighlights`, `getForumFeedItems`), seção `ForumSection` em `components/home-hub/HomeHub.tsx` (card "Conheça o Fórum" + até 4 tópicos novos) e `components/home/FeedForumCard.tsx` no feed misto (`kind: "forum"` em `lib/home-mixed-feed.ts`). App: `ForumHomeSection` na Home (aba Início, vem em `forum` de `GET /api/home/hub`) e `ForumFeedCard` na aba Feed (`kind: "forum"` de `GET /api/feed`). Tópico novo e resposta viram item de feed; na aba Seguindo só entra quem a pessoa segue; bloqueados e silenciados somem; tópicos com spoiler escondem o trecho.
+
 ## Nota: admin do Fórum (`/admin/forum`) não tem espelho no app
 
 No site (`C:\ChartFM`, `app/admin/forum`) o admin modera tópicos (fixar, fechar, remover/restaurar, mover de categoria, trocar tag) e gerencia categorias e tags de formato (criar, renomear, ordenar, trocar ícone e cor, ativar/desativar; só exclui o que não tem tópicos). Categorias e tags agora vêm do banco (`ForumCategory`, `ForumTagDef`, migration `20261003000000_forum_admin_taxonomy`; os padrões são gravados na primeira leitura) e o app as consome por `GET /api/forum/categories` e `GET /api/forum/tags`. A tela de admin é puramente administrativa, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
@@ -186,3 +190,7 @@ Conta banida no site (`User.excludedFromAggregates`, por várias contas no mesmo
 ## Nota: aba "Global 100" (vídeo com corte manual) da Central de Mídias não tem espelho no app
 
 No site (`C:\ChartFM`, `/admin/midias`, aba Global 100) o admin escolhe, por posição do Global 100, o vídeo do YouTube, o início e a duração do corte e gera a contagem em HyperFrames (`lib/social-media/global-countdown.ts`). É puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+## Regra permanente: todo editor de vídeo da Central de Mídias é igual (site)
+
+No site (`C:\ChartFM`), todo editor de vídeo com clipe do YouTube deixa o admin escolher o minuto em que o clipe começa (início m:ss + duração por clipe, como no Global 100); 0:00 = refrão automático. Detalhe e pendências (Under My Skin ainda não tem) no CLAUDE.md do site. Puramente administrativo, sem tela correspondente aqui.

@@ -118,11 +118,15 @@ export interface FeedEditorialItem {
   comments: number;
 }
 
+/** Mesmo formato de `ForumFeedItem` em api/homeHub.ts. */
+export type FeedForumItem = import("./homeHub").ForumFeedItem;
+
 export type FeedItem =
   | { kind: "chart"; id: string; createdAt: string; item: FeedChartItem }
   | { kind: "recommendation"; id: string; createdAt: string; item: FeedRecommendationItem }
   | { kind: "system"; id: string; createdAt: string; item: FeedSystemItem }
-  | { kind: "editorial"; id: string; createdAt: string; item: FeedEditorialItem };
+  | { kind: "editorial"; id: string; createdAt: string; item: FeedEditorialItem }
+  | { kind: "forum"; id: string; createdAt: string; item: FeedForumItem };
 
 export type FeedTab = "for-you" | "following";
 

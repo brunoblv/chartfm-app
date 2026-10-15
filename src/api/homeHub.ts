@@ -71,12 +71,31 @@ export interface HomePlaylist {
   durationSeconds?: number;
 }
 
+/** Espelha `ForumFeedItem` de c:\ChartFM\lib\home-forum.ts. */
+export interface ForumFeedItem {
+  /** "topic" = tópico novo; "reply" = resposta. */
+  type: "topic" | "reply";
+  id: string;
+  topicId: string;
+  topicTitle: string;
+  tagLabel: string | null;
+  tagColor: string | null;
+  text: string;
+  spoiler: boolean;
+  comments: number;
+  likes: number;
+  createdAt: string;
+  author: { id: string; name: string; handle: string; avatarColor: string; image: string | null };
+}
+
 export interface HomeHubResponse {
   weekStatus: WeekStatus;
   recap: WeeklyRecap;
   friendCharts: FriendChart[];
   people: SuggestedPerson[];
   playlists?: HomePlaylist[];
+  /** Tópicos novos do Fórum. Servidor antigo não manda. */
+  forum?: ForumFeedItem[];
 }
 
 export function useHomeHubQuery(enabled: boolean) {

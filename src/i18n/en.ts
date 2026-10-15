@@ -661,4 +661,11 @@ export const en: Record<string, string> = {
   "Encontramos várias contas criadas no mesmo IP, o que vai contra as regras do ChartFM. Por isso, esta conta não pode mais participar do app nem do site.": "We found several accounts created from the same IP address, which goes against the ChartFM rules. Because of that, this account can no longer take part in the app or the site.",
   "Você não pode publicar paradas, votar, comentar, jogar nem seguir ninguém.": "You can't publish charts, vote, comment, play or follow anyone.",
   "Acha que foi um engano? Fale com a gente": "Think this is a mistake? Contact us",
+  // Fórum na Home
+  "Novo por aqui": "New here",
+  "Conheça o Fórum do ChartFM": "Meet the ChartFM Forum",
+  "Converse sobre lançamentos, clipes, charts e tudo que está movimentando a música. Abra um tópico ou entre numa conversa.": "Talk about releases, music videos, charts and everything moving music. Start a topic or join a conversation.",
+  "Conhecer o Fórum": "Explore the Forum",
+  "abriu um tópico no Fórum": "started a topic in the Forum",
+  "respondeu no Fórum": "replied in the Forum",
 };

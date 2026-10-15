@@ -6,6 +6,7 @@ import { ChartFeedCard } from "./ChartFeedCard";
 import { RecommendationFeedCard } from "./RecommendationFeedCard";
 import { SystemFeedCard } from "./SystemFeedCard";
 import { EditorialFeedCard } from "./EditorialFeedCard";
+import { ForumFeedCard } from "./ForumFeedCard";
 import { useTr } from "../../i18n/useTr";
 
 function FeedItemRow({ entry }: { entry: FeedItem }) {
@@ -18,6 +19,8 @@ function FeedItemRow({ entry }: { entry: FeedItem }) {
       return <SystemFeedCard item={entry.item} />;
     case "editorial":
       return <EditorialFeedCard item={entry.item} />;
+    case "forum":
+      return <ForumFeedCard item={entry.item} />;
     default:
       return null;
   }
