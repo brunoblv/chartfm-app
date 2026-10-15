@@ -22,6 +22,7 @@ import {
 import { useProfileQuery, ProfileChartEntry } from "../api/profile";
 import { useParadasQuery } from "../api/paradas";
 import { useTr } from "../i18n/useTr";
+import { findDuplicateSongs } from "../lib/chartDuplicates";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -87,6 +88,22 @@ export function EditorScreen() {
   const handlePublish = () => {
     if (isSaving) return;
     const songs = chartSize ? chart.slice(0, chartSize) : chart;
+    const duplicates = findDuplicateSongs(songs);
+    if (duplicates.length > 0) {
+      const first = duplicates[0];
+      const where = first.positions.join(", ");
+      Alert.alert(
+        tr("Música repetida na parada"),
+        duplicates.length === 1
+          ? lang === "en"
+            ? `"${first.title}" appears more than once in your chart (positions ${where}). Remove one of them before publishing.`
+            : `"${first.title}" está repetida na parada (posições ${where}). Remova uma delas antes de publicar.`
+          : lang === "en"
+            ? `${duplicates.length} songs appear more than once in your chart (for example "${first.title}", positions ${where}). Remove the repeats before publishing.`
+            : `${duplicates.length} músicas estão repetidas na parada (por exemplo "${first.title}", posições ${where}). Remova as repetidas antes de publicar.`,
+      );
+      return;
+    }
     const vars = { songs, paradaId: paradaId ?? selectedParada?.id ?? null, weekDate, spotlights };
     publishMutation.mutate(vars, {
       onSuccess: () => {

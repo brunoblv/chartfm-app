@@ -244,6 +244,7 @@ export const en: Record<string, string> = {
   "Recomendar uma música": "Recommend a song",
   "Avaliar um álbum": "Review an album",
   "Não foi possível publicar": "Couldn't publish",
+  "Música repetida na parada": "Repeated song in your chart",
   "Corte da parada · posição": "Chart cutoff · spot",
   "música": "song",
   "músicas": "songs",
