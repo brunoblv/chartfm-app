@@ -194,3 +194,9 @@ No site (`C:\ChartFM`, `/admin/midias`, aba Global 100) o admin escolhe, por pos
 ## Regra permanente: todo editor de vídeo da Central de Mídias é igual (site)
 
 No site (`C:\ChartFM`), todo editor de vídeo com clipe do YouTube deixa o admin escolher o minuto em que o clipe começa (início m:ss + duração por clipe, como no Global 100); 0:00 = refrão automático. Detalhe e pendências (Under My Skin ainda não tem) no CLAUDE.md do site. Puramente administrativo, sem tela correspondente aqui.
+
+## Nota: publicação do TikTok pela API (Central de Mídias) não tem espelho no app
+
+No site (`C:\ChartFM`) a Central de Mídias passou a publicar no TikTok pela Content Posting API: o admin conecta a conta na aba Contas (OAuth, `/api/admin/tiktok/*`, `lib/social/tiktok.ts`, `lib/social-media/publish/tiktok-video.ts`; credencial em `SocialCredential` com `refreshToken`, migration `20261013000000_tiktok_credential`). Sem conexão o TikTok segue manual. Enquanto o app do TikTok está em auditoria, os posts saem privados (`SELF_ONLY`); depois da aprovação, `TIKTOK_PUBLIC_POSTING=1` libera o público. Puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
+
+Atualização (2026-10-15): o usuário pediu a publicação no X pelo Tweepy e ela foi implementada no site (`C:\ChartFM`): destino `X` na Central de Mídias (só vídeo, até 140 s), `scripts/x_post.py` chamado por `lib/social-media/publish/x-video.ts`, chaves `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_TOKEN_SECRET` no .env (`lib/social/x.ts`), migration `20261015000000_social_target_x`. Sem as chaves o X segue manual, como o TikTok sem conexão. Puramente administrativo, sem tela correspondente aqui. Não é esquecimento da regra de espelhamento.
