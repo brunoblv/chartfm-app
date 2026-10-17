@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable, FlatList, TextInput, ActivityIndicator, Alert, KeyboardAvoidingView, Platform, Share } from "react-native";
+import { View, Text, Pressable, FlatList, TextInput, ActivityIndicator, Alert, KeyboardAvoidingView, Platform, Share, Modal, Switch, ScrollView } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,6 +17,9 @@ import {
   useForumAddComment,
   useForumCommentLike,
   useForumCommentsQuery,
+  useForumDeleteComment,
+  useForumEditComment,
+  useForumEditTopic,
   useForumModerateTopic,
   useForumToggleLike,
   useForumToggleSave,
@@ -40,6 +43,11 @@ export function ForumTopicScreen() {
   const [replyTo, setReplyTo] = React.useState<{ id: string; name: string } | null>(null);
   const [expanded, setExpanded] = React.useState<Set<string>>(new Set());
   const [spoilerOpen, setSpoilerOpen] = React.useState(false);
+  const [editor, setEditor] = React.useState<
+    | { kind: "topic"; title: string; body: string; spoiler: boolean }
+    | { kind: "comment"; id: string; text: string }
+    | null
+  >(null);
 
   const topicQ = useForumTopicQuery(topicId);
   const commentsQ = useForumCommentsQuery(topicId, sort);
@@ -48,6 +56,9 @@ export function ForumTopicScreen() {
   const commentLike = useForumCommentLike();
   const add = useForumAddComment(topicId);
   const moderate = useForumModerateTopic(topicId);
+  const editTopic = useForumEditTopic(topicId);
+  const editComment = useForumEditComment();
+  const deleteComment = useForumDeleteComment();
   const topic = topicQ.data;
 
   const requireLogin = () => {
@@ -67,6 +78,30 @@ export function ForumTopicScreen() {
     );
   };
 
+  const saveEditor = () => {
+    if (!editor) return;
+    const onError = (e: unknown) => Alert.alert(tr("Não foi possível salvar"), tr(forumErrorKey(e)));
+    if (editor.kind === "topic") {
+      editTopic.mutate(
+        { title: editor.title.trim(), body: editor.body.trim(), spoiler: editor.spoiler },
+        { onSuccess: () => setEditor(null), onError },
+      );
+    } else {
+      editComment.mutate({ id: editor.id, text: editor.text.trim() }, { onSuccess: () => setEditor(null), onError });
+    }
+  };
+
+  const confirmDeleteComment = (id: string) => {
+    Alert.alert(tr("Excluir esta resposta?"), tr("Esta ação não pode ser desfeita."), [
+      { text: tr("Cancelar"), style: "cancel" },
+      {
+        text: tr("Excluir"),
+        style: "destructive",
+        onPress: () => deleteComment.mutate(id, { onError: (e) => Alert.alert(tr("Não foi possível excluir"), tr(forumErrorKey(e))) }),
+      },
+    ]);
+  };
+
   const openMenu = () => {
     if (!topic) return;
     const opts: { text: string; style?: "destructive" | "cancel"; onPress?: () => void }[] = [];
@@ -75,6 +110,9 @@ export function ForumTopicScreen() {
     if (topic.canModerate) {
       opts.push({ text: topic.pinned ? tr("Desafixar") : tr("Fixar"), onPress: () => moderate.mutate({ pinned: !topic.pinned }) });
       opts.push({ text: topic.closed ? tr("Reabrir") : tr("Fechar"), onPress: () => moderate.mutate({ closed: !topic.closed }) });
+    }
+    if (topic.canEdit) {
+      opts.push({ text: tr("Editar"), onPress: () => setEditor({ kind: "topic", title: topic.title, body: topic.body ?? "", spoiler: topic.spoiler }) });
     }
     if (topic.canModerate || topic.isAuthor) {
       opts.push({
@@ -185,6 +223,7 @@ export function ForumTopicScreen() {
             <Text style={{ fontSize: 12.5, color: colors.textMuted }}>· {relativeTime(c.createdAt, lang)}</Text>
           </View>
           <ForumRichText text={c.text} style={{ fontSize: 15, lineHeight: 22, color: colors.text }} />
+          {c.editedAt ? <Text style={{ fontSize: 11.5, color: colors.textMuted }}>{tr("editado")}</Text> : null}
           <View style={{ flexDirection: "row", alignItems: "center", gap: 18, marginTop: 2 }}>
             <Pressable
               onPress={() => !requireLogin() && commentLike.mutate(c.id)}
@@ -201,9 +240,21 @@ export function ForumTopicScreen() {
                 <Text style={{ fontSize: 12.5, fontWeight: "700", color: colors.textMuted }}>{tr("Responder")}</Text>
               </Pressable>
             )}
-            <Pressable onPress={() => !requireLogin() && navigation.navigate("ReportSheet", { targetType: "forum_comment", targetId: c.id })} hitSlop={10}>
-              <Text style={{ fontSize: 12.5, fontWeight: "700", color: colors.textMuted }}>{tr("Denunciar")}</Text>
-            </Pressable>
+            {!c.canDelete && (
+              <Pressable onPress={() => !requireLogin() && navigation.navigate("ReportSheet", { targetType: "forum_comment", targetId: c.id })} hitSlop={10}>
+                <Text style={{ fontSize: 12.5, fontWeight: "700", color: colors.textMuted }}>{tr("Denunciar")}</Text>
+              </Pressable>
+            )}
+            {c.canEdit && (
+              <Pressable onPress={() => setEditor({ kind: "comment", id: c.id, text: c.text })} hitSlop={10}>
+                <Text style={{ fontSize: 12.5, fontWeight: "700", color: colors.textMuted }}>{tr("Editar")}</Text>
+              </Pressable>
+            )}
+            {c.canDelete && (
+              <Pressable onPress={() => confirmDeleteComment(c.id)} hitSlop={10}>
+                <Text style={{ fontSize: 12.5, fontWeight: "700", color: colors.textMuted }}>{tr("Excluir")}</Text>
+              </Pressable>
+            )}
           </View>
         </View>
       </View>
@@ -293,6 +344,67 @@ export function ForumTopicScreen() {
           </View>
         )}
       </KeyboardAvoidingView>
+
+      <Modal visible={!!editor} animationType="slide" transparent onRequestClose={() => setEditor(null)}>
+        <KeyboardAvoidingView style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.45)" }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+          <View style={{ maxHeight: "90%", backgroundColor: colors.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 16 }}>
+            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 12 }}>
+              <Text accessibilityRole="header" style={{ fontSize: 18, fontWeight: "800", color: colors.text }}>
+                {editor?.kind === "topic" ? tr("Editar tópico") : tr("Editar resposta")}
+              </Text>
+              <Text style={{ fontSize: 12.5, color: colors.textMuted }}>{tr("Você pode editar até 15 minutos depois de postar.")}</Text>
+              {editor?.kind === "topic" && (
+                <TextInput
+                  value={editor.title}
+                  onChangeText={(v) => setEditor({ ...editor, title: v })}
+                  maxLength={80}
+                  placeholder={tr("Título")}
+                  placeholderTextColor={colors.textMuted}
+                  accessibilityLabel={tr("Título")}
+                  style={{ borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12, backgroundColor: colors.fillSubtle, fontSize: 15, color: colors.text }}
+                />
+              )}
+              <TextInput
+                value={editor?.kind === "topic" ? editor.body : editor?.text ?? ""}
+                onChangeText={(v) => setEditor(editor?.kind === "topic" ? { ...editor, body: v } : editor ? { ...editor, text: v } : null)}
+                multiline
+                maxLength={editor?.kind === "topic" ? 8000 : 2000}
+                placeholder={tr("Texto")}
+                placeholderTextColor={colors.textMuted}
+                accessibilityLabel={tr("Texto")}
+                style={{ minHeight: 120, maxHeight: 260, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12, backgroundColor: colors.fillSubtle, fontSize: 15, color: colors.text, textAlignVertical: "top" }}
+              />
+              {editor?.kind === "topic" && (
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <Text style={{ fontSize: 14.5, color: colors.text }}>{tr("Este tópico contém spoiler")}</Text>
+                  <Switch value={editor.spoiler} onValueChange={(v) => setEditor({ ...editor, spoiler: v })} trackColor={{ true: colors.accent }} />
+                </View>
+              )}
+              <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 8 }}>
+                <Pressable onPress={() => setEditor(null)} accessibilityRole="button" style={{ minHeight: 44, paddingHorizontal: 18, alignItems: "center", justifyContent: "center" }}>
+                  <Text style={{ fontWeight: "700", color: colors.textMuted }}>{tr("Cancelar")}</Text>
+                </Pressable>
+                {(() => {
+                  const body = editor?.kind === "topic" ? editor.body : editor?.text ?? "";
+                  const titleLen = editor?.kind === "topic" ? editor.title.trim().length : 10;
+                  const valid = body.trim().length > 0 && titleLen >= 10 && titleLen <= 80;
+                  const pending = editTopic.isPending || editComment.isPending;
+                  return (
+                    <Pressable
+                      onPress={saveEditor}
+                      disabled={!valid || pending}
+                      accessibilityRole="button"
+                      style={{ minHeight: 44, paddingHorizontal: 22, borderRadius: 22, backgroundColor: colors.accent, alignItems: "center", justifyContent: "center", opacity: !valid || pending ? 0.45 : 1 }}
+                    >
+                      {pending ? <ActivityIndicator color="#fff" /> : <Text style={{ fontWeight: "700", color: "#fff" }}>{tr("Salvar")}</Text>}
+                    </Pressable>
+                  );
+                })()}
+              </View>
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </SafeAreaView>
   );
 }

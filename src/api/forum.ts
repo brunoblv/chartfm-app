@@ -75,6 +75,8 @@ export interface ForumTopicDetail extends ForumTopic {
   body: string;
   canModerate: boolean;
   isAuthor: boolean;
+  /** Autor dentro dos 15 minutos de edição. */
+  canEdit: boolean;
 }
 
 export interface ForumCommentRemoved {
@@ -94,6 +96,11 @@ export interface ForumCommentLive {
   featured: boolean;
   isTopicAuthor: boolean;
   createdAt: string;
+  editedAt: string | null;
+  /** Autor dentro dos 15 minutos de edição. */
+  canEdit: boolean;
+  /** Autor ou moderação. */
+  canDelete: boolean;
   author: ForumUser;
 }
 
@@ -213,6 +220,32 @@ export function useForumCreateTopic() {
   });
 }
 
+export function useForumEditTopic(topicId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { title: string; body: string; spoiler: boolean }) =>
+      apiRequest<{ ok: true }>(`/api/forum/topics/${topicId}`, { method: "PATCH", body: input }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["forum"] }),
+  });
+}
+
+export function useForumEditComment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (vars: { id: string; text: string }) =>
+      apiRequest<{ ok: true }>(`/api/forum/comments/${vars.id}`, { method: "PATCH", body: { text: vars.text } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["forum"] }),
+  });
+}
+
+export function useForumDeleteComment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiRequest<{ ok: true }>(`/api/forum/comments/${id}`, { method: "DELETE" }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["forum"] }),
+  });
+}
+
 export function useForumModerateTopic(topicId: string) {
   const qc = useQueryClient();
   return useMutation({
@@ -237,6 +270,8 @@ export function forumErrorKey(e: unknown): string {
       return "O título precisa ter entre 10 e 80 caracteres.";
     case "unauthorized":
       return "Entre na sua conta para participar.";
+    case "edit_window_closed":
+      return "O prazo de 15 minutos para editar já passou.";
     default:
       return "Não foi possível concluir. Tente novamente.";
   }
